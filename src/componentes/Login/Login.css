@@ -1,0 +1,45 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 4px;
+}
+.usuario:focus,
+.contraseña:focus,
+.button:focus {
+  outline-color: black;
+}
+
+.usuario,
+.contraseña {
+  padding: 10px;
+  margin: 5px;
+  width: 100%;
+}
+.button {
+  margin: 1rem;
+  padding: 0.5rem;
+  display: block;
+  width: 100%;
+  color: black;
+  background: #fff;
+  border: 1px solid black;
+  transition: 0.3s ease all;
+  border-radius: 0.2em;
+}
+.button:hover,
+.button:active {
+  color: #fff;
+  background: black;
+}
+.cuenta {
+  font-size: x-small;
+  line-height: 1.5em;
+  padding: 0.1em;
+  text-align: left;
+}
+.cuenta span {
+  color: #cf963c;
+  font-weight: bold;
+}
