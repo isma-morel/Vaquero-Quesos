@@ -1,6 +1,6 @@
 import "./Lista.css";
 import productos from "./Productos.json";
-function Lista() {
+function Lista({ onRowClick }) {
   return (
     <table className="tabla">
       <thead>
@@ -10,20 +10,25 @@ function Lista() {
         </tr>
       </thead>
       <tbody>
-        {productos.map(({ producto, codigo, descripcion }, index) => (
+        {productos.map(({ producto, codigo, descripcion, confoto }, index) => (
           <tr key={index}>
             <td>
               <span className="codigo">{codigo}</span>
             </td>
-            <td className="producto">
+            <td
+              onClick={onRowClick}
+              className={`producto ${confoto ? "confoto" : ""}`}>
               <div>
                 <span className="titulo">{producto}</span>
                 <span className="descripcion">{descripcion}</span>
               </div>
-
-              <span className="foto">
-                <i className="fas fa-camera"></i>
-              </span>
+              {confoto ? (
+                <span className="foto">
+                  <i className="fas fa-camera"></i>
+                </span>
+              ) : (
+                ""
+              )}
             </td>
           </tr>
         ))}

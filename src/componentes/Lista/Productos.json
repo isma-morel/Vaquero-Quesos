@@ -1,7 +1,8 @@
 [{
     "codigo":"123456",
     "producto":"Gran Vaquero",
-    "descripcion":"Horma"
+    "descripcion":"Horma",
+    "confoto":true
 },
 {
     "codigo":"123456",

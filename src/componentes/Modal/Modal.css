@@ -1,0 +1,89 @@
+.overlay {
+  position: fixed;
+  height: 100vh;
+  width: 100%;
+  top: 0;
+  left: 0;
+  background: white;
+  display: none;
+  justify-content: center;
+  align-items: center;
+  backface-visibility: hidden;
+  z-index: 500;
+}
+.overlay.open {
+  display: flex;
+  animation: overlayAparicion 0.5s forwards;
+}
+.overlay .card-producto {
+  text-align: center;
+}
+.overlay .card-producto .imagen-producto {
+  width: 300px;
+  transform: translateY(-100vh);
+  animation: imagenAparicion 0.5s forwards;
+}
+
+.overlay .card-producto .producto {
+  font-size: 32px;
+  font-weight: 500;
+  text-align: center;
+  width: 100%;
+}
+.overlay .card-producto .producto:hover {
+  cursor: pointer;
+  color: #cf963c;
+}
+.overlay .card-producto .descripcion {
+  font-size: 18px;
+  font-weight: 400;
+  text-align: center;
+  display: block;
+}
+
+.overlay .card-producto .boton {
+  margin: 1em;
+  background: none;
+  border: 1px solid black;
+  color: black;
+  padding: 0.5em;
+  cursor: pointer;
+  border-radius: 2px;
+  transition: 0.5s all ease;
+}
+.overlay .card-producto .boton:hover {
+  background: black;
+  color: white;
+}
+
+.overlay .card-producto .texto-producto {
+  transform: translateY(100vh);
+  animation: textoProductoAparicion 0.5s forwards;
+}
+
+@keyframes textoProductoAparicion {
+  0% {
+    transform: translateY(100vh);
+  }
+  100% {
+    transform: translateY(0);
+  }
+}
+
+@keyframes imagenAparicion {
+  0% {
+    transform: translateY(-100vh);
+  }
+  100% {
+    transform: translateY(0);
+  }
+}
+
+@keyframes overlayAparicion {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}

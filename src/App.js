@@ -1,18 +1,26 @@
 import { useState } from "react";
 import "./App.css";
-import { Login, Lista } from "./componentes";
+import { Login, Lista, Modal } from "./componentes";
 import { logo } from "./logo.json";
 import { granVaquero } from "./GranVaquero.json";
 function App() {
   const [isOpenModal, setIsOpenModal] = useState(false);
+  const handleCloseModal = (e) => {
+    setIsOpenModal(false);
+  };
   return (
     <div className="contenedor">
-      <Login logo={logo} />
+      <Modal isOpen={isOpenModal} onClose={handleCloseModal} />
+      <Listado setModal={setIsOpenModal} />
     </div>
   );
 }
 
-const Listado = () => {
+const Listado = ({ setModal }) => {
+  const handleRowClick = (e) => {
+    console.log(e);
+    setModal(true);
+  };
   return (
     <div className="contenedor">
       <div className="contenedor__landing">
@@ -25,7 +33,7 @@ const Listado = () => {
       </div>
 
       <div className="contenedor__lista">
-        <Lista />
+        <Lista onRowClick={handleRowClick} />
       </div>
     </div>
   );

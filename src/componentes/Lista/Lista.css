@@ -35,11 +35,13 @@
   display: flex;
   justify-content: space-between;
   width: 100%;
-}
-.tabla tbody tr td.producto.confoto {
+  user-select: none;
   cursor: pointer;
 }
 
+.tabla tbody tr td.producto:hover .titulo {
+  color: #cf963c;
+}
 .tabla tbody tr td .codigo {
   font-weight: 500;
   font-size: 18px;
@@ -53,7 +55,9 @@
   margin-right: 0.5em;
 }
 .tabla tbody tr td .descripcion {
-  font-weight: 300;
+  font-weight: 400;
+  font-size: 15px;
+  color: #222;
 }
 
 .tabla tbody tr td .foto {
