@@ -1,0 +1,105 @@
+.tabla {
+  width: 80%;
+  border-collapse: collapse;
+  margin: 1rem auto;
+}
+
+.tabla thead {
+  color: #f8f8f8;
+  background: #484848;
+  text-align: left;
+}
+.tabla thead th {
+  font-weight: 400;
+  padding: 1rem;
+  border-left: 1px solid #999;
+  min-width: 20%;
+  text-align: center;
+}
+.tabla thead th:nth-child(2),
+.tabla tbody tr td:nth-child(2) {
+  width: 60%;
+  text-align: left;
+}
+
+.tabla tbody tr {
+  border: none;
+}
+.tabla tbody tr:nth-child(even) {
+  background-color: #fdf2dc;
+}
+.tabla tbody tr td {
+  padding: 1em;
+}
+.tabla tbody tr td.producto {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+}
+.tabla tbody tr td.producto.confoto {
+  cursor: pointer;
+}
+
+.tabla tbody tr td .codigo {
+  font-weight: 500;
+  font-size: 18px;
+  text-align: center;
+  display: inline-block;
+  width: 100%;
+}
+.tabla tbody tr td .titulo {
+  font-weight: 500;
+  font-size: 20px;
+  margin-right: 0.5em;
+}
+.tabla tbody tr td .descripcion {
+  font-weight: 300;
+}
+
+.tabla tbody tr td .foto {
+  color: #cf963c;
+  font-size: 25px;
+}
+
+/* 
+*
+*   Media querys.
+*
+*/
+
+@media (max-width: 700px) {
+  .tabla {
+    border-collapse: collapse;
+    width: 100%;
+    margin-top: 5rem;
+  }
+  .tabla thead {
+    font-size: 10px;
+    display: none;
+  }
+  .tabla thead th {
+    padding: 1rem;
+  }
+  .tabla tbody tr td .descripcion {
+    color: #cf963c;
+    font-weight: 400;
+  }
+  .tabla tbody tr td .foto {
+    font-size: 1.5em;
+    margin-bottom: 0;
+  }
+  .tabla tbody tr td.producto div {
+    display: flex;
+    flex-direction: column;
+  }
+  .tabla tbody tr td.producto {
+    justify-content: center;
+    align-items: start;
+    flex-direction: column;
+    padding: 0.5em;
+  }
+  .tabla tbody tr td .codigo {
+    text-align: left;
+    padding: 0px 1em;
+  }
+}

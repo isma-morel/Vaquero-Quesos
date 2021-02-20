@@ -1,3 +1,12 @@
+hr {
+  border: 0;
+  height: 1px;
+  text-align: center;
+  width: 100%;
+  margin-bottom: 0.3em;
+  background-image: linear-gradient(to left, #fff, rgba(0, 0, 0, 0.4), #fff);
+}
+
 .container {
   display: flex;
   flex-direction: column;
@@ -39,7 +48,9 @@
   padding: 0.1em;
   text-align: left;
 }
-.cuenta span {
+
+.cuenta span a {
   color: #cf963c;
+  text-decoration: none;
   font-weight: bold;
 }

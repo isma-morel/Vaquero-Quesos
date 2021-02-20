@@ -1,15 +1,16 @@
 import React from "react";
 
 import "./Login.css";
-const Login = () => {
+const Login = ({ logo }) => {
   return (
     <div className="container">
+      <img src={logo} alt="Logo Vaquero" />
+      <hr />
       <form
         onSubmit={(e) => {
           e.preventDefault();
         }}
-        className="container"
-      >
+        className="container">
         <input className="usuario" type="text" placeholder="Usuario" />
         <input
           className="contraseña"
@@ -19,7 +20,11 @@ const Login = () => {
         <button className="button">ENVIAR</button>
         <small className="cuenta">
           Si no tiene una cuenta puede comunicarse a <br />
-          <span>cuentasVaquero@gmail.com.</span>
+          <span>
+            <a class="email" href="mailto:cuentasVaquero@gmail.com">
+              cuentasVaquero@gmail.com
+            </a>
+          </span>
         </small>
       </form>
     </div>
