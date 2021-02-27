@@ -1,0 +1,106 @@
+.contenedor-pedidos {
+  width: 80%;
+}
+.tabla-pedidos {
+  width: 80%;
+  border-collapse: collapse;
+  margin: 1rem auto;
+}
+.tabla-pedidos thead {
+  color: #f8f8f8;
+  background: #484848;
+  text-align: left;
+}
+.tabla-pedidos thead th {
+  font-weight: 400;
+  padding: 1rem;
+  border-left: 1px solid #999;
+  min-width: 60%;
+  text-align: center;
+  user-select: none;
+}
+.tabla-pedidos tbody tr td:nth-child(1) {
+  font-size: 18px;
+  font-weight: 500;
+}
+.tabla-pedidos thead th:nth-child(2),
+.tabla-pedidos tbody tr td:nth-child(2) {
+  min-width: 20%;
+  text-align: center;
+  position: relative;
+}
+
+.tabla-pedidos tbody tr {
+  border: none;
+  user-select: none;
+}
+.tabla-pedidos tbody tr:nth-child(even) {
+  background-color: #fdf2dc;
+}
+.tabla-pedidos tbody tr td {
+  padding: 1em;
+  text-align: left;
+}
+.tabla-pedidos tbody tr .icono {
+  color: #cf963c;
+  font-size: 25px;
+  cursor: pointer;
+}
+.tabla-pedidos tbody tr .icono-cancel {
+  color: #ce3c3c;
+  font-size: 25px;
+  cursor: pointer;
+}
+
+.tabla-pedidos tbody tr .botones {
+  position: absolute;
+  right: -5em;
+}
+.tabla-pedidos tbody tr .botones i {
+  margin: auto 5px;
+  align-self: baseline;
+}
+@media (max-width: 700px) {
+  .contenedor-pedidos {
+    width: 100%;
+  }
+  .tabla-pedidos {
+    border-collapse: collapse;
+    width: 100%;
+    margin-top: 5rem;
+  }
+  .tabla-pedidos thead {
+    font-size: 10px;
+    display: none;
+  }
+  .tabla-pedidos thead th {
+    padding: 1rem;
+  }
+  .tabla-pedidos thead th:nth-child(2),
+  .tabla-pedidos tbody tr td:nth-child(2) {
+    min-width: 60%;
+    text-align: center;
+  }
+  .tabla-pedidos tbody tr .contenedor-flex .botones {
+    right: 5px;
+  }
+  .tabla-pedidos tbody tr .contenedor-flex .botones i {
+    margin: 2px;
+  }
+}
+@media (max-width: 360px) {
+  .tabla-pedidos thead th:nth-child(2),
+  .tabla-pedidos tbody tr td:nth-child(2) {
+    text-align: start;
+  }
+  .tabla-pedidos tbody tr .contenedor-flex .botones {
+    right: 10px;
+    bottom: 50%;
+    transform: translateY(50%);
+  }
+  .tabla-pedidos tbody tr .contenedor-flex .botones i {
+    font-size: 20px;
+    display: block;
+    padding: 0;
+  }
+}

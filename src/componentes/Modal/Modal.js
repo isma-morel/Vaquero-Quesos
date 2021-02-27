@@ -11,7 +11,14 @@ const Modal = ({ isOpen, onClose }) => {
         />
         <div className="texto-producto">
           <h2 className="producto">Gran Vaquero</h2>
-          <h3 className="descripcion"> Horma</h3>
+          <h3 className="descripcion">Horma</h3>
+          <input name="cantidad" type="number" placeholder="Cantidad" min={0} />
+          <select name="" id="">
+            <option value="">kg</option>
+            <option value="">pack</option>
+            <option value="">pallet</option>
+          </select>
+          <br />
           <button className="boton" onClick={onClose}>
             Volver a la lista
           </button>

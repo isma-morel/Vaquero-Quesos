@@ -60,7 +60,25 @@
   transform: translateY(100vh);
   animation: textoProductoAparicion 0.5s forwards;
 }
-
+.overlay .card-producto .texto-producto input {
+  font-size: 1em;
+  max-width: 60%;
+  padding: 5px;
+}
+.overlay .card-producto .texto-producto input:focus {
+  outline-color: black;
+}
+.overlay .card-producto .texto-producto select {
+  font-size: 1em;
+  margin: 2em 0.3em;
+  padding: 5px;
+  max-width: 30%;
+  appearance: menu;
+  border: 1px solid black;
+  background: transparent;
+  border-radius: 3px;
+  text-align: center;
+}
 @keyframes textoProductoAparicion {
   0% {
     transform: translateY(100vh);
