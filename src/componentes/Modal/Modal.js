@@ -1,6 +1,13 @@
 import { granVaquero } from "../../GranVaquero.json";
 import "./Modal.css";
-const Modal = ({ isOpen, onClose }) => {
+const Modal = ({ isOpen, onClose, producto }) => {
+  const handleGuardarProducto = (e) => {
+    let carrito = JSON.parse(localStorage.getItem("carrito")) || [];
+    carrito = [...carrito, { prod: "asd" }];
+    localStorage.setItem("carrito", JSON.stringify(carrito));
+    onClose();
+  };
+
   return (
     <div className={`overlay ${isOpen ? "open" : ""}`}>
       <div className="card-producto">
@@ -22,7 +29,9 @@ const Modal = ({ isOpen, onClose }) => {
           <button className="boton" onClick={onClose}>
             Volver a la lista
           </button>
-          <button className="boton">Agregar al carrito</button>
+          <button onClick={handleGuardarProducto} className="boton">
+            Agregar al carrito
+          </button>
         </div>
       </div>
     </div>

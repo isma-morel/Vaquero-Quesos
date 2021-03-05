@@ -22,7 +22,7 @@ const Login = ({ logo }) => {
           Si no tiene una cuenta puede comunicarse a <br />
           <span>
             <a class="email" href="mailto:cuentasVaquero@gmail.com">
-              cuentasVaquero@gmail.com
+              ventas@quesosvaquero.com
             </a>
           </span>
         </small>

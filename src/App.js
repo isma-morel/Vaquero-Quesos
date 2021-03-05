@@ -1,4 +1,5 @@
 import "./App.css";
+import { BrowserRouter, Switch, Route, Link, Redirect } from "react-router-dom";
 import { Login, Carrito, Lista, Modal, ModalCarrito } from "./componentes";
 import { logo } from "./logo.json";
 import { granVaquero } from "./GranVaquero.json";
@@ -13,31 +14,53 @@ function App() {
     handleCarritoModal();
   };
   return (
-    <div className="contenedor">
-      {/*  <BasePage titulo="MAYORISTAS - 57| 22/01/2021">
-        <Modal isOpen={isOpenModal} onClose={handleModal} />
-        <Lista onRowClick={handleModal} />
-      </BasePage> */}
-      {/* <Login logo={logo} /> */}
-      <BasePage titulo="CARRITO - CLIENTE N° 388221-4">
-        <ModalCarrito
-          isOpen={isOpenCarritoModal}
-          onClose={handleCarritoModal}
-          Producto={productoEditable}
-        />
-        <Carrito onEdit={handleCarrito} />
-      </BasePage>
-    </div>
+    <BrowserRouter>
+      <div className="contenedor">
+        <Switch>
+          <Route exact path="/">
+            <Login logo={logo} />
+          </Route>
+
+          {localStorage.getItem("auth") && (
+            <>
+              <Route exact path="/Lista">
+                <BasePage titulo="MAYORISTAS - 57| 22/01/2021">
+                  <Modal isOpen={isOpenModal} onClose={handleModal} />
+                  <Lista onRowClick={handleModal} />
+                </BasePage>
+              </Route>
+              <Route path="/Carrito">
+                <BasePage titulo="CARRITO - CLIENTE N° 388221-4">
+                  <ModalCarrito
+                    isOpen={isOpenCarritoModal}
+                    onClose={handleCarritoModal}
+                    Producto={productoEditable}
+                  />
+                  <Carrito onEdit={handleCarrito} />
+                </BasePage>
+              </Route>
+            </>
+          )}
+          <Redirect to="/" />
+        </Switch>
+      </div>
+    </BrowserRouter>
   );
 }
 
 const BasePage = ({ children, titulo }) => {
   return (
     <>
+      <div className="botonesNav">
+        <Link to="/Carrito">
+          <i class="fas fa-shopping-cart"></i>
+        </Link>
+        <span>Cliente: 388221-4</span>
+      </div>
       <div className="contenedor__landing">
         <img src={logo} alt="Logo Vaquero" />
 
-        <div className="contenedor__titulo" style={{}}>
+        <div className="contenedor__titulo">
           <h2>{titulo}</h2>
           <hr />
         </div>

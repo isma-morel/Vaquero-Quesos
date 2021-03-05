@@ -36,6 +36,8 @@ const Carrito = ({ onEdit }) => {
           ))}
         </tbody>
       </table>
+      <button>Confirmar</button>
+      <button>Volver a la Lista</button>
     </div>
   );
 };
