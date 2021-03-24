@@ -1,0 +1,32 @@
+[
+  {
+    "cliente": 123123,
+    "pedido": 123123123,
+    "prouctos": [
+      {
+        "codigo": 123123,
+        "presentacion": "Gran Vaquero",
+        "cantidadPedida": 12,
+        "medida": "KG"
+      },
+      {
+        "codigo": 123123,
+        "presentacion": "Gran Vaquero",
+        "cantidadPedida": 123,
+        "medida": "KG"
+      }
+    ]
+  },
+  {
+    "cliente": 321321,
+    "pedido": 321321321,
+    "prouctos": [
+      {
+        "codigo": 123123,
+        "presentacion": "Gran Vaquero",
+        "cantidadPedida": 5,
+        "medida": "KG"
+      }
+    ]
+  }
+]

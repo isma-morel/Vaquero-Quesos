@@ -88,6 +88,29 @@
     margin: 2px;
   }
 }
+
+.contenedor-pedidos .contenedor-botones {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+
+.contenedor-pedidos .contenedor-botones .btn{
+  margin: 1rem;
+  padding: 0.5rem;
+  display: block;
+
+  color: black;
+  background: #fff;
+  border: 1px solid black;
+  transition: 0.3s ease all;
+  border-radius: 0.2em;
+}
+.contenedor-pedidos .contenedor-botones  .btn:hover{
+  color: #fff;
+  background: black;
+}
 @media (max-width: 360px) {
   .tabla-pedidos thead th:nth-child(2),
   .tabla-pedidos tbody tr td:nth-child(2) {

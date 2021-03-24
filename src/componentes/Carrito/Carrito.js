@@ -1,8 +1,10 @@
 import React from "react";
+import { useHistory } from "react-router";
 import "./Carrito.css";
 import prueba from "./Prueba.json";
 
 const Carrito = ({ onEdit }) => {
+  const history = useHistory();
   return (
     <div className="contenedor-pedidos">
       <table className="tabla-pedidos">
@@ -36,8 +38,16 @@ const Carrito = ({ onEdit }) => {
           ))}
         </tbody>
       </table>
-      <button>Confirmar</button>
-      <button>Volver a la Lista</button>
+      <div className="contenedor-botones">
+        <button className="btn">Confirmar</button>
+        <button
+          onClick={() => {
+            history.push("/Lista");
+          }}
+          className="btn">
+          Volver a la Lista
+        </button>
+      </div>
     </div>
   );
 };

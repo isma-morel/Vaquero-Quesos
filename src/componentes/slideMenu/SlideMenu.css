@@ -1,0 +1,162 @@
+body {
+  font-size: 16px;
+}
+
+/*
+  Slide
+*/
+
+.slide {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100%;
+  background: #484848;
+  display: flex;
+  overflow: hidden;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+  transition: all 0.5s ease;
+  box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.3);
+}
+.slide.openSlide {
+  width: 9.9em;
+}
+.slide.closeSlide {
+  width: 3.5em;
+}
+
+/*
+  fin Slide
+*/
+
+/* 
+  boton Bread
+*/
+
+.Bread {
+  font-size: 20px;
+  position: absolute;
+  top: 1em;
+  left: 1em;
+  color: white;
+}
+.Bread:hover {
+  cursor: pointer;
+}
+
+/* 
+  fin boton Bread.
+*/
+
+/*
+  controles del menu.
+*/
+
+.slide ul {
+  list-style: none;
+  margin-top: 5px;
+  padding: 10px;
+  transform: translateX(-10px);
+}
+.slide .menu {
+  overflow: hidden;
+  max-height: 70%;
+  overflow-x: hidden;
+}
+
+.slide ul li {
+  display: block;
+  min-width: 10rem;
+  padding: 10px 0;
+  font-weight: 500;
+}
+
+.slide ul li .link {
+  text-decoration: none;
+  color: white;
+  cursor: pointer;
+  position: relative;
+  display: inline-block;
+  height: 100%;
+  width: 100%;
+}
+.slide ul li .link span {
+  text-align: center;
+}
+.slide ul li .link i {
+  user-select: none;
+  margin: 0px 0.5em;
+  font-size: 25px;
+}
+
+/*
+  fin Controles del menu
+*/
+
+/*
+  SubMenu
+*/
+
+.slide.closeSlide .submenu {
+  padding: 0;
+}
+
+.slide .submenu {
+  transition: all 0.3s;
+}
+
+.slide .submenu.Close {
+  animation: 0.26s CloseSub forwards ease-in-out;
+}
+
+.slide .submenu.Open {
+  animation: OpenSub 0.26s forwards;
+}
+
+.slide .submenu-item {
+  background: rgba(255, 255, 255, 0.2);
+  border-bottom: 0.5px solid rgba(0, 0, 0, 0.2);
+  transition: all 0.2s;
+  border-radius: 3rem;
+}
+
+/*end SubMenu*/
+
+@keyframes CloseSub {
+  0% {
+    opacity: 1;
+  }
+  10% {
+    opacity: 0;
+  }
+  100% {
+    transform: translateX(-500px);
+    position: absolute;
+  }
+}
+
+@keyframes OpenSub {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(0);
+    position: inherit;
+  }
+}
+
+@media (max-width: 800px) {
+  .slide.closeSlide {
+    width: 0px;
+  }
+
+  .Bread {
+    color: black;
+  }
+  .slide .Bread {
+    color: white;
+  }
+}
