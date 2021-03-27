@@ -118,9 +118,11 @@ const Carrito = () => {
         </table>
       ) : null}
       <div className="contenedor-botones">
-        <button onClick={handleConfirmar} className="btn">
-          Confirmar
-        </button>
+        {productos.length ? (
+          <button onClick={handleConfirmar} className="btn">
+            Confirmar
+          </button>
+        ) : null}
         <button
           onClick={() => {
             history.push("/Lista");

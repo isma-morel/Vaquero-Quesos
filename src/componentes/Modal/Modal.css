@@ -118,3 +118,8 @@
     scroll-behavior: smooth;
   }
 }
+@media (max-width: 700px) {
+  .overlay .card-producto .imagen-producto {
+    width: 150px;
+  }
+}

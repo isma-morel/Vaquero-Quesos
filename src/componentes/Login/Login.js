@@ -15,7 +15,12 @@ const Login = ({ logo, LogSucces }) => {
     fetch(
       `${BASE_URL}/iClientesSP/ValidarCliente?pUsuario=${target[0].value}&pContrasenia=${target[1].value}`
     )
-      .then((result) => result.json())
+      .then((result) => {
+        if (result.status === 400) {
+          throw new Error("usuario o contraseña incorrecta.");
+        }
+        return result.json();
+      })
       .then((json) => {
         if (json.IdCliente === 0) {
           target[1].value = "";

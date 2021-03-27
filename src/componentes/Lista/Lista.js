@@ -14,6 +14,7 @@ function Lista() {
   useEffect(() => {
     const pedirLista = async () => {
       const auth = JSON.parse(localStorage.getItem("auth"));
+      if (!auth.IdCliente) localStorage.removeItem("auth");
       try {
         const json = await fetch(
           `${BASE_URL}/iProductosSP/ProductosDatos?pUsuario=${auth.usuario}&pToken=${auth.Token}`
