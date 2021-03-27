@@ -16,6 +16,22 @@
   align-items: center;
 }
 
+.contenedor-tabla .btn {
+  margin: 1rem;
+  padding: 0.5rem 1rem;
+  display: block;
+
+  color: black;
+  background: #fff;
+  border: 1px solid black;
+  transition: 0.3s ease all;
+  border-radius: 0.2em;
+}
+.contenedor-tabla .btn:hover {
+  color: #fff;
+  background: black;
+}
+
 .contenedor-tabla .contenedor-cliente {
   width: 80%;
   height: 2em;
@@ -70,5 +86,15 @@
 @media (max-width: 700px) {
   .contenedor-tabla .contenedor-cliente {
     width: 100%;
+  }
+  .contenedor-tabla {
+    overflow-x: scroll;
+    width: 100vw;
+  }
+  .contenedor-tabla .tabla.tabla-pedidos {
+  }
+  .tabla-pedidos tbody td.cantidad-preparar input[type="number"] {
+    margin: 1em auto;
+    padding: 2px;
   }
 }

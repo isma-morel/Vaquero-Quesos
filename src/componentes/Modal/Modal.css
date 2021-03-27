@@ -17,6 +17,10 @@
 }
 .overlay .card-producto {
   text-align: center;
+  max-height: 100vh;
+}
+.overlay.open .card-producto {
+  animation: card-producto-over 2s forwards;
 }
 .overlay .card-producto .imagen-producto {
   width: 300px;
@@ -103,5 +107,14 @@
   }
   100% {
     opacity: 1;
+  }
+}
+
+@keyframes card-producto-over {
+  from {
+  }
+  to {
+    overflow: auto;
+    scroll-behavior: smooth;
   }
 }

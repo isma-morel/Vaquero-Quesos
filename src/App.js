@@ -1,55 +1,51 @@
 import "./App.css";
-import { BrowserRouter, Switch, Route, Link, Redirect } from "react-router-dom";
 import {
-  Login,
-  Carrito,
-  Lista,
-  Modal,
-  ModalCarrito,
-  SlideMenu,
-  Dashboard,
-} from "./componentes";
+  BrowserRouter,
+  Switch,
+  Route,
+  Link,
+  Redirect,
+  useHistory,
+} from "react-router-dom";
+import { Login, Carrito, Lista, Dashboard } from "./componentes";
 import { logo } from "./logo.json";
-import useModal from "./hooks/useModal";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 function App() {
-  const [isOpenModal, handleModal] = useModal();
-  const [isOpenCarritoModal, handleCarritoModal] = useModal();
-  const [productoEditable, setProductoEditable] = useState({});
-  const handleCarrito = (producto) => (e) => {
-    setProductoEditable(producto);
-    handleCarritoModal();
+  const [usuario, setUsuario] = useState();
+  useEffect(() => {
+    LogSucces();
+  }, []);
+  const LogSucces = () => {
+    const user = JSON.parse(localStorage.getItem("auth"));
+    setUsuario(user);
   };
+
   return (
     <BrowserRouter>
       <div className="contenedor">
         <Switch>
-          <Route exact path="/">
-            <Login logo={logo} />
+          <Route exact path="/Lista">
+            <BasePage usuario={usuario} titulo="MAYORISTAS - 57| 22/01/2021">
+              <Lista />
+            </BasePage>
           </Route>
 
-          {localStorage.getItem("auth") && (
-            <Route exact path="/Lista">
-              <BasePage titulo="MAYORISTAS - 57| 22/01/2021">
-                <Modal isOpen={isOpenModal} onClose={handleModal} />
-                <Lista onRowClick={handleModal} />
-              </BasePage>
-            </Route>
-          )}
-          {localStorage.getItem("auth") && (
-            <Route exact path="/Carrito">
-              <BasePage titulo="CARRITO - CLIENTE N° 388221-4">
-                <ModalCarrito
-                  isOpen={isOpenCarritoModal}
-                  onClose={handleCarritoModal}
-                  Producto={productoEditable}
-                />
-                <Carrito onEdit={handleCarrito} />
-              </BasePage>
-            </Route>
-          )}
+          <Route exact path="/Carrito">
+            <BasePage
+              usuario={usuario}
+              titulo={`CARRITO - ${usuario?.Nombre} `}>
+              <Carrito />
+            </BasePage>
+          </Route>
+
           <Route path="/Dashboard">
             <Dashboard />
+          </Route>
+          <Route exact path="/Logout">
+            <Logout />
+          </Route>
+          <Route exact path="/">
+            <Login LogSucces={LogSucces} logo={logo} />
           </Route>
           <Redirect to="/" />
         </Switch>
@@ -58,14 +54,17 @@ function App() {
   );
 }
 
-const BasePage = ({ children, titulo }) => {
+const BasePage = ({ children, titulo, usuario }) => {
   return (
     <>
       <div className="botonesNav">
         <Link to="/Carrito">
           <i className="fas fa-shopping-cart"></i>
         </Link>
-        <span>Cliente: 388221-4</span>
+        <span>Cliente: {usuario?.Nombre}</span>
+        <Link to="/Logout">
+          <i className="fas fa-sign-out-alt"></i>
+        </Link>
       </div>
       <div className="contenedor__landing">
         <img src={logo} alt="Logo Vaquero" />
@@ -79,6 +78,15 @@ const BasePage = ({ children, titulo }) => {
       <div className="contenedor__lista">{children}</div>
     </>
   );
+};
+
+const Logout = () => {
+  const history = useHistory();
+  useEffect(() => {
+    localStorage.removeItem("auth");
+    history.push("/");
+  }, []);
+  return "";
 };
 
 export default App;

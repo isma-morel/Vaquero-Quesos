@@ -1,30 +1,68 @@
-[{
-    "codigo":"123456",
-    "producto":"Gran Vaquero",
-    "descripcion":"Horma",
-    "confoto":true
-},
-{
-    "codigo":"123456",
-    "producto":"Gran Vaquero",
-    "descripcion":"Horma"
-},
-{
-    "codigo":"123456",
-    "producto":"Gran Vaquero",
-    "descripcion":"Horma"
-},{
-    "codigo":"123456",
-    "producto":"Gran Vaquero",
-    "descripcion":"Horma"
-},
-{
-    "codigo":"123456",
-    "producto":"Gran Vaquero",
-    "descripcion":"Horma"
-},
-{
-    "codigo":"123456",
-    "producto":"Gran Vaquero",
-    "descripcion":"Horma"
-}]
+[
+  {
+    "IdProducto": 123,
+    "Codigo": 123456,
+    "Descripcion": "Gran Vaquero",
+    "Presentacion": "Horma",
+    "TieneFoto": true,
+    "Medidas": [
+      {
+        "IdProducto": 123,
+        "Descripcion": "Gran Vaquero",
+        "IdMedida": 1,
+        "DescripcionUM": "KG."
+      },
+      {
+        "IdProducto": 123,
+        "Descripcion": "Gran Vaquero",
+        "IdMedida": 2,
+        "DescripcionUM": "Pallet."
+      }
+    ]
+  },
+  {
+    "IdProducto": 123,
+    "Codigo": 123456,
+    "Descripcion": "Gran Vaquero",
+    "Presentacion": "Horma",
+    "TieneFoto": true,
+    "Medidas": [
+      {
+        "IdProducto": 123,
+        "Descripcion": "Gran Vaquero",
+        "IdMedida": 1,
+        "DescripcionUM": "KG."
+      }
+    ]
+  },
+  {
+    "IdProducto": 123,
+    "Codigo": 123456,
+    "Descripcion": "Gran Vaquero",
+    "Presentacion": "Horma",
+    "TieneFoto": true,
+    "Medidas": [
+      {
+        "IdProducto": 123,
+        "Descripcion": "Gran Vaquero",
+        "IdMedida": 1,
+        "DescripcionUM": "KG."
+      }
+    ]
+  },
+  {
+    "IdProducto": 123,
+    "Codigo": 123456,
+    "Descripcion": "Gran Vaquero",
+    "Presentacion": "Horma",
+    "TieneFoto": true,
+    "Medidas": [
+      {
+        "IdProducto": 123,
+        "Descripcion": "Gran Vaquero",
+        "IdMedida": 1,
+        "DescripcionUM": "KG."
+      }
+    ]
+  }
+]

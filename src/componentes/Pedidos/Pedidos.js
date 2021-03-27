@@ -33,13 +33,14 @@ const Pedidos = () => {
                     <td>{`${cantidadPedida}${medida}`}</td>
                     <td className="cantidad-preparar">
                       <input type="number" max={cantidadPedida} min={0} />
-                      <i className="far fa-check-square"></i>
                     </td>
                   </tr>
                 )
               )}
             </tbody>
           </table>
+          <button className="btn">Confirmar pedido</button>
+          <hr />
         </div>
       ))}
     </div>
