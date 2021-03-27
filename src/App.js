@@ -10,8 +10,10 @@ import {
 import { Login, Carrito, Lista, Dashboard } from "./componentes";
 import { logo } from "./logo.json";
 import { useEffect, useState } from "react";
+const url = process.env.PUBLIC_URL;
 function App() {
   const [usuario, setUsuario] = useState();
+
   useEffect(() => {
     LogSucces();
   }, []);
@@ -38,9 +40,9 @@ function App() {
             </BasePage>
           </Route>
 
-          <Route path="/Dashboard">
+          {/*  <Route path="/Dashboard">
             <Dashboard />
-          </Route>
+          </Route> */}
           <Route exact path="/Logout">
             <Logout />
           </Route>

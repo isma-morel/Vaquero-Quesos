@@ -1,8 +1,7 @@
 import useModal from "../../hooks/useModal";
 import "./Lista.css";
-import productos from "./Productos.json";
 import { Modal } from "../../componentes";
-import { Redirect } from "react-router";
+import { Redirect, useHistory } from "react-router";
 import { useEffect, useState } from "react";
 
 const BASE_URL = "http://200.89.178.131/LacteosApi/api";
@@ -11,7 +10,7 @@ function Lista() {
   const [isOpenModal, handleModal] = useModal();
   const [productoAagregar, SetProductoAagregar] = useState();
   const [productosState, setProductosState] = useState();
-
+  const history = useHistory();
   useEffect(() => {
     const pedirLista = async () => {
       const auth = JSON.parse(localStorage.getItem("auth"));
@@ -20,6 +19,10 @@ function Lista() {
           `${BASE_URL}/iProductosSP/ProductosDatos?pUsuario=${auth.usuario}&pToken=${auth.Token}`
         );
         const result = await json.json();
+        if (result.length === 0) {
+          localStorage.removeItem("auth");
+          history.push("/");
+        }
         setProductosState(result);
       } catch (err) {
         console.log(err);
