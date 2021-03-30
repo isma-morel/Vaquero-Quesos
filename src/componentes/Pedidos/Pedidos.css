@@ -5,31 +5,41 @@
   flex-direction: column;
   align-items: center;
 }
-
-/* Contenedores de la tabla */
-
-.contenedor-tabla {
-  margin: 3em auto;
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+.pedidos .controles {
+  position: fixed;
+  width: 80%;
+  z-index: 1;
+  background: #fff;
+}
+.pedidos .controles input[type="text"] {
+  max-width: 50%;
+  padding: 0.5em;
+  font-weight: 500;
 }
 
-.contenedor-tabla .btn {
+.pedidos .controles .btn {
   margin: 1rem;
   padding: 0.5rem 1rem;
-  display: block;
-
   color: black;
   background: #fff;
   border: 1px solid black;
   transition: 0.3s ease all;
   border-radius: 0.2em;
+  max-width: fit-content;
 }
-.contenedor-tabla .btn:hover {
+.pedidos .controles .btn:hover {
   color: #fff;
   background: black;
+}
+
+/* Contenedores de la tabla */
+
+.contenedor-tabla {
+  margin: 5em auto 3em auto;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 .contenedor-tabla .contenedor-cliente {
@@ -37,7 +47,15 @@
   height: 2em;
   margin-top: 2em;
 }
-
+.spin {
+  margin-top: 10em;
+  border: 5px solid #f3f3f3;
+  border-top: 5px solid #484848;
+  border-radius: 50%;
+  width: 100px;
+  height: 100px;
+  animation: spin 2s linear infinite;
+}
 /* Tabla */
 
 .tabla.tabla-pedidos {
@@ -88,13 +106,30 @@
     width: 100%;
   }
   .contenedor-tabla {
-    overflow-x: scroll;
+    overflow-x: auto;
     width: 100vw;
   }
-  .contenedor-tabla .tabla.tabla-pedidos {
+  .pedidos .controles {
+    position: inherit;
+    margin-left: auto;
   }
+  .pedidos .controles div {
+    display: flex;
+    flex-direction: row nowrap;
+    align-items: center;
+    justify-content: center;
+  }
+
   .tabla-pedidos tbody td.cantidad-preparar input[type="number"] {
     margin: 1em auto;
     padding: 2px;
+  }
+}
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
   }
 }

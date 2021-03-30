@@ -12,8 +12,12 @@ function Lista() {
   const [productosState, setProductosState] = useState();
   const history = useHistory();
   useEffect(() => {
+    const auth = JSON.parse(localStorage.getItem("auth"));
+    if (auth.TipoCliente === "S") {
+      history.push("/Dashboard");
+      return;
+    }
     const pedirLista = async () => {
-      const auth = JSON.parse(localStorage.getItem("auth"));
       if (!auth.IdCliente) localStorage.removeItem("auth");
       try {
         const json = await fetch(
@@ -29,6 +33,7 @@ function Lista() {
         console.log(err);
       }
     };
+
     pedirLista();
   }, []);
   const handleClick = (producto) => (e) => {

@@ -1,8 +1,19 @@
 import React, { useEffect } from "react";
-import { SlideMenu, Pedidos } from "../index";
-import { Route, Switch } from "react-router-dom";
+import { SlideMenu, Pedidos, AprepararGuardar } from "../index";
+import { Route, Switch, useHistory } from "react-router-dom";
 
 const Dashboard = () => {
+  const { push } = useHistory();
+  useEffect(() => {
+    const auth = JSON.parse(localStorage.getItem("auth"));
+    if (!auth) {
+      push("/");
+    }
+    if (auth.TipoCliente === "C") {
+      push("/Lista");
+      return;
+    }
+  }, []);
   return (
     <div className="contenedor">
       <SlideMenu
@@ -17,6 +28,11 @@ const Dashboard = () => {
             icono: <i className="fas fa-receipt"></i>,
             texto: "Preparacion",
           },
+          {
+            to: "/Logout",
+            icono: <i className="fas fa-sign-out-alt"></i>,
+            texto: "salir",
+          },
         ]}
       />
       <Switch>
@@ -24,7 +40,7 @@ const Dashboard = () => {
           <Pedidos />
         </Route>
         <Route path="/Dashboard/preparacion">
-          <h1>otra cosa</h1>
+          <AprepararGuardar />
         </Route>
       </Switch>
     </div>

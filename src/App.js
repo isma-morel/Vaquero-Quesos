@@ -10,6 +10,8 @@ import {
 import { Login, Carrito, Lista, Dashboard } from "./componentes";
 import { logo } from "./logo.json";
 import { useEffect, useState } from "react";
+import "react-toastify/dist/ReactToastify.css";
+import { ToastContainer } from "react-toastify";
 const url = process.env.PUBLIC_URL;
 function App() {
   const [usuario, setUsuario] = useState();
@@ -40,9 +42,9 @@ function App() {
             </BasePage>
           </Route>
 
-          {/*  <Route path="/Dashboard">
-            <Dashboard />
-          </Route> */}
+          <Route path="/Dashboard">
+            <Dashboard usuario={usuario} />
+          </Route>
           <Route exact path="/Logout">
             <Logout />
           </Route>
@@ -51,6 +53,7 @@ function App() {
           </Route>
           <Redirect to="/" />
         </Switch>
+        <ToastContainer />
       </div>
     </BrowserRouter>
   );

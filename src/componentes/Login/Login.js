@@ -7,7 +7,14 @@ const BASE_URL = "http://200.89.178.131/LacteosApi/api";
 const Login = ({ logo, LogSucces }) => {
   const history = useHistory();
   const [error, setError] = useState();
-
+  useEffect(() => {
+    const auth = JSON.parse(localStorage.getItem("auth"));
+    if (auth) {
+      auth.TipoCliente === "C"
+        ? history.push("/Lista")
+        : history.push("/Dashboard");
+    }
+  }, []);
   const handleSubmit = (e) => {
     e.preventDefault();
     const { target } = e;
@@ -32,12 +39,14 @@ const Login = ({ logo, LogSucces }) => {
           JSON.stringify({ ...json, usuario: target[0].value })
         );
         LogSucces();
-        history.push("/Lista");
+        json.TipoCliente === "C"
+          ? history.push("/Lista")
+          : history.push("/Dashboard");
       })
       .catch((err) => setError(err.message));
   };
 
-  return !localStorage.getItem("auth") ? (
+  return (
     <div className="container">
       <img src={logo} alt="Logo Vaquero" />
       <hr />
@@ -61,8 +70,6 @@ const Login = ({ logo, LogSucces }) => {
         </small>
       </form>
     </div>
-  ) : (
-    <Redirect to="/Lista" />
   );
 };
 export default Login;

@@ -120,6 +120,11 @@
 }
 @media (max-width: 700px) {
   .overlay .card-producto .imagen-producto {
-    width: 150px;
+    width: 30%;
+  }
+}
+@media (max-height: 500px) {
+  .overlay .card-producto .imagen-producto {
+    display: none;
   }
 }

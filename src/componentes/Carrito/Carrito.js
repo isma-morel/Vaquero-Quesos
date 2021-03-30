@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Redirect, useHistory } from "react-router";
+import { toast } from "react-toastify";
 import { ModalCarrito } from "..";
 import useModal from "../../hooks/useModal";
 import "./Carrito.css";
@@ -56,7 +57,9 @@ const Carrito = () => {
         }
       );
       if (result.status === 400) throw new Error("error al guardar el pedido");
-      alert(`pedido cargado con exito N° de pedido: ${await result.json()} `);
+      toast.success(
+        `pedido cargado con exito N° de pedido: ${await result.json()} `
+      );
       localStorage.removeItem("carrito");
       setProductos([]);
     } catch (err) {
