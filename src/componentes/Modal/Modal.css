@@ -59,6 +59,16 @@
   background: black;
   color: white;
 }
+.overlay .card-producto .boton.btn-secondary {
+  color: white;
+  background: #cf963c;
+  border: 1px solid #cf963c;
+  cursor: pointer;
+}
+.overlay .card-producto .boton.btn-secondary:hover {
+  color: white;
+  background: #cf973ce3;
+}
 
 .overlay .card-producto .texto-producto {
   transform: translateY(100vh);

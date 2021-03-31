@@ -82,7 +82,9 @@ function Lista() {
             ))}
           </tbody>
         </table>
-      ) : null}
+      ) : (
+        <div className="spin spin-Lista"></div>
+      )}
     </>
   ) : (
     <Redirect to="/" />

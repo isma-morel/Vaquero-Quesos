@@ -1,6 +1,45 @@
-.contenedor-preparar {
+.preparar {
+  width: 100%;
   min-height: 100vh;
   display: flex;
-  justify-content: center;
+  flex-direction: column;
   align-items: center;
+}
+.preparar .controles {
+  position: fixed;
+  width: 80%;
+  z-index: 1;
+  background: #fff;
+}
+.preparar .controles input[type="text"] {
+  max-width: 50%;
+  padding: 0.5em;
+  font-weight: 500;
+  margin-top: 1em;
+}
+.preparar .contenedor-tabla .contenedor-cliente .btn {
+  background: none;
+  border: 1px solid black;
+  border-radius: 2px;
+  padding: 3px 6px;
+  margin: 0 1em;
+  color: black;
+  cursor: pointer;
+  transition: 0.2s ease all;
+}
+.preparar .contenedor-tabla .contenedor-cliente .btn:hover {
+  background: black;
+  color: white;
+}
+@media (max-width: 700px) {
+  .preparar .controles {
+    position: inherit;
+    margin-left: auto;
+  }
+  .pedidos .controles div {
+    display: flex;
+    flex-direction: row nowrap;
+    align-items: center;
+    justify-content: center;
+  }
 }

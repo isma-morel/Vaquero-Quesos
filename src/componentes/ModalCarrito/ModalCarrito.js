@@ -54,7 +54,7 @@ const ModalCarrito = ({ isOpen, onClose, ProductoIndex, setProductos }) => {
           </select>
 
           <br />
-          <button onClick={handleConfirmar} className="boton">
+          <button onClick={handleConfirmar} className="boton btn-secondary">
             Modificar
           </button>
           <button className="boton" onClick={onClose}>

@@ -90,13 +90,12 @@
 }
 
 .contenedor-pedidos .contenedor-botones {
-    display: flex;
-    justify-content: center;
-    align-items: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
-
-.contenedor-pedidos .contenedor-botones .btn{
+.contenedor-pedidos .contenedor-botones .btn {
   margin: 1rem;
   padding: 0.5rem;
   display: block;
@@ -107,9 +106,19 @@
   transition: 0.3s ease all;
   border-radius: 0.2em;
 }
-.contenedor-pedidos .contenedor-botones  .btn:hover{
+.contenedor-pedidos .contenedor-botones .btn:hover {
   color: #fff;
   background: black;
+}
+.contenedor-pedidos .contenedor-botones .btn.btn-secondary {
+  color: white;
+  background: #cf963c;
+  border: 1px solid #cf963c;
+  cursor: pointer;
+}
+.contenedor-pedidos .contenedor-botones .btn.btn-secondary:hover {
+  color: white;
+  background: #cf973ce3;
 }
 @media (max-width: 360px) {
   .tabla-pedidos thead th:nth-child(2),

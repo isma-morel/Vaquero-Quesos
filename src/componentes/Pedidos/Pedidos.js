@@ -253,7 +253,7 @@ const Pedidos = () => {
                   ) => (
                     <tr key={indexProd}>
                       <td>{Codigo}</td>
-                      <td className="">
+                      <td>
                         <div>
                           <span className="titulo">{Presentacion}</span>
                         </div>

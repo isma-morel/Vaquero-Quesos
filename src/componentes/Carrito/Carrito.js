@@ -122,7 +122,7 @@ const Carrito = () => {
       ) : null}
       <div className="contenedor-botones">
         {productos.length ? (
-          <button onClick={handleConfirmar} className="btn">
+          <button onClick={handleConfirmar} className="btn btn-secondary">
             Confirmar
           </button>
         ) : null}

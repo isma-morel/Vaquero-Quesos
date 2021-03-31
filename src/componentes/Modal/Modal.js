@@ -63,7 +63,9 @@ const Modal = ({ isOpen, onClose, producto }) => {
             ))}
           </select>
           <br />
-          <button onClick={handleGuardarProducto} className="boton">
+          <button
+            onClick={handleGuardarProducto}
+            className="boton btn-secondary">
             Agregar al carrito
           </button>
           <button className="boton" onClick={handleVolver}>
