@@ -8,7 +8,7 @@ const ProcesarPedido = (pedidos) => {
   pedidosProcesados = pedidos.Resumido.reduce((acum, actual) => {
     let resultado = {
       ...actual,
-      Fecha: new Date(actual.Fecha).toLocaleString(),
+      Fecha: new Date(actual.Fecha).toLocaleDateString(),
       Productos: [],
     };
     pedidos.Detallado.forEach(
@@ -99,12 +99,16 @@ function AprepararGuardar() {
         pedidosFiltrados.map(({ Cliente, Fecha, Productos, Pedido }, index) => (
           <div key={index} className="contenedor-tabla">
             <div className="contenedor-cliente">
-              <span>
-                Cliente: {Cliente} - Pedido: {Pedido} - Fecha: {Fecha}
-                <button className="btn">Preparar</button>
-              </span>
+              <div>
+                <span>Cliente: {Cliente}</span>
+
+                <span>Pedido: {Pedido}</span>
+
+                <span>Fecha: {Fecha}</span>
+              </div>
+              <button className="btn">Preparar</button>
             </div>
-            <table className="tabla">
+            <table className="tabla tabla-pedidos">
               <thead>
                 <tr>
                   <th>CODIGO</th>

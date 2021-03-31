@@ -17,26 +17,52 @@
   font-weight: 500;
   margin-top: 1em;
 }
+
+.preparar .contenedor-tabla .contenedor-cliente {
+  height: fit-content;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.preparar .contenedor-tabla .contenedor-cliente div {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  flex-direction: column;
+}
 .preparar .contenedor-tabla .contenedor-cliente .btn {
-  background: none;
-  border: 1px solid black;
+  background: green;
+  border: none;
   border-radius: 2px;
   padding: 3px 6px;
-  margin: 0 1em;
-  color: black;
+  margin: 5px 0;
+
+  color: #fff;
   cursor: pointer;
   transition: 0.2s ease all;
+  font-size: 1em;
+  box-shadow: 1px 2px 5px rgba(0, 0, 0, 0.5);
 }
 .preparar .contenedor-tabla .contenedor-cliente .btn:hover {
-  background: black;
-  color: white;
+  background: rgba(0, 128, 0, 0.726);
 }
+
 @media (max-width: 700px) {
   .preparar .controles {
     position: inherit;
     margin-left: auto;
   }
-  .pedidos .controles div {
+  .preparar .contenedor-tabla .tabla.tabla-pedidos {
+    margin-top: 2em;
+  }
+  .preparar .contenedor-tabla .contenedor-cliente {
+    padding: 0 5px;
+  }
+  .preparar .contenedor-tabla .contenedor-cliente .btn {
+    margin: 5px;
+  }
+
+  .preparar .controles div {
     display: flex;
     flex-direction: row nowrap;
     align-items: center;

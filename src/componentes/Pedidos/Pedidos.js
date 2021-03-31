@@ -160,12 +160,6 @@ const Pedidos = () => {
 
       const json = await result.json();
 
-      if (json.length === 0) {
-        localStorage.removeItem("auth");
-        push("/");
-        return;
-      }
-
       const pedidoProcesado = await ProcesarPedido(json);
 
       setPedidos(pedidoProcesado);

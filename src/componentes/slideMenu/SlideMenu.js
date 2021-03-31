@@ -24,7 +24,9 @@ const SlideMenu = ({ Items }) => {
       })
     );
   }, [Items]);
-
+  const handleMenuClick = (e) => {
+    setIsOpen(false);
+  };
   const handleClick = (e) => {
     setIsOpen(!isOpen);
   };
@@ -54,7 +56,10 @@ const SlideMenu = ({ Items }) => {
           {ItemState?.map((item, index) => (
             <div key={index}>
               <li onClick={item.to ? () => {} : handleSubMenu(index)}>
-                <NavLink className="link" to={item?.to || "#"}>
+                <NavLink
+                  onClick={handleMenuClick}
+                  className="link"
+                  to={item?.to || "#"}>
                   {item.icono}
                   <span>{isOpen ? item.texto : ""}</span>
                 </NavLink>

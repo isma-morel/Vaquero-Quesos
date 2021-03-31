@@ -4,11 +4,13 @@
   display: flex;
   flex-direction: column;
   align-items: center;
+  padding-top: 5em;
 }
 .pedidos .controles {
   position: fixed;
   width: 80%;
   z-index: 1;
+  top: 0;
   background: #fff;
 }
 .pedidos .controles input[type="text"] {
@@ -20,22 +22,22 @@
 .pedidos .controles .btn {
   margin: 1rem;
   padding: 0.5rem 1rem;
-  color: black;
-  background: #fff;
-  border: 1px solid black;
+  color: #fff;
+  background: green;
+  border: none;
   transition: 0.3s ease all;
   border-radius: 0.2em;
   max-width: fit-content;
 }
 .pedidos .controles .btn:hover {
-  color: #fff;
-  background: black;
+  background: rgba(0, 128, 0, 0.726);
 }
 
 /* Contenedores de la tabla */
 
 .contenedor-tabla {
-  margin: 5em auto 3em auto;
+  font-size: 0.8em;
+  margin: 5em auto 0 auto;
   width: 100%;
   display: flex;
   flex-direction: column;
@@ -46,6 +48,8 @@
   width: 80%;
   height: 2em;
   margin-top: 2em;
+  font-size: 1.5em;
+  display: block;
 }
 .spin {
   margin-top: 10em;
@@ -68,6 +72,9 @@
 
 .tabla-pedidos tbody td.producto {
   cursor: initial !important;
+}
+.tabla.tabla-pedidos tbody td .titulo {
+  font-size: 1.1em;
 }
 
 .tabla-pedidos tbody td.cantidad-preparar {
@@ -93,15 +100,22 @@
   text-align: left;
   position: inherit;
 }
-
+.tabla.tabla-pedidos tbody tr td:nth-child(1) {
+  font-size: 1.2em;
+}
 .tabla.tabla-pedidos thead tr th.header-cliente {
   text-align: left;
   border-bottom: 1px solid #999;
 }
-
+.tabla.tabla-pedidos tbody tr:nth-child(even) {
+  background-color: rgba(0, 0, 0, 0.25);
+}
 /* Querys */
 
 @media (max-width: 700px) {
+  .pedidos {
+    padding-top: 0;
+  }
   .contenedor-tabla .contenedor-cliente {
     width: 100%;
   }
