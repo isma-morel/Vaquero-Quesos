@@ -101,7 +101,7 @@
 }
 .form-tabla .tara-table {
   min-height: 100%;
-  flex-grow: 1;
+  flex-grow: 0.8;
   margin: 1em auto;
   align-self: flex-start;
 }
@@ -144,8 +144,9 @@
   border-radius: 2px;
   width: 100%;
   padding: 0.5em;
-  margin: 10px auto;
+  margin: 10px 10px;
   cursor: pointer;
+  flex-grow: 1;
 }
 .form-pesaje .boton-form:hover,
 .form-pesaje .boton-form:disabled {
@@ -162,15 +163,19 @@
   border-radius: 2px;
   border: 1px solid gray;
 }
-.form-pesaje .piezas-input input[type="number"] {
-  max-width: 50%;
+.form-pesaje .piezas-input .piezas-input-boton {
+  display: flex;
+  flex-direction: row;
 }
-.form-pesaje .piezas-input button {
+.form-pesaje .piezas-input .piezas-input-boton input[type="number"] {
+  width: 80%;
+}
+.form-pesaje .piezas-input .piezas-input-boton button {
   border: none;
   background: rgb(179, 128, 19);
   padding: 4px 8px;
   border-radius: 2px;
-  margin: 5px;
+  margin-left: 5px;
   color: white;
   cursor: pointer;
 }
@@ -179,13 +184,12 @@
   flex-direction: column;
   padding: 10px 0px;
 }
-.form-pesaje .flex-input .tara-button {
-  border: none;
-  background: black;
-  color: white;
-  border-radius: 2px;
-  padding: 10px;
-  cursor: pointer;
+.form-pesaje .botones-form {
+  width: 100%;
+  display: flex;
+}
+.form-pesaje .botones-form .boton-cancelar {
+  background-color: rgb(201, 11, 11);
 }
 
 @media (max-width: 700px) {
@@ -211,8 +215,16 @@
   }
   .form-tabla {
     width: 100%;
+    justify-content: center;
   }
   .form-pesaje {
+    width: 100%;
     align-items: center;
+  }
+  .form-pesaje .flex-input {
+    width: 80%;
+  }
+  .form-pesaje .boton-form {
+    width: 80%;
   }
 }

@@ -270,6 +270,9 @@ const ModoPreparar = ({ pedido, salir, onGuardar }) => {
       Productos: ProductoPesado,
     });
   };
+  const handleCancelarPesaje = (e) => {
+    setProductoApesar(null);
+  };
   return !productoApesar ? (
     <div className="contenedor-tabla">
       <div className="contenedor-cliente">
@@ -333,11 +336,15 @@ const ModoPreparar = ({ pedido, salir, onGuardar }) => {
       <hr />
     </div>
   ) : (
-    <ModoPesar producto={productoApesar} onGuardar={handleGuardarPesaje} />
+    <ModoPesar
+      producto={productoApesar}
+      onGuardar={handleGuardarPesaje}
+      onCancelar={handleCancelarPesaje}
+    />
   );
 };
 
-const ModoPesar = ({ producto, onGuardar }) => {
+const ModoPesar = ({ producto, onGuardar, onCancelar }) => {
   const [pesaje, setPesaje] = useState({
     TaraTotal: 0,
     PesoNeto: 0,
@@ -486,12 +493,17 @@ const ModoPesar = ({ producto, onGuardar }) => {
               value={pesaje.PesoPorPieza}
             />
           </div>
-          <button
-            disabled={!(pesaje.PesoPorPieza > 0 && pesaje.TaraTotal > 0)}
-            onClick={onGuardar(pesaje)}
-            className="boton-form">
-            Guardar
-          </button>
+          <div className="botones-form">
+            <button
+              disabled={!(pesaje.PesoPorPieza > 0)}
+              onClick={onGuardar(pesaje)}
+              className="boton-form">
+              Guardar
+            </button>
+            <button onClick={onCancelar} className="boton-form boton-cancelar">
+              Cancelar
+            </button>
+          </div>
         </div>
         <div className="tara-table">
           <table>
