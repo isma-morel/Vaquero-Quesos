@@ -146,6 +146,7 @@ function AprepararGuardar() {
   };
 
   const handlePrepararCerrar = (e) => {
+    setPedidos([]);
     pedirPedidosAPreparar();
     setPedidoSeleccionado({});
     setModoPreparar(false);
