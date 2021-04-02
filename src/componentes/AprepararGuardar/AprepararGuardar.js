@@ -146,6 +146,7 @@ function AprepararGuardar() {
   };
 
   const handlePrepararCerrar = (e) => {
+    pedirPedidosAPreparar();
     setPedidoSeleccionado({});
     setModoPreparar(false);
   };
@@ -258,14 +259,7 @@ const ModoPreparar = ({ pedido, salir, onGuardar }) => {
     setPedidoApreparar({ ...pedidoApreparar, Productos: ProductoPesado });
     setProductoApesar(undefined);
   };
-  const handleSalir = (e) => {
-    let ProductoPesado = pedidoApreparar.Productos;
-    ProductoPesado = ProductoPesado.map((prod) => ({
-      ...prod,
-      Cantidad: prod.CantidadAnterior || prod.Cantidad,
-    }));
-    salir();
-  };
+
   const handleEliminarPesaje = (index) => (e) => {
     let ProductoPesado = pedidoApreparar.Productos;
     ProductoPesado[index].Pesaje = null;
@@ -292,7 +286,7 @@ const ModoPreparar = ({ pedido, salir, onGuardar }) => {
             className="btn">
             Guardar
           </button>
-          <button onClick={handleSalir} className="btn btn-red">
+          <button onClick={salir} className="btn btn-red">
             <i className="fas fa-window-close btn-exit"></i>
           </button>
         </div>
