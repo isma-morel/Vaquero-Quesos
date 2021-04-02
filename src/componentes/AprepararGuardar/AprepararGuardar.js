@@ -251,6 +251,7 @@ const ModoPreparar = ({ pedido, salir, onGuardar }) => {
       PesoBruto,
       Taras,
     };
+    ProductoPesado[producto.index].Cantidad = producto.Cantidad;
     setPedidoApreparar({ ...pedidoApreparar, Productos: ProductoPesado });
     setProductoApesar(undefined);
   };
