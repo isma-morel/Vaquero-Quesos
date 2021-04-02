@@ -4,6 +4,7 @@
   display: flex;
   flex-direction: column;
   align-items: center;
+  transition: all 1s ease;
 }
 .preparar .controles {
   position: fixed;
@@ -17,14 +18,13 @@
   font-weight: 500;
   margin-top: 1em;
 }
-
 .preparar .contenedor-tabla .contenedor-cliente {
   height: fit-content;
   display: flex;
   align-items: center;
   justify-content: space-between;
 }
-.preparar .contenedor-tabla .contenedor-cliente div {
+.preparar .contenedor-tabla .contenedor-cliente .datos {
   display: flex;
   justify-content: center;
   align-items: flex-start;
@@ -35,16 +35,157 @@
   border: none;
   border-radius: 2px;
   padding: 3px 6px;
-  margin: 5px 0;
-
+  margin: 5px;
   color: #fff;
   cursor: pointer;
   transition: 0.2s ease all;
   font-size: 1em;
   box-shadow: 1px 2px 5px rgba(0, 0, 0, 0.5);
 }
-.preparar .contenedor-tabla .contenedor-cliente .btn:hover {
+.preparar .contenedor-tabla .contenedor-cliente .btn:hover,
+.preparar .contenedor-tabla .contenedor-cliente .btn:disabled {
   background: rgba(0, 128, 0, 0.726);
+}
+.preparar .contenedor-tabla .contenedor-cliente .btn.btn-red {
+  background-color: red;
+}
+.preparar .contenedor-tabla .contenedor-cliente .btn.btn-red:hover {
+  background-color: rgba(255, 0, 0, 0.726);
+}
+.preparar .contenedor-tabla .contenedor-cliente .btn-exit {
+  color: white;
+
+  cursor: pointer;
+  display: inline-block;
+}
+.preparar
+  .contenedor-tabla
+  .tabla.tabla.tabla-pedidos.tabla-preparar
+  tr
+  td:nth-child(2) {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+}
+.preparar
+  .contenedor-tabla
+  .tabla.tabla.tabla-pedidos.tabla-preparar
+  tr
+  td
+  button {
+  padding: 3px 6px;
+  background: rgb(179, 128, 19);
+  color: white;
+  border: none;
+  border-radius: 2px;
+  font-size: 1.2em;
+  cursor: pointer;
+}
+.preparar
+  .contenedor-tabla
+  .tabla.tabla.tabla-pedidos.tabla-preparar
+  tr
+  td
+  button:hover {
+  background: rgba(179, 128, 19, 0.726);
+}
+
+/* Formulario de pesaje  */
+.form-tabla {
+  width: 80%;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+}
+.form-tabla .tara-table {
+  min-height: 100%;
+  flex-grow: 1;
+  margin: 1em auto;
+  align-self: flex-start;
+}
+.form-tabla .tara-table table {
+  border-collapse: collapse;
+  width: 100%;
+}
+.form-tabla .tara-table table thead {
+  background-color: #484848;
+  color: white;
+}
+.form-tabla .tara-table table thead tr th {
+  padding: 1em;
+  border-left: 1px solid gray;
+}
+.form-tabla .tara-table table tbody tr td {
+  border-left: 1px solid gray;
+  border-top: 1px solid gray;
+}
+.form-tabla .tara-table table tbody tr td {
+  padding: 1em;
+  text-align: right;
+}
+.form-tabla .tara-table table tbody tr td:nth-child(1) {
+  text-align: left;
+}
+.form-pesaje {
+  padding: 1rem 0px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+  font-size: clamp(1.2em, 10vw, 1em);
+}
+.form-pesaje .boton-form {
+  background: green;
+  color: white;
+  display: block;
+  border: none;
+  border-radius: 2px;
+  width: 100%;
+  padding: 0.5em;
+  margin: 10px auto;
+  cursor: pointer;
+}
+.form-pesaje .boton-form:hover,
+.form-pesaje .boton-form:disabled {
+  background: rgba(0, 128, 0, 0.74);
+}
+.form-pesaje .flex-input {
+  display: flex;
+  flex-direction: column;
+  padding: 10px;
+}
+.form-pesaje .flex-input input[type="number"] {
+  padding: 5px;
+  font-weight: 500;
+  border-radius: 2px;
+  border: 1px solid gray;
+}
+.form-pesaje .piezas-input input[type="number"] {
+  max-width: 50%;
+}
+.form-pesaje .piezas-input button {
+  border: none;
+  background: rgb(179, 128, 19);
+  padding: 4px 8px;
+  border-radius: 2px;
+  margin: 5px;
+  color: white;
+  cursor: pointer;
+}
+.form-pesaje .flex-input .tara-input {
+  display: flex;
+  flex-direction: column;
+  padding: 10px 0px;
+}
+.form-pesaje .flex-input .tara-button {
+  border: none;
+  background: black;
+  color: white;
+  border-radius: 2px;
+  padding: 10px;
+  cursor: pointer;
 }
 
 @media (max-width: 700px) {
@@ -67,5 +208,11 @@
     flex-direction: row nowrap;
     align-items: center;
     justify-content: center;
+  }
+  .form-tabla {
+    width: 100%;
+  }
+  .form-pesaje {
+    align-items: center;
   }
 }
