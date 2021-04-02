@@ -251,14 +251,25 @@ const ModoPreparar = ({ pedido, salir, onGuardar }) => {
       PesoBruto,
       Taras,
     };
+    ProductoPesado[producto.index].CantidadAnterior =
+      ProductoPesado[producto.index].Cantidad;
     ProductoPesado[producto.index].Cantidad = producto.Cantidad;
+
     setPedidoApreparar({ ...pedidoApreparar, Productos: ProductoPesado });
     setProductoApesar(undefined);
   };
-
+  const handleSalir = (e) => {
+    let ProductoPesado = pedidoApreparar.Productos;
+    ProductoPesado = ProductoPesado.map((prod) => ({
+      ...prod,
+      Cantidad: prod.CantidadAnterior || prod.Cantidad,
+    }));
+    salir();
+  };
   const handleEliminarPesaje = (index) => (e) => {
     let ProductoPesado = pedidoApreparar.Productos;
     ProductoPesado[index].Pesaje = null;
+    ProductoPesado[index].Cantidad = ProductoPesado[index].CantidadAnterior;
     setPedidoApreparar({
       ...pedidoApreparar,
       Productos: ProductoPesado,
@@ -281,7 +292,7 @@ const ModoPreparar = ({ pedido, salir, onGuardar }) => {
             className="btn">
             Guardar
           </button>
-          <button onClick={salir} className="btn btn-red">
+          <button onClick={handleSalir} className="btn btn-red">
             <i className="fas fa-window-close btn-exit"></i>
           </button>
         </div>
