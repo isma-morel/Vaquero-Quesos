@@ -290,8 +290,8 @@ const ModoPreparar = ({ pedido, salir, onGuardar }) => {
             className="btn">
             Guardar
           </button>
-          <button onClick={salir} className="btn btn-red">
-            <i className="fas fa-window-close btn-exit"></i>
+          <button onClick={salir} className="fas fa-window-close btn btn-red">
+            {/* <i className="fas fa-window-close btn-exit"></i> */}
           </button>
         </div>
       </div>

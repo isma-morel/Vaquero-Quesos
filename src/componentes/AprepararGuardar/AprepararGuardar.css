@@ -47,14 +47,21 @@
   background: rgba(0, 128, 0, 0.726);
 }
 .preparar .contenedor-tabla .contenedor-cliente .btn.btn-red {
-  background-color: red;
+  background: none;
+  color: red;
+  font-size: 1.78em;
+  text-align: center;
+  vertical-align: middle;
+  padding: 0;
 }
 .preparar .contenedor-tabla .contenedor-cliente .btn.btn-red:hover {
-  background-color: rgba(255, 0, 0, 0.726);
+  color: rgba(255, 0, 0, 0.726);
 }
 .preparar .contenedor-tabla .contenedor-cliente .btn-exit {
   color: white;
-
+  padding: 0;
+  margin: 0;
+  font-size: 1.5em;
   cursor: pointer;
   display: inline-block;
 }
