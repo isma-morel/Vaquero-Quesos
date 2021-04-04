@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
 import "./Pedidos.css";
-import { BASE_URL } from "../../BaseURL.json";
 import { useHistory } from "react-router";
 import { toast } from "react-toastify";
+import { BASE_URL } from "../../BaseURL.json";
 const ProcesarPedido = (pedidos) => {
   if (pedidos.length === 0) return [];
   const pedido = pedidos.reduce(

@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { SlideMenu, Pedidos, AprepararGuardar } from "../index";
+import { SlideMenu, Pedidos, AprepararGuardar, Facturar } from "../index";
 import { Route, Switch, useHistory } from "react-router-dom";
 
 const Dashboard = () => {
@@ -29,6 +29,11 @@ const Dashboard = () => {
             texto: "Preparacion",
           },
           {
+            to: "/Dashboard/facturar",
+            icono: <i className="fas fa-file-invoice-dollar"></i>,
+            texto: "Facturar",
+          },
+          {
             to: "/Logout",
             icono: <i className="fas fa-sign-out-alt"></i>,
             texto: "salir",
@@ -41,6 +46,9 @@ const Dashboard = () => {
         </Route>
         <Route path="/Dashboard/preparacion">
           <AprepararGuardar />
+        </Route>
+        <Route path="/Dashboard/facturar">
+          <Facturar />
         </Route>
       </Switch>
     </div>

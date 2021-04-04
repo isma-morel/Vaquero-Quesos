@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from "react";
-import { Redirect, useHistory } from "react-router";
+import { useHistory } from "react-router";
 import "./Login.css";
-
-const BASE_URL = "http://200.89.178.131/LacteosApi/api";
+import { BASE_URL } from "../../BaseURL.json";
 
 const Login = ({ logo, LogSucces }) => {
   const history = useHistory();
@@ -20,7 +19,7 @@ const Login = ({ logo, LogSucces }) => {
     const { target } = e;
 
     fetch(
-      `${BASE_URL}/iClientesSP/ValidarCliente?pUsuario=${target[0].value}&pContrasenia=${target[1].value}`
+      `${BASE_URL}iClientesSP/ValidarCliente?pUsuario=${target[0].value}&pContrasenia=${target[1].value}`
     )
       .then((result) => {
         if (result.status === 400) {

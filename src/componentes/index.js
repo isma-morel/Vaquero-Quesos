@@ -7,3 +7,4 @@ export { default as SlideMenu } from "./slideMenu/SlideMenu";
 export { default as Dashboard } from "./Dashboard/Dashboard";
 export { default as Pedidos } from "./Pedidos/Pedidos";
 export { default as AprepararGuardar } from "./AprepararGuardar/AprepararGuardar";
+export { default as Facturar } from "./Facturar/Facturar";

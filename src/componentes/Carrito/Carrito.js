@@ -2,10 +2,9 @@ import React, { useEffect, useState } from "react";
 import { Redirect, useHistory } from "react-router";
 import { toast } from "react-toastify";
 import { ModalCarrito } from "..";
+import { BASE_URL } from "../../BaseURL.json";
 import useModal from "../../hooks/useModal";
 import "./Carrito.css";
-const HEADERS = new Headers().append("Content-Type", "application/json");
-const BASE_URL = "http://200.89.178.131/LacteosApi/api";
 const Carrito = () => {
   const history = useHistory();
   const [isOpenCarritoModal, handleCarritoModal] = useModal();
@@ -47,7 +46,7 @@ const Carrito = () => {
     });
     try {
       const result = await fetch(
-        `${BASE_URL}/iPedidosSP/Guardar?pUsuario=${user.usuario}&pToken=${user.Token}`,
+        `${BASE_URL}iPedidosSP/Guardar?pUsuario=${user.usuario}&pToken=${user.Token}`,
         {
           method: "POST",
           headers: {

@@ -3,8 +3,7 @@ import "./Lista.css";
 import { Modal } from "../../componentes";
 import { Redirect, useHistory } from "react-router";
 import { useEffect, useState } from "react";
-
-const BASE_URL = "http://200.89.178.131/LacteosApi/api";
+import { BASE_URL } from "../../BaseURL.json";
 
 function Lista() {
   const [isOpenModal, handleModal] = useModal();
@@ -21,7 +20,7 @@ function Lista() {
       if (!auth.IdCliente) localStorage.removeItem("auth");
       try {
         const json = await fetch(
-          `${BASE_URL}/iProductosSP/ProductosDatos?pUsuario=${auth.usuario}&pToken=${auth.Token}`
+          `${BASE_URL}iProductosSP/ProductosDatos?pUsuario=${auth.usuario}&pToken=${auth.Token}`
         );
         const result = await json.json();
         if (result.length === 0) {
