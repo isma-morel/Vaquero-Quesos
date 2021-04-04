@@ -33,14 +33,14 @@
 .preparar .contenedor-tabla .contenedor-cliente .btn {
   background: green;
   border: none;
-  border-radius: 2px;
-  padding: 3px 6px;
+  border-radius: 0.2em;
+  padding: 0.4em 0.6em;
   margin: 5px;
   color: #fff;
   cursor: pointer;
   transition: 0.2s ease all;
-  font-size: 1em;
-  box-shadow: 1px 2px 5px rgba(0, 0, 0, 0.5);
+  font-size: 0.8em;
+  transition: 0.2s all ease;
 }
 .preparar .contenedor-tabla .contenedor-cliente .btn:hover,
 .preparar .contenedor-tabla .contenedor-cliente .btn:disabled {
@@ -80,6 +80,7 @@
   border-radius: 2px;
   font-size: 1.2em;
   cursor: pointer;
+  transition: 0.2s all ease;
 }
 .preparar
   .contenedor-tabla
