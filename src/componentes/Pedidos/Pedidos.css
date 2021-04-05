@@ -4,7 +4,7 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding-top: 5em;
+  padding-top: 4em;
 }
 .pedidos .controles {
   position: fixed;
@@ -17,6 +17,15 @@
   max-width: 50%;
   padding: 0.5em;
   font-weight: 500;
+}
+
+.controles .titulo {
+  font-size: 2em;
+  display: inline-block;
+  width: 100%;
+  align-self: center;
+  text-align: center;
+  font-weight: bold;
 }
 
 .pedidos .controles .btn {
@@ -37,7 +46,7 @@
 
 .contenedor-tabla {
   font-size: 0.8em;
-  margin: 5em auto 0 auto;
+  margin: 3em auto 0 auto;
   width: 100%;
   display: flex;
   flex-direction: column;
@@ -50,6 +59,7 @@
   margin-top: 2em;
   font-size: 1.5em;
   display: block;
+  font-weight: bold;
 }
 .spin {
   margin-top: 10em;
@@ -108,7 +118,7 @@
   border-bottom: 1px solid #999;
 }
 .tabla.tabla-pedidos tbody tr:nth-child(even) {
-  background-color: rgba(0, 0, 0, 0.25);
+  background-color: rgba(0, 0, 0, 0.13);
 }
 /* Querys */
 
@@ -122,6 +132,7 @@
   .contenedor-tabla {
     overflow-x: auto;
     width: 100vw;
+    margin: 1em auto 0px auto;
   }
   .pedidos .controles {
     position: inherit;

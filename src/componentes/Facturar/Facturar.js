@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { useHistory } from "react-router";
 import { toast } from "react-toastify";
 import { BASE_URL } from "../../BaseURL.json";
 import useModal from "../../hooks/useModal";
@@ -101,6 +102,8 @@ const Facturar = () => {
   const [pedidosAFacturarFiltrados, setPedidosAFacturarFiltrados] = useState();
   const [pedidosAFacturar, setPedidosAFacturar] = useState();
   const [pedidoAjustar, setPedidoAjustar] = useState();
+  const { push } = useHistory();
+
   const pedirPedidosParaFacturar = async () => {
     const auth = JSON.parse(localStorage.getItem("auth"));
     try {
@@ -108,6 +111,10 @@ const Facturar = () => {
         `${BASE_URL}iPedidosSP/ParaFacturar?pUsuario=${auth.usuario}&pToken=${auth.Token}`
       );
       if (result.status !== 200) {
+        if (result.status === 401) {
+          localStorage.removeItem("auth");
+          push("/");
+        }
         throw new Error(result.statusText);
       }
 
@@ -115,6 +122,7 @@ const Facturar = () => {
       const PedidosAFacturarProcesados = ProcesarPedidosAFacturar(json);
       setPedidosAFacturar(PedidosAFacturarProcesados);
     } catch (err) {
+      toast.error("ha ocurrido un error");
       console.log(err);
     }
   };
@@ -159,8 +167,14 @@ const Facturar = () => {
           body: JSON.stringify(pedidoProcesado),
         }
       );
-      if (result.status !== 200) throw new Error(result.statusText);
-      console.log(result);
+      if (result.status !== 200) {
+        if (result.status === 401) {
+          localStorage.removeItem("auth");
+          push("/");
+        }
+        throw new Error(result.statusText);
+      }
+
       toast.success("facturacion guardada correctamente");
       setPedidosAFacturar(null);
       pedirPedidosParaFacturar();
@@ -185,6 +199,7 @@ const Facturar = () => {
             placeholder="Filtro"
             onChange={handleChangeFiltro}
           />
+          <span className="titulo">Facturación</span>
         </div>
         <hr />
       </div>

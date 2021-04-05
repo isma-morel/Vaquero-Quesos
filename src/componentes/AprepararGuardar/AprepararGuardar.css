@@ -4,9 +4,12 @@
   display: flex;
   flex-direction: column;
   align-items: center;
+  padding-top: 2em;
   transition: all 1s ease;
+  font-size: clamp(1em, 2vw, 1.2em);
 }
 .preparar .controles {
+  top: 0;
   position: fixed;
   width: 80%;
   z-index: 1;
@@ -201,6 +204,9 @@
 }
 
 @media (max-width: 700px) {
+  .preparar {
+    padding-top: 0;
+  }
   .preparar .controles {
     position: inherit;
     margin-left: auto;
@@ -214,12 +220,17 @@
   .preparar .contenedor-tabla .contenedor-cliente .btn {
     margin: 5px;
   }
+  .preparar .controles .titulo {
+    display: inline-block;
+    margin-top: 0.5em;
+  }
 
   .preparar .controles div {
     display: flex;
-    flex-direction: row nowrap;
+    flex-direction: row;
+    flex-wrap: wrap;
     align-items: center;
-    justify-content: center;
+    justify-content: flex-start;
   }
   .form-tabla {
     width: 100%;

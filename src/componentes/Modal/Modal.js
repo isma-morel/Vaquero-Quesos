@@ -1,5 +1,6 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { granVaquero } from "../../GranVaquero.json";
+import { BASE_URL } from "../../BaseURL.json";
 import "./Modal.css";
 const Modal = ({ isOpen, onClose, producto }) => {
   const medidaDefault = producto.Medidas ? producto.Medidas[0].IdMedida : 0;
@@ -7,6 +8,28 @@ const Modal = ({ isOpen, onClose, producto }) => {
     cantidad: 0,
     medida: medidaDefault,
   });
+  const [foto, setFoto] = useState();
+  useEffect(() => {
+    const pedirFoto = async (idProducto) => {
+      try {
+        const result = await fetch(
+          `${BASE_URL}iProductosSP/Foto?idProducto=${idProducto}`
+        );
+        if (result.status !== 200) {
+          throw new Error("error al obtener la foto " + result.text());
+        }
+        const json = await result.json();
+        setFoto(`data:image/png;base64,${json.Foto}`);
+      } catch (err) {
+        console.log(err);
+      }
+    };
+    if (producto.TieneFoto) {
+      pedirFoto(producto.IdProducto);
+    } else {
+      setFoto(null);
+    }
+  }, [producto]);
 
   const LimpiarImputs = () => {
     setInputs({ medida: medidaDefault, cantidad: 0 });
@@ -35,11 +58,13 @@ const Modal = ({ isOpen, onClose, producto }) => {
   return (
     <div className={`overlay ${isOpen ? "open" : ""}`}>
       <div className="card-producto">
-        <img
-          className="imagen-producto"
-          src={granVaquero}
-          alt="Imagen ilustrativa"
-        />
+        {producto.TieneFoto && (
+          <img
+            className="imagen-producto"
+            src={foto}
+            alt="Imagen ilustrativa"
+          />
+        )}
         <div className="texto-producto">
           <h2 className="producto">{producto.Descripcion}</h2>
           <h3 className="descripcion">{producto.Presentacion}</h3>

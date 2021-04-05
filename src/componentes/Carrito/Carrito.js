@@ -55,14 +55,20 @@ const Carrito = () => {
           body: JSON.stringify(pedido),
         }
       );
-      if (result.status === 400) throw new Error("error al guardar el pedido");
+      if (result.status !== 200) {
+        if (result.status === 401) {
+          localStorage.removeItem("auth");
+          history.push("/");
+        }
+        throw new Error("error al guardar el pedido");
+      }
       toast.success(
         `pedido cargado con exito N° de pedido: ${await result.json()} `
       );
       localStorage.removeItem("carrito");
       setProductos([]);
     } catch (err) {
-      alert(err.message);
+      toast.error(err.message);
     }
   };
   const handleCarrito = (index) => (e) => {

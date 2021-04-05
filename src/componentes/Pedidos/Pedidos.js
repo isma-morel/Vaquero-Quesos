@@ -102,28 +102,6 @@ const filtrar = (value, pedidos) => {
   return resultado;
 };
 
-const GuardarConfirmados = async (Preparados, usuario, Token) => {
-  if (Preparados.length === 0) return;
-  let PedidosPreparados = { PedidosAPrepararTodos: Preparados };
-  try {
-    const result = await fetch(
-      `${BASE_URL}iPedidosSP/APrepararGuardar?pUsuario=${usuario}&pToken=${Token}`,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(PedidosPreparados),
-      }
-    );
-    if (result.status !== 200) {
-      throw new Error(result.statusText);
-    }
-  } catch (err) {
-    console.log(err);
-  }
-};
-
 const obtenerPedidosAConfirmar = (pedidos) => {
   let Preparados = [];
   pedidos.map(({ Productos }) => {
@@ -155,6 +133,10 @@ const Pedidos = () => {
       );
 
       if (result.status !== 200) {
+        if (result.status === 401) {
+          localStorage.removeItem("auth");
+          push("/");
+        }
         throw new Error(result.statusText);
       }
 
@@ -164,17 +146,40 @@ const Pedidos = () => {
 
       setPedidos(pedidoProcesado);
     } catch (err) {
+      toast.error("ha ocurrido un herror");
       console.log(err.message);
     }
   };
-  const handleConfirmar = (e) => {
+  const handleConfirmar = async (e) => {
     const { usuario, Token } = JSON.parse(localStorage.getItem("auth")) || {};
     let Preparados = obtenerPedidosAConfirmar(pedidos);
-    GuardarConfirmados(Preparados, usuario, Token).then((result) => {
+    if (Preparados.length === 0) return;
+    let PedidosPreparados = { PedidosAPrepararTodos: Preparados };
+    try {
+      const result = await fetch(
+        `${BASE_URL}iPedidosSP/APrepararGuardar?pUsuario=${usuario}&pToken=${Token}`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(PedidosPreparados),
+        }
+      );
+      if (result.status !== 200) {
+        if (result.status === 401) {
+          localStorage.removeItem("auth");
+          push("/");
+        }
+        throw new Error(result.statusText);
+      }
       setPedidos([]);
       PedirPedidos();
       toast.success("pedidos confirmados con exito");
-    });
+    } catch (err) {
+      toast.error("ha ocurrido un error.");
+      console.log(err);
+    }
   };
   const handleChangeFiltro = (e) => {
     const resultado = filtrar(e.target.value, pedidos);
@@ -214,8 +219,10 @@ const Pedidos = () => {
             Confirmar preparacion
           </button>
         </div>
+        <span className="titulo">Pedidos</span>
         <hr />
       </div>
+
       {pedidos.length > 0 ? (
         pedidosFiltrados.map(({ Cliente, Pedido, Productos }, index) => (
           <div key={index} className="contenedor-tabla">

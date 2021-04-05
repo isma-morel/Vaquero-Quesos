@@ -22,11 +22,14 @@ function Lista() {
         const json = await fetch(
           `${BASE_URL}iProductosSP/ProductosDatos?pUsuario=${auth.usuario}&pToken=${auth.Token}`
         );
-        const result = await json.json();
-        if (result.length === 0) {
-          localStorage.removeItem("auth");
-          history.push("/");
+        if (json.status !== 200) {
+          if (json.status === 401) {
+            localStorage.removeItem("auth");
+            history.push("/");
+          }
+          throw new Error("se ha producido un error");
         }
+        const result = await json.json();
         setProductosState(result);
       } catch (err) {
         console.log(err);

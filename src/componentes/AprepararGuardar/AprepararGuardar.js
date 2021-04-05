@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { useHistory } from "react-router";
 import { toast } from "react-toastify";
 import { BASE_URL } from "../../BaseURL.json";
 import "./AprepararGuardar.css";
@@ -92,7 +93,7 @@ function AprepararGuardar() {
   const [pedidosFiltrados, setPedidosFiltrados] = useState([]);
   const [modoPreparar, setModoPreparar] = useState(false);
   const [pedidoSeleccionado, setPedidoSeleccionado] = useState({});
-
+  const { push } = useHistory();
   const pedirPedidosAPreparar = async () => {
     let pedidosProcesados = [];
     const { usuario, Token } = JSON.parse(localStorage.getItem("auth")) || {};
@@ -101,15 +102,21 @@ function AprepararGuardar() {
       const result = await fetch(
         `${BASE_URL}iPedidosSP/PedidosParaPreparar?pUsuario=${usuario}&pToken=${Token}`
       );
-      if (result.status !== 200) throw new Error(result.statusText);
+      if (result.status !== 200) {
+        if (result.status === 401) {
+          localStorage.removeItem("auth");
+          push("/");
+        }
+        throw new Error(result.statusText);
+      }
 
       const json = await result.json();
-      if (!json?.Resumido) throw new Error("error al obtener los datos");
 
       pedidosProcesados = await ProcesarPedido(json);
 
       setPedidos(pedidosProcesados);
     } catch (err) {
+      toast.error("a ocurrido un error");
       console.log(err);
     }
   };
@@ -128,9 +135,13 @@ function AprepararGuardar() {
         }
       );
       if (result.status !== 200) {
+        if (result.status === 401) {
+          localStorage.removeItem("auth");
+          push("/");
+        }
         throw new Error(result.statusText);
       }
-      const json = await result.json();
+
       toast.success("Pedido guardado con exito");
       setModoPreparar(false);
       setPedidoSeleccionado({});
@@ -175,6 +186,7 @@ function AprepararGuardar() {
             placeholder="Filtro"
             onChange={handleChangeFiltro}
           />
+          <span className="titulo">Preparación</span>
         </div>
         <hr />
       </div>
@@ -290,9 +302,9 @@ const ModoPreparar = ({ pedido, salir, onGuardar }) => {
             className="btn">
             Guardar
           </button>
-          <button onClick={salir} className="fas fa-window-close btn btn-red">
-            {/* <i className="fas fa-window-close btn-exit"></i> */}
-          </button>
+          <button
+            onClick={salir}
+            className="fas fa-window-close btn btn-red"></button>
         </div>
       </div>
       <table className="tabla tabla-pedidos tabla-preparar">
@@ -370,9 +382,30 @@ const ModoPesar = ({ producto, onGuardar, onCancelar }) => {
     tempProd.Cantidad = parseFloat(value);
     calcular({ ...pesaje, producto: tempProd });
   };
+  const handleChangePeso = (indice) => (e) => {
+    const esNumero = /^[0-9]+([.])?([0-9]+)?$/;
+    let taraTemp = pesaje.Taras;
+
+    if (!e.target.innerText.trim().match(esNumero)) {
+      e.target.innerHTML = "</br>";
+      taraTemp[indice].Peso = 0;
+      taraTemp[indice].subTotal = 0;
+      calcular({ ...pesaje, Taras: taraTemp });
+      return;
+    }
+    taraTemp[indice].subTotal =
+      parseFloat(e.target.innerText) * parseFloat(taraTemp[indice].cantidad);
+    taraTemp[indice].Peso = parseFloat(e.target.innerText);
+
+    calcular({
+      ...pesaje,
+      Taras: taraTemp,
+    });
+  };
   const handleChange = (indice) => (e) => {
     const esNumero = /^[0-9]+([.])?([0-9]+)?$/;
     let taraTemp = pesaje.Taras;
+
     if (!e.target.innerText.trim().match(esNumero)) {
       e.target.innerHTML = "</br>";
       taraTemp[indice].subTotal = 0;
@@ -401,7 +434,12 @@ const ModoPesar = ({ producto, onGuardar, onCancelar }) => {
       }
       const json = await result.json();
       json.forEach((tara) =>
-        tarasTemp.push({ ...tara, subTotal: 0, cantidad: 0 })
+        tarasTemp.push({
+          ...tara,
+          subTotal: 0,
+          cantidad: 0,
+          PesoEditable: !tara.Peso,
+        })
       );
       setPesaje({ ...pesaje, Taras: tarasTemp });
     } catch (err) {
@@ -523,7 +561,11 @@ const ModoPesar = ({ producto, onGuardar, onCancelar }) => {
                     contentEditable
                     inputMode="decimal"
                     onSelect={handleChange(index)}></td>
-                  <td>{tara.Peso}</td>
+                  {tara.PesoEditable ? (
+                    <td onSelect={handleChangePeso(index)} contentEditable></td>
+                  ) : (
+                    <td>{tara.Peso}</td>
+                  )}
                   <td>{tara.subTotal}</td>
                 </tr>
               ))}
