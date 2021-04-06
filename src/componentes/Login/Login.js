@@ -6,6 +6,7 @@ import { BASE_URL } from "../../BaseURL.json";
 const Login = ({ logo, LogSucces }) => {
   const history = useHistory();
   const [error, setError] = useState();
+  const [isLoading, setLoading] = useState(false);
   useEffect(() => {
     const auth = JSON.parse(localStorage.getItem("auth"));
     if (auth) {
@@ -17,12 +18,12 @@ const Login = ({ logo, LogSucces }) => {
   const handleSubmit = (e) => {
     e.preventDefault();
     const { target } = e;
-
+    setLoading(true);
     fetch(
       `${BASE_URL}iClientesSP/ValidarCliente?pUsuario=${target[0].value}&pContrasenia=${target[1].value}`
     )
       .then((result) => {
-        if (result.status === 400) {
+        if (result.status !== 200) {
           throw new Error("usuario o contraseña incorrecta.");
         }
         return result.json();
@@ -42,7 +43,8 @@ const Login = ({ logo, LogSucces }) => {
           ? history.push("/Lista")
           : history.push("/Dashboard");
       })
-      .catch((err) => setError(err.message));
+      .catch((err) => setError(err.message))
+      .finally(() => setLoading(false));
   };
 
   return (
@@ -58,7 +60,9 @@ const Login = ({ logo, LogSucces }) => {
           type="password"
           placeholder="Contraseña"
         />
-        <button className="button">ENVIAR</button>
+        <button disabled={isLoading} className="button">
+          ENVIAR
+        </button>
         <small className="cuenta">
           Si no tiene una cuenta puede comunicarse a <br />
           <span>

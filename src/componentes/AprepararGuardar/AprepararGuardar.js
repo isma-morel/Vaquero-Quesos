@@ -259,12 +259,13 @@ const ModoPreparar = ({ pedido, salir, onGuardar }) => {
     setProductoApesar(productoApesar);
   };
   const handleGuardarPesaje = (pesaje) => (e) => {
-    const { producto, PesoBruto, Taras, PesoPorPieza } = pesaje;
+    const { producto, PesoBruto, Taras, PesoPorPieza, PesoNeto } = pesaje;
     let ProductoPesado = pedidoApreparar.Productos;
     ProductoPesado[producto.index].Pesaje = {
       PesoBruto,
       Taras,
       PesoPorPieza,
+      PesoNeto,
     };
     ProductoPesado[producto.index].CantidadAnterior =
       ProductoPesado[producto.index].Cantidad;
@@ -343,7 +344,7 @@ const ModoPreparar = ({ pedido, salir, onGuardar }) => {
                   )}
                 </td>
                 <td>{`${Cantidad} ${Medida}`}</td>
-                <td>{`${Pesaje?.PesoBruto || 0}`}</td>
+                <td>{`${Pesaje?.PesoNeto || 0}`}</td>
                 <td>{`${Pesaje?.PesoPorPieza || 0}`}</td>
               </tr>
             )

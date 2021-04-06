@@ -3,6 +3,10 @@ import "./Pedidos.css";
 import { useHistory } from "react-router";
 import { toast } from "react-toastify";
 import { BASE_URL } from "../../BaseURL.json";
+
+/* Procesamiento del pedio para poder armar las tablas,
+  recibe los datos crudos y devuelve los datos con la estructura necesaria.
+*/
 const ProcesarPedido = (pedidos) => {
   if (pedidos.length === 0) return [];
   const pedido = pedidos.reduce(
@@ -20,29 +24,9 @@ const ProcesarPedido = (pedidos) => {
         idPedidosProd,
         Medida,
         IdMedidaPrinc,
+        MedidaPrinc,
       }
     ) => {
-      if (acum.length === 0) {
-        return [
-          {
-            IdPedido,
-            Pedido,
-            Cliente,
-            Productos: [
-              {
-                IdProducto,
-                Codigo,
-                Presentacion,
-                Cantidad,
-                CantidadPreparar,
-                idPedidosProd,
-                Medida,
-                IdMedidaPrinc,
-              },
-            ],
-          },
-        ];
-      }
       let indexPedido = acum.findIndex((elem) => elem.IdPedido === IdPedido);
       if (indexPedido < 0) {
         return [
@@ -61,6 +45,7 @@ const ProcesarPedido = (pedidos) => {
                 idPedidosProd,
                 Medida,
                 IdMedidaPrinc,
+                MedidaPrinc,
               },
             ],
           },
@@ -75,6 +60,7 @@ const ProcesarPedido = (pedidos) => {
         idPedidosProd,
         Medida,
         IdMedidaPrinc,
+        MedidaPrinc,
       });
       return [...acum];
     },
@@ -91,6 +77,9 @@ const filtrarPedidoPorCliente = (cliente, pedidos) => {
   return pedidos.filter((pedido) => pedido.Cliente.includes(cliente));
 };
 
+/* Metodo que se encarga de discernir entre el tipo de filtrado que se va a aplicar
+  si es un numero aplica el filtro por Id y si es un string aplica un filtro por Cliente.
+*/
 const filtrar = (value, pedidos) => {
   const esNumero = /^[0-9]+$/;
   let resultado = pedidos;
@@ -102,6 +91,10 @@ const filtrar = (value, pedidos) => {
   return resultado;
 };
 
+/* funcion encargada de obtener todos los pedidos que hayan sido cargados
+    recibe el arreglo de pedidos y devuelve todos aquellos pedios que ya esten preparados
+    para la confirmacion.
+*/
 const obtenerPedidosAConfirmar = (pedidos) => {
   let Preparados = [];
   pedidos.map(({ Productos }) => {
@@ -123,6 +116,7 @@ const Pedidos = () => {
   const [pedidos, setPedidos] = useState([]);
   const [pedidosFiltrados, setPedidosFiltrados] = useState([]);
   const { push } = useHistory();
+
   const PedirPedidos = async () => {
     const { usuario, Token } = JSON.parse(localStorage.getItem("auth")) || {};
     if (!Token) return;
@@ -150,6 +144,7 @@ const Pedidos = () => {
       console.log(err.message);
     }
   };
+
   const handleConfirmar = async (e) => {
     const { usuario, Token } = JSON.parse(localStorage.getItem("auth")) || {};
     let Preparados = obtenerPedidosAConfirmar(pedidos);
@@ -181,20 +176,23 @@ const Pedidos = () => {
       console.log(err);
     }
   };
+
   const handleChangeFiltro = (e) => {
     const resultado = filtrar(e.target.value, pedidos);
     if (!resultado) return;
     setPedidosFiltrados(resultado);
   };
+
   const handleChangeCantidad = (index, indexProd) => (e) => {
     const { target } = e;
     let pedidosTemp = pedidosFiltrados;
-    pedidosTemp[index].Productos[indexProd].CantidadPreparar = parseInt(
-      target.value
-    );
+
+    pedidosTemp[index].Productos[indexProd].CantidadPreparar =
+      parseInt(target.value) || "";
 
     setPedidosFiltrados([...pedidosTemp]);
   };
+
   /* Efecto encargado de actualizar la lista de pedidos que se va a renderizar */
   useEffect(() => {
     setPedidosFiltrados(pedidos);
@@ -249,6 +247,7 @@ const Pedidos = () => {
                       Cantidad,
                       Medida,
                       CantidadPreparar,
+                      MedidaPrinc,
                     },
                     indexProd
                   ) => (
@@ -264,10 +263,10 @@ const Pedidos = () => {
                         <input
                           value={CantidadPreparar}
                           type="number"
-                          max={Cantidad}
                           min={0}
                           onChange={handleChangeCantidad(index, indexProd)}
                         />
+                        {MedidaPrinc}
                       </td>
                     </tr>
                   )

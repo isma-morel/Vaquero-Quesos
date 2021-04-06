@@ -49,6 +49,16 @@ hr {
   color: #fff;
   background: black;
 }
+.button:disabled::after {
+  content: "";
+  display: inline-block;
+  width: 0.8em;
+  height: 0.8em;
+  border-radius: 50%;
+  margin: 0px 1em;
+  border-top: 2px solid gray;
+  animation: rotar 0.3s linear infinite;
+}
 .cuenta {
   font-size: x-small;
   line-height: 1.5em;
@@ -60,4 +70,12 @@ hr {
   color: #cf963c;
   text-decoration: none;
   font-weight: bold;
+}
+@keyframes rotar {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }
