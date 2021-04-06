@@ -12,7 +12,7 @@ import "./SlideMenu.css";
  * @arguments sub: arreglo de items del menu.
  */
 const SlideMenu = ({ Items }) => {
-  const [isOpen, setIsOpen] = useState(true);
+  const [isOpen, setIsOpen] = useState(false);
   const [ItemState, setItemState] = useState([]);
   useEffect(() => {
     setItemState(

@@ -62,7 +62,7 @@ const Dashboard = () => {
               </Link>
               <div></div>
               <div></div>
-              <Link to="/Dashboard/facturacion">
+              <Link to="/Dashboard/facturar">
                 <i className="fas fa-file-invoice-dollar"></i>
               </Link>
               <Link to="/Logout">
