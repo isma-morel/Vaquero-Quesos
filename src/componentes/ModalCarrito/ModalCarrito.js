@@ -15,6 +15,20 @@ const ModalCarrito = ({ isOpen, onClose, ProductoIndex, setProductos }) => {
     const { name, value } = e.target;
     setProducto({ ...producto, [name]: parseInt(value) });
   };
+  const handleClick = (e) => {
+    const { name } = e.target;
+    if (name === "plus") {
+      setProducto({
+        ...producto,
+        cantidad: producto.cantidad >= 0 ? producto.cantidad + 1 : 0,
+      });
+    } else {
+      setProducto({
+        ...producto,
+        cantidad: producto.cantidad >= 0 ? producto.cantidad - 1 : 0,
+      });
+    }
+  };
 
   const handleConfirmar = (e) => {
     const carrito = JSON.parse(localStorage.getItem("carrito"));
@@ -31,34 +45,49 @@ const ModalCarrito = ({ isOpen, onClose, ProductoIndex, setProductos }) => {
           <h2 className="producto">{producto.Descripcion}</h2>
           <h3 className="descripcion">{producto.Presentacion}</h3>
 
-          <input
-            name="cantidad"
-            type="number"
-            placeholder="Cantidad"
-            min={0}
-            value={producto.cantidad}
-            step={1}
-            onChange={handleChangeSelect}
-          />
+          <div className="input">
+            <button
+              name="minus"
+              onClick={handleClick}
+              disabled={!producto.cantidad}
+              className="fas fa-minus boton-input"></button>
 
-          <select
-            name="medida"
-            id=""
-            onChange={handleChangeSelect}
-            value={producto.medida}>
-            {producto.Medidas?.map((medida) => (
-              <option key={medida.IdMedida} value={medida.IdMedida}>
-                {medida.DescripcionUM}
-              </option>
+            <input
+              name="cantidad"
+              onChange={handleChangeSelect}
+              type="number"
+              value={producto.cantidad}
+              min={0}
+            />
+            <button
+              name="plus"
+              onClick={handleClick}
+              className="fas fa-plus boton-input"></button>
+          </div>
+          <div className="radios">
+            {producto.Medidas?.map((medida, index) => (
+              <div key={index}>
+                <input
+                  onChange={handleChangeSelect}
+                  type="radio"
+                  name="medida"
+                  id={medida.DescripcionUM}
+                  defaultChecked={!index}
+                  key={medida.IdMedida}
+                  value={medida.IdMedida}
+                />
+                <label htmlFor={medida.DescripcionUM}>
+                  {medida.DescripcionUM}
+                </label>
+              </div>
             ))}
-          </select>
-
+          </div>
           <br />
-          <button onClick={handleConfirmar} className="boton btn-secondary">
-            Modificar
-          </button>
           <button className="boton" onClick={onClose}>
             Volver a la lista
+          </button>
+          <button onClick={handleConfirmar} className="boton btn-secondary">
+            Modificar
           </button>
         </div>
       </div>

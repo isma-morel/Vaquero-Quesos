@@ -1,0 +1,34 @@
+.dashboard {
+  min-height: 100vh;
+  min-width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.dashboard .grid {
+  width: 80%;
+  margin: auto;
+  text-align: center;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  row-gap: 1em;
+  column-gap: 1em;
+  padding: 1em;
+}
+.dashboard .grid a,
+.dashboard .grid a:hover,
+.dashboard .grid a:visited {
+  color: black;
+  font-size: 4em;
+  border: 1px solid black;
+  border-radius: 0.2em;
+  transition: ease 0.2s all;
+}
+.dashboard .grid a:hover {
+  color: white;
+  background: black;
+}
+.dashboard .grid a i {
+  margin: auto 0.2em;
+}

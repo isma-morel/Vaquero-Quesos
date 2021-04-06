@@ -120,6 +120,48 @@
   color: white;
   background: #cf973ce3;
 }
+.contenedor-pedidos .modalConfirmar .overlay.open {
+  background: rgba(0, 0, 0, 0.3);
+}
+.contenedor-pedidos .modalConfirmar .overlay.open .card-productos {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 2em;
+  border-radius: 0.2em;
+  box-shadow: 1px 1px 10px rgba(0, 0, 0, 0.3);
+  background: #fafafa;
+}
+.contenedor-pedidos .modalConfirmar .overlay.open .card-productos .botones {
+  display: flex;
+  justify-content: space-between;
+  margin: 3em auto 0px auto;
+  width: 50%;
+}
+.contenedor-pedidos
+  .modalConfirmar
+  .overlay.open
+  .card-productos
+  .botones
+  button {
+  background: white;
+  color: black;
+  border: 1px solid black;
+  padding: 0.4em 0.6em;
+  border-radius: 0.2em;
+  cursor: pointer;
+}
+.contenedor-pedidos
+  .modalConfirmar
+  .overlay.open
+  .card-productos
+  .botones
+  button.btn-confirmar {
+  background: #cf963c;
+  color: white;
+  border: none;
+}
 @media (max-width: 360px) {
   .tabla-pedidos thead th:nth-child(2),
   .tabla-pedidos tbody tr td:nth-child(2) {
@@ -134,5 +176,8 @@
     font-size: 20px;
     display: block;
     padding: 0;
+  }
+  .contenedor-pedidos .modalConfirmar .overlay.open .card-productos .botones {
+    width: 100%;
   }
 }

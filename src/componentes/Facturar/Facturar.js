@@ -135,7 +135,7 @@ const Facturar = () => {
 
   const handleChangeFiltro = (e) => {
     const resultado = filtrar(e.target.value, pedidosAFacturar);
-    if (!(resultado && resultado.length > 0)) return;
+    if (!resultado) return;
     setPedidosAFacturarFiltrados(resultado);
   };
   const handleAjustar = (index) => (e) => {
@@ -211,11 +211,11 @@ const Facturar = () => {
                 <div className="datos">
                   <span>Cliente: {Cliente}</span>
                   <span>Pedido: {Pedido}</span>
-                  <span>
-                    A: {A}% - B: {B}%
-                  </span>
                 </div>
-                <div>
+                <span className="porcentajes">
+                  A: {A}% - B: {B}%
+                </span>
+                <div className="botones">
                   <button
                     onClick={handleAjustar(index)}
                     className="btn ajustar">
@@ -236,6 +236,7 @@ const Facturar = () => {
                     <th>PRESENTACION</th>
                     <th>CANTIDAD LISTA</th>
                     <th>PESO</th>
+                    <th>PESO POR PIEZA</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -251,10 +252,15 @@ const Facturar = () => {
                             <span className="titulo">{Presentacion}</span>
                           </div>
                         </td>
-                        <td>{`${CantidadLista}${Medida || ""}`}</td>
+                        <td className="peso">{`${CantidadLista} ${
+                          Medida || ""
+                        }`}</td>
                         <td className="peso">
                           <span>{`${Peso} Kg`}</span>
                         </td>
+                        <td className="peso">{`${parseFloat(
+                          (Peso / CantidadLista).toFixed(2)
+                        )} Kg`}</td>
                       </tr>
                     )
                   )}

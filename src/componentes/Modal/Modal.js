@@ -39,7 +39,21 @@ const Modal = ({ isOpen, onClose, producto }) => {
     const { name, value } = e.target;
     setInputs({ ...inputs, [name]: parseInt(value) });
   };
-
+  const handleClick = (e) => {
+    const { name } = e.target;
+    console.log(e.target);
+    if (name === "plus") {
+      setInputs({
+        ...inputs,
+        cantidad: inputs.cantidad >= 0 ? inputs.cantidad + 1 : 0,
+      });
+    } else {
+      setInputs({
+        ...inputs,
+        cantidad: inputs.cantidad >= 0 ? inputs.cantidad - 1 : 0,
+      });
+    }
+  };
   const handleGuardarProducto = (e) => {
     if (inputs.cantidad === "") {
       return;
@@ -68,33 +82,52 @@ const Modal = ({ isOpen, onClose, producto }) => {
         <div className="texto-producto">
           <h2 className="producto">{producto.Descripcion}</h2>
           <h3 className="descripcion">{producto.Presentacion}</h3>
-          <input
-            name="cantidad"
-            onChange={handleChange}
-            type="number"
-            value={inputs.cantidad}
-            placeholder="Cantidad"
-            min={0}
-          />
-          <select
-            onChange={handleChange}
-            value={inputs.medida}
-            name="medida"
-            id="">
-            {producto.Medidas?.map((medida) => (
-              <option key={medida.IdMedida} value={medida.IdMedida}>
-                {medida.DescripcionUM}
-              </option>
+          <div className="input">
+            <button
+              name="minus"
+              onClick={handleClick}
+              disabled={!inputs.cantidad}
+              className="fas fa-minus boton-input"></button>
+
+            <input
+              name="cantidad"
+              onChange={handleChange}
+              type="number"
+              step={1}
+              value={inputs.cantidad}
+              min={0}
+            />
+            <button
+              name="plus"
+              onClick={handleClick}
+              className="fas fa-plus boton-input"></button>
+          </div>
+          <div className="radios">
+            {producto.Medidas?.map((medida, index) => (
+              <div key={index}>
+                <input
+                  onChange={handleChange}
+                  type="radio"
+                  name="medida"
+                  id={medida.DescripcionUM}
+                  defaultChecked={!index}
+                  key={medida.IdMedida}
+                  value={medida.IdMedida}
+                />
+                <label htmlFor={medida.DescripcionUM}>
+                  {medida.DescripcionUM}
+                </label>
+              </div>
             ))}
-          </select>
+          </div>
           <br />
+          <button className="boton" onClick={handleVolver}>
+            Volver a la lista
+          </button>
           <button
             onClick={handleGuardarProducto}
             className="boton btn-secondary">
             Agregar al carrito
-          </button>
-          <button className="boton" onClick={handleVolver}>
-            Volver a la lista
           </button>
         </div>
       </div>

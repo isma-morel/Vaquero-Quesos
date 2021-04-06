@@ -1,3 +1,14 @@
+.overlay.open .card-producto .input input::-webkit-outer-spin-button,
+.overlay.open .card-producto .input input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Firefox */
+.overlay.open .card-producto .input input[type="number"] {
+  -moz-appearance: textfield;
+}
+
 .overlay {
   position: fixed;
   height: 100vh;
@@ -11,6 +22,7 @@
   backface-visibility: hidden;
   z-index: 500;
 }
+
 .overlay.open {
   display: flex;
   animation: overlayAparicion 0.5s forwards;
@@ -22,6 +34,44 @@
 .overlay.open .card-producto {
   animation: card-producto-over 2s forwards;
 }
+.overlay.open .card-producto .input {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: nowrap;
+  margin: 0.5em auto;
+}
+.overlay.open .card-producto .input input[type="number"] {
+  width: 4em;
+  text-align: end;
+}
+.overlay.open .card-producto .input .boton-input {
+  border: none;
+  background: #cf973cb7;
+  color: white;
+  padding: 0.4em;
+  border-radius: 50%;
+  margin: 0px 5px;
+}
+.overlay.open .card-producto .radios {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+}
+.overlay.open .card-producto .radios div {
+  padding: 0.3em;
+  margin: 0.2em;
+}
+.overlay.open .card-producto .radios div input[type="radio"] {
+  margin: 0px 0.2em;
+}
+.overlay.open .card-producto .radios div label {
+  padding: 0.3em;
+  border-radius: 0.2em;
+  user-select: none;
+}
+
 .overlay .card-producto .imagen-producto {
   width: 300px;
   transform: translateY(-100vh);

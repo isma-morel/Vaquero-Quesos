@@ -146,7 +146,7 @@ const Pedidos = () => {
 
       setPedidos(pedidoProcesado);
     } catch (err) {
-      toast.error("ha ocurrido un herror");
+      toast.error("ha ocurrido un error");
       console.log(err.message);
     }
   };
@@ -183,7 +183,7 @@ const Pedidos = () => {
   };
   const handleChangeFiltro = (e) => {
     const resultado = filtrar(e.target.value, pedidos);
-    if (!(resultado && resultado.length > 0)) return;
+    if (!resultado) return;
     setPedidosFiltrados(resultado);
   };
   const handleChangeCantidad = (index, indexProd) => (e) => {
@@ -259,7 +259,7 @@ const Pedidos = () => {
                           <span className="titulo">{Presentacion}</span>
                         </div>
                       </td>
-                      <td>{`${Cantidad}${Medida || ""}`}</td>
+                      <td>{`${Cantidad} ${Medida || ""}`}</td>
                       <td className="cantidad-preparar">
                         <input
                           value={CantidadPreparar}

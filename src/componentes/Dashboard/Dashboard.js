@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import { SlideMenu, Pedidos, AprepararGuardar, Facturar } from "../index";
-import { Route, Switch, useHistory } from "react-router-dom";
-
+import { Route, Switch, useHistory, Link } from "react-router-dom";
+import "./Dashboard.css";
 const Dashboard = () => {
   const { push } = useHistory();
   useEffect(() => {
@@ -49,6 +49,27 @@ const Dashboard = () => {
         </Route>
         <Route path="/Dashboard/facturar">
           <Facturar />
+        </Route>
+        <Route path="/Dashboard">
+          <div className="dashboard">
+            <div className="grid">
+              <div></div>
+              <Link to="/Dashboard/pedidos">
+                <i className="fas fa-list-ul"></i>
+              </Link>
+              <Link to="/Dashboard/preparacion">
+                <i className="fas fa-receipt"></i>
+              </Link>
+              <div></div>
+              <div></div>
+              <Link to="/Dashboard/facturacion">
+                <i className="fas fa-file-invoice-dollar"></i>
+              </Link>
+              <Link to="/Logout">
+                <i className="fas fa-sign-out-alt"></i>
+              </Link>
+            </div>
+          </div>
         </Route>
       </Switch>
     </div>

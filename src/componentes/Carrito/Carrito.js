@@ -8,6 +8,7 @@ import "./Carrito.css";
 const Carrito = () => {
   const history = useHistory();
   const [isOpenCarritoModal, handleCarritoModal] = useModal();
+  const [isOpenConfirmacionModal, handleConfirmacionModal] = useModal();
   const [productoEditable, setProductoEditable] = useState(null);
   const [productos, setProductos] = useState([]);
   const [user, setUser] = useState();
@@ -17,17 +18,17 @@ const Carrito = () => {
     setUser(usuario);
     setProductos(carrito);
   }, []);
+  const handleConfirmacion = (e) => {
+    handleConfirmacionModal();
+  };
   const handleConfirmar = async (e) => {
-    const confirmacion = window.confirm(
-      "esta seguro que desea enviar el pedido?"
-    );
+    handleConfirmacionModal();
     let pedido = {
       Numero: 0,
       IdCliente: user.IdCliente,
       Observacion: "",
       Productos: [],
     };
-    if (!confirmacion) return;
 
     productos.map((producto) => {
       const { Medidas, cantidad, medida, IdProducto } = producto;
@@ -89,6 +90,13 @@ const Carrito = () => {
         ProductoIndex={productoEditable}
         setProductos={setProductos}
       />
+      <div className="modalConfirmar">
+        <ModalConfirmar
+          isOpen={isOpenConfirmacionModal}
+          onClick={handleConfirmar}
+          Close={handleConfirmacionModal}
+        />
+      </div>
 
       {productos.length > 0 ? (
         <table className="tabla-pedidos">
@@ -126,11 +134,6 @@ const Carrito = () => {
         </table>
       ) : null}
       <div className="contenedor-botones">
-        {productos.length ? (
-          <button onClick={handleConfirmar} className="btn btn-secondary">
-            Confirmar
-          </button>
-        ) : null}
         <button
           onClick={() => {
             history.push("/Lista");
@@ -138,10 +141,31 @@ const Carrito = () => {
           className="btn">
           Volver a la Lista
         </button>
+        {productos.length ? (
+          <button onClick={handleConfirmacion} className="btn btn-secondary">
+            Confirmar
+          </button>
+        ) : null}
       </div>
     </div>
   ) : (
     <Redirect to="/" />
+  );
+};
+
+const ModalConfirmar = ({ isOpen, onClick, Close }) => {
+  return (
+    <div className={`overlay ${isOpen && "open"}`}>
+      <div className="card-productos">
+        <h3>Esta a punto de confirmar el pedido, esta seguro?</h3>
+        <div className="botones">
+          <button onClick={Close}>Cancelar</button>
+          <button onClick={onClick} className="btn-confirmar">
+            Confirmar
+          </button>
+        </div>
+      </div>
+    </div>
   );
 };
 

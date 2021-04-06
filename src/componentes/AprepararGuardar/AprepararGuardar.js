@@ -165,7 +165,7 @@ function AprepararGuardar() {
 
   const handleChangeFiltro = (e) => {
     const resultado = Filtrar(e.target.value, pedidos);
-    if (!(resultado && resultado.length > 0)) return;
+    if (!resultado) return;
     setPedidosFiltrados(resultado);
   };
 
@@ -220,7 +220,7 @@ function AprepararGuardar() {
                   <tbody>
                     {Productos?.map(
                       (
-                        { Codigo, Presentacion, Cantidad, Medida },
+                        { Codigo, Presentacion, Cantidad, Medida, Pesaje },
                         indexProd
                       ) => (
                         <tr key={indexProd}>
@@ -259,11 +259,12 @@ const ModoPreparar = ({ pedido, salir, onGuardar }) => {
     setProductoApesar(productoApesar);
   };
   const handleGuardarPesaje = (pesaje) => (e) => {
-    const { producto, PesoBruto, Taras } = pesaje;
+    const { producto, PesoBruto, Taras, PesoPorPieza } = pesaje;
     let ProductoPesado = pedidoApreparar.Productos;
     ProductoPesado[producto.index].Pesaje = {
       PesoBruto,
       Taras,
+      PesoPorPieza,
     };
     ProductoPesado[producto.index].CantidadAnterior =
       ProductoPesado[producto.index].Cantidad;
@@ -297,14 +298,14 @@ const ModoPreparar = ({ pedido, salir, onGuardar }) => {
         </div>
         <div className="botones">
           <button
+            onClick={salir}
+            className="fas fa-window-close btn btn-red"></button>
+          <button
             disabled={pedidoApreparar.Productos.some(({ Pesaje }) => !Pesaje)}
             onClick={onGuardar(pedidoApreparar)}
             className="btn">
             Guardar
           </button>
-          <button
-            onClick={salir}
-            className="fas fa-window-close btn btn-red"></button>
         </div>
       </div>
       <table className="tabla tabla-pedidos tabla-preparar">
@@ -313,6 +314,8 @@ const ModoPreparar = ({ pedido, salir, onGuardar }) => {
             <th>CODIGO</th>
             <th>PRESENTACION</th>
             <th>CANTIDAD</th>
+            <th>PESO</th>
+            <th>PESO POR PIEZA</th>
           </tr>
         </thead>
         <tbody>
@@ -340,6 +343,8 @@ const ModoPreparar = ({ pedido, salir, onGuardar }) => {
                   )}
                 </td>
                 <td>{`${Cantidad} ${Medida}`}</td>
+                <td>{`${Pesaje?.PesoBruto || 0}`}</td>
+                <td>{`${Pesaje?.PesoPorPieza || 0}`}</td>
               </tr>
             )
           )}
@@ -532,14 +537,14 @@ const ModoPesar = ({ producto, onGuardar, onCancelar }) => {
             />
           </div>
           <div className="botones-form">
+            <button onClick={onCancelar} className="boton-form boton-cancelar">
+              Cancelar
+            </button>
             <button
               disabled={!(pesaje.PesoPorPieza > 0)}
               onClick={onGuardar(pesaje)}
               className="boton-form">
               Guardar
-            </button>
-            <button onClick={onCancelar} className="boton-form boton-cancelar">
-              Cancelar
             </button>
           </div>
         </div>
