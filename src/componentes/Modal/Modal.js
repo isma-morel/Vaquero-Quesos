@@ -41,7 +41,6 @@ const Modal = ({ isOpen, onClose, producto }) => {
   };
   const handleClick = (e) => {
     const { name } = e.target;
-    console.log(e.target);
     if (name === "plus") {
       setInputs({
         ...inputs,

@@ -63,9 +63,6 @@ const BasePage = ({ children, titulo, usuario }) => {
   return (
     <>
       <div className="botonesNav">
-        <Link to="/Carrito">
-          <i className="fas fa-shopping-cart"></i>
-        </Link>
         <span>Cliente: {usuario?.Nombre}</span>
         <Link to="/Logout">
           <i className="fas fa-sign-out-alt"></i>

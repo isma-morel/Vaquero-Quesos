@@ -1,7 +1,7 @@
 .tabla {
   width: 80%;
   border-collapse: collapse;
-  margin: 1rem auto;
+  margin: 1rem auto 3.5em auto;
 }
 
 .tabla thead {
@@ -72,6 +72,33 @@
   border-top: 5px solid #cf963c;
 }
 
+.visor-carrito {
+  position: fixed;
+  bottom: 1em;
+  background: #cf963c;
+  padding: 0.5em 2em;
+  border-radius: 0.2em;
+  transform: translateY(5em);
+  animation: aparecer 0.5s forwards;
+}
+.visor-carrito a,
+.visor-carrito a:hover,
+.visor-carrito a:visited {
+  text-decoration: none;
+  color: white;
+}
+.visor-carrito a {
+  display: inline-block;
+  width: 100%;
+  height: 100%;
+}
+.visor-carrito span:nth-child(1) {
+  font-weight: 600;
+  margin-right: 1.1em;
+}
+.visor-carrito span:nth-child(2) {
+  font-size: 0.9em;
+}
 /* 
 *
 *   Media querys.
@@ -112,5 +139,14 @@
   .tabla tbody tr td .codigo {
     text-align: left;
     padding: 0px 1em;
+  }
+}
+
+@keyframes aparecer {
+  from {
+    transform: translateY(5em);
+  }
+  to {
+    transform: translateY(0);
   }
 }

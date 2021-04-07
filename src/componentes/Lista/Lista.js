@@ -4,18 +4,31 @@ import { Modal } from "../../componentes";
 import { Redirect, useHistory } from "react-router";
 import { useEffect, useState } from "react";
 import { BASE_URL } from "../../BaseURL.json";
+import { Link } from "react-router-dom";
 
 function Lista() {
   const [isOpenModal, handleModal] = useModal();
   const [productoAagregar, SetProductoAagregar] = useState();
   const [productosState, setProductosState] = useState();
+  const [cantidadProductos, setCantidadProductos] = useState(0);
   const history = useHistory();
+
+  const obtenerCarrito = () => {
+    const carrito = JSON.parse(localStorage.getItem("carrito")) || [];
+    setCantidadProductos(carrito.length);
+  };
+  const handleCloseModal = (e) => {
+    obtenerCarrito();
+    handleModal();
+  };
+
   useEffect(() => {
     const auth = JSON.parse(localStorage.getItem("auth"));
     if (auth.TipoCliente === "S") {
       history.push("/Dashboard");
       return;
     }
+
     const pedirLista = async () => {
       if (!auth.IdCliente) localStorage.removeItem("auth");
       try {
@@ -37,6 +50,7 @@ function Lista() {
     };
 
     pedirLista();
+    obtenerCarrito();
   }, []);
   const handleClick = (producto) => (e) => {
     SetProductoAagregar(producto);
@@ -47,10 +61,12 @@ function Lista() {
       {productoAagregar ? (
         <Modal
           isOpen={isOpenModal}
-          onClose={handleModal}
+          onClose={handleCloseModal}
           producto={productoAagregar}
         />
       ) : null}
+      {cantidadProductos ? <VisorCarrito cantidad={cantidadProductos} /> : null}
+
       {productosState ? (
         <table className="tabla">
           <thead>
@@ -92,5 +108,16 @@ function Lista() {
     <Redirect to="/" />
   );
 }
+
+const VisorCarrito = ({ cantidad }) => {
+  return (
+    <div className="visor-carrito">
+      <Link className="link-visor-carrito" to="/Carrito">
+        <span>Tu Pedido</span>
+        <span>{`${cantidad} item`}</span>
+      </Link>
+    </div>
+  );
+};
 
 export default Lista;
