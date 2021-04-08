@@ -84,7 +84,10 @@ const ModalCarrito = ({ isOpen, onClose, ProductoIndex, setProductos }) => {
           <button className="boton" onClick={onClose}>
             Volver a la lista
           </button>
-          <button onClick={handleConfirmar} className="boton btn-secondary">
+          <button
+            onClick={handleConfirmar}
+            disabled={!producto.cantidad}
+            className="boton btn-secondary">
             Modificar
           </button>
         </div>

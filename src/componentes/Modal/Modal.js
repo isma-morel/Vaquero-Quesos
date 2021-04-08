@@ -125,7 +125,8 @@ const Modal = ({ isOpen, onClose, producto }) => {
           </button>
           <button
             onClick={handleGuardarProducto}
-            className="boton btn-secondary">
+            className="boton btn-secondary"
+            disabled={!inputs.cantidad}>
             Agregar al carrito
           </button>
         </div>
