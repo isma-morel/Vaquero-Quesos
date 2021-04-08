@@ -169,6 +169,7 @@ const Pedidos = () => {
         throw new Error(result.statusText);
       }
       setPedidos([]);
+      setIsLoading(true);
       PedirPedidos();
       toast.success(`pedido N° ${pedidos[index].Pedido} confirmado con exito`);
     } catch (err) {
