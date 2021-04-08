@@ -130,7 +130,7 @@ const EstadoPedidos = () => {
             onChange={handleChangeFiltro}
             placeholder="Filtro"
           />
-          <span className="titulo">Estado</span>
+          <span className="titulo">Estado de Pedidos</span>
         </div>
         <hr />
       </div>
