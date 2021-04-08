@@ -7,7 +7,6 @@ const ModalCarrito = ({ isOpen, onClose, ProductoIndex, setProductos }) => {
     /* efecto encargado de obtener el producto que se va a editar. */
     const carrito = JSON.parse(localStorage.getItem("carrito")) || [];
     const productoEditado = carrito[ProductoIndex];
-
     setProducto(productoEditado);
   }, [ProductoIndex, isOpen]);
 
@@ -72,8 +71,7 @@ const ModalCarrito = ({ isOpen, onClose, ProductoIndex, setProductos }) => {
                   type="radio"
                   name="medida"
                   id={medida.DescripcionUM}
-                  defaultChecked={!index}
-                  key={medida.IdMedida}
+                  checked={medida.IdMedida === producto.medida}
                   value={medida.IdMedida}
                 />
                 <label htmlFor={medida.DescripcionUM}>

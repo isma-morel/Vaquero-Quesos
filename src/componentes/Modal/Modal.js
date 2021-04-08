@@ -109,7 +109,7 @@ const Modal = ({ isOpen, onClose, producto }) => {
                   type="radio"
                   name="medida"
                   id={medida.DescripcionUM}
-                  defaultChecked={!index}
+                  checked={inputs.medida === medida.IdMedida}
                   key={medida.IdMedida}
                   value={medida.IdMedida}
                 />
