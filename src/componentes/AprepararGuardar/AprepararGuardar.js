@@ -93,6 +93,7 @@ function AprepararGuardar() {
   const [pedidosFiltrados, setPedidosFiltrados] = useState([]);
   const [modoPreparar, setModoPreparar] = useState(false);
   const [pedidoSeleccionado, setPedidoSeleccionado] = useState({});
+  const [isLoading, setIsLoading] = useState(false);
   const { push } = useHistory();
   const pedirPedidosAPreparar = async () => {
     let pedidosProcesados = [];
@@ -102,6 +103,7 @@ function AprepararGuardar() {
       const result = await fetch(
         `${BASE_URL}iPedidosSP/PedidosParaPreparar?pUsuario=${usuario}&pToken=${Token}`
       );
+      setIsLoading(false);
       if (result.status !== 200) {
         if (result.status === 401) {
           localStorage.removeItem("auth");
@@ -173,6 +175,7 @@ function AprepararGuardar() {
     setPedidosFiltrados(pedidos);
   }, [pedidos]);
   useEffect(() => {
+    setIsLoading(true);
     pedirPedidosAPreparar();
   }, []);
 
@@ -190,7 +193,7 @@ function AprepararGuardar() {
         </div>
         <hr />
       </div>
-      {pedidos.length > 0 ? (
+      {!isLoading ? (
         !modoPreparar ? (
           pedidosFiltrados.map(
             ({ Cliente, Fecha, Productos, Pedido }, index) => (

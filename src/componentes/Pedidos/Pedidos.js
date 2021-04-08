@@ -115,6 +115,7 @@ const obtenerPedidosAConfirmar = (pedidos) => {
 const Pedidos = () => {
   const [pedidos, setPedidos] = useState([]);
   const [pedidosFiltrados, setPedidosFiltrados] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
   const { push } = useHistory();
 
   const PedirPedidos = async () => {
@@ -125,7 +126,7 @@ const Pedidos = () => {
       const result = await fetch(
         `${BASE_URL}iPedidosSP/PedidosPendientes?pUsuario=${usuario}&pToken=${Token}`
       );
-
+      setIsLoading(false);
       if (result.status !== 200) {
         if (result.status === 401) {
           localStorage.removeItem("auth");
@@ -199,6 +200,7 @@ const Pedidos = () => {
   }, [pedidos]);
   /* Efecto encargado de realizar la peticion de la lista  */
   useEffect(() => {
+    setIsLoading(true);
     PedirPedidos();
   }, []);
 
@@ -221,7 +223,7 @@ const Pedidos = () => {
         <hr />
       </div>
 
-      {pedidos.length > 0 ? (
+      {!isLoading ? (
         pedidosFiltrados.map(({ Cliente, Pedido, Productos }, index) => (
           <div key={index} className="contenedor-tabla">
             <div className="contenedor-cliente">

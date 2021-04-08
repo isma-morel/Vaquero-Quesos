@@ -27,7 +27,7 @@ const ProcesarPedidosAFacturar = (pedidosBruto) => {
       let prodTemp = {};
       const index = acum.findIndex((pedido) => pedido.Pedido === Pedido);
 
-      if (!acum.length || index < 0) {
+      if (index < 0) {
         prodTemp = {
           Pedido,
           Cliente,
