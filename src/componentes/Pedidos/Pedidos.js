@@ -95,18 +95,17 @@ const filtrar = (value, pedidos) => {
     recibe el arreglo de pedidos y devuelve todos aquellos pedios que ya esten preparados
     para la confirmacion.
 */
-const obtenerPedidosAConfirmar = (pedidos) => {
+const ProcesarPedidoAConfirmar = ({ Productos }) => {
   let Preparados = [];
-  pedidos.map(({ Productos }) => {
-    Productos.map(({ CantidadPreparar, idPedidosProd, IdMedidaPrinc }) => {
-      if (CantidadPreparar > 0) {
-        Preparados.push({
-          idPedidosProd,
-          IdMedidaPrinc,
-          CantidadPrinc: CantidadPreparar,
-        });
-      }
-    });
+
+  Productos.map(({ CantidadPreparar, idPedidosProd, IdMedidaPrinc }) => {
+    if (CantidadPreparar > 0) {
+      Preparados.push({
+        idPedidosProd,
+        IdMedidaPrinc,
+        CantidadPrinc: CantidadPreparar,
+      });
+    }
   });
 
   return Preparados;
@@ -146,9 +145,9 @@ const Pedidos = () => {
     }
   };
 
-  const handleConfirmar = async (e) => {
+  const handleConfirmar = (index) => async (e) => {
     const { usuario, Token } = JSON.parse(localStorage.getItem("auth")) || {};
-    let Preparados = obtenerPedidosAConfirmar(pedidos);
+    let Preparados = ProcesarPedidoAConfirmar(pedidos[index]);
     if (Preparados.length === 0) return;
     let PedidosPreparados = { PedidosAPrepararTodos: Preparados };
     try {
@@ -171,7 +170,7 @@ const Pedidos = () => {
       }
       setPedidos([]);
       PedirPedidos();
-      toast.success("pedidos confirmados con exito");
+      toast.success(`pedido N° ${pedidos[index].Pedido} confirmado con exito`);
     } catch (err) {
       toast.error("ha ocurrido un error.");
       console.log(err);
@@ -214,10 +213,6 @@ const Pedidos = () => {
             placeholder="Filtro"
             onChange={handleChangeFiltro}
           />
-
-          <button onClick={handleConfirmar} className="btn">
-            Confirmar preparacion
-          </button>
         </div>
         <span className="titulo">Pedidos</span>
         <hr />
@@ -230,6 +225,9 @@ const Pedidos = () => {
               <span>
                 Cliente: {Cliente} - Pedido: {Pedido}
               </span>
+              <button className="btn" onClick={handleConfirmar(index)}>
+                Confirmar pedido
+              </button>
             </div>
             <table className="tabla tabla-pedidos">
               <thead>
