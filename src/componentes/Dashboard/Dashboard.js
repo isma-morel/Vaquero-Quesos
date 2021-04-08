@@ -1,5 +1,11 @@
 import React, { useEffect } from "react";
-import { SlideMenu, Pedidos, AprepararGuardar, Facturar } from "../index";
+import {
+  SlideMenu,
+  Pedidos,
+  AprepararGuardar,
+  Facturar,
+  EstadoPedidos,
+} from "../index";
 import { Route, Switch, useHistory, Link } from "react-router-dom";
 import "./Dashboard.css";
 const Dashboard = () => {
@@ -34,6 +40,11 @@ const Dashboard = () => {
             texto: "Facturar",
           },
           {
+            to: "/Dashboard/estado",
+            icono: <i className="fas fa-calendar-check"></i>,
+            texto: "Estado",
+          },
+          {
             to: "/Logout",
             icono: <i className="fas fa-sign-out-alt"></i>,
             texto: "salir",
@@ -50,6 +61,9 @@ const Dashboard = () => {
         <Route path="/Dashboard/facturar">
           <Facturar />
         </Route>
+        <Route path="/Dashboard/estado">
+          <EstadoPedidos />
+        </Route>
         <Route path="/Dashboard">
           <div className="dashboard">
             <div className="grid">
@@ -65,6 +79,11 @@ const Dashboard = () => {
               <Link to="/Dashboard/facturar">
                 <i className="fas fa-file-invoice-dollar"></i>
               </Link>
+              <Link to="/Dashboard/estado">
+                <i className="fas fa-calendar-check"></i>
+              </Link>
+              <div></div>
+              <div></div>
               <Link to="/Logout">
                 <i className="fas fa-sign-out-alt"></i>
               </Link>

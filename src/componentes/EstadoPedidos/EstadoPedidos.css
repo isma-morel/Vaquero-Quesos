@@ -1,0 +1,65 @@
+.estado {
+  width: 100%;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-top: 2em;
+  transition: all 1s ease;
+  font-size: clamp(0.8em, 2vw, 1em);
+}
+.estado .controles {
+  top: 0;
+  position: fixed;
+  width: 80%;
+  z-index: 1;
+  background: #fff;
+}
+.estado .controles input[type="text"] {
+  max-width: 50%;
+  padding: 0.5em;
+  font-weight: 500;
+  margin-top: 1em;
+}
+.estado .contenedor-cliente {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  height: fit-content;
+  padding: 0.5em 0;
+}
+.estado .contenedor-tabla .contenedor-cliente .datos {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  flex-direction: column;
+}
+.estado .tabla.tabla-pedidos tbody tr td.peso {
+  white-space: nowrap;
+}
+.estado .tabla.tabla-pedidos tbody tr td:nth-child(3),
+.estado .tabla.tabla-pedidos tbody tr td:nth-child(4),
+.estado .tabla.tabla-pedidos tbody tr td:nth-child(5) {
+  text-align: right;
+}
+@media (max-width: 700px) {
+  .estado {
+    padding-top: 0;
+  }
+  .estado .controles {
+    position: inherit;
+    margin-left: auto;
+  }
+  .estado .controles .titulo {
+    display: inline-block;
+    margin-top: 0.5em;
+  }
+  .estado .controles div {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: flex-start;
+  }
+}
