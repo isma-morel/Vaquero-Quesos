@@ -81,6 +81,7 @@
 }
 .tabla-pedidos thead th {
   min-width: 10%;
+  padding: 0.5em 0.8em;
 }
 
 .tabla-pedidos tbody td.producto {
@@ -138,8 +139,15 @@
   .pedidos {
     padding-top: 0;
   }
+  .tabla.tabla-pedidos {
+    font-size: 0.7em;
+  }
   .contenedor-tabla .contenedor-cliente {
     width: 100%;
+  }
+  .tabla.tabla-pedidos thead {
+    display: table-header-group;
+    font-size: 0.7em;
   }
   .contenedor-tabla {
     overflow-x: auto;
@@ -160,6 +168,9 @@
   .tabla-pedidos tbody td.cantidad-preparar input[type="number"] {
     margin: 1em auto;
     padding: 2px;
+  }
+  .pedidos .contenedor-tabla .contenedor-cliente {
+    padding: 2em 0;
   }
 }
 @keyframes spin {

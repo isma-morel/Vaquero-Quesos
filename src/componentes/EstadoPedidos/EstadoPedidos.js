@@ -148,8 +148,8 @@ const EstadoPedidos = () => {
                 <tr>
                   <th>CODIGO</th>
                   <th>PRESENTACION</th>
-                  <th>CANTIDAD PEDIDA</th>
-                  <th>CANTIDAD A PREPARAR</th>
+                  <th>CANT. PEDIDA</th>
+                  <th>CANT. A PREPARAR</th>
                   <th>CANT. LISTA</th>
                   <th>MEDIDA</th>
                   <th>ESTADO</th>
