@@ -145,6 +145,7 @@ const Pedidos = () => {
     }
   };
 
+  /* Manejadores de eventos */
   const handleConfirmar = (index) => async (e) => {
     const { usuario, Token } = JSON.parse(localStorage.getItem("auth")) || {};
     let Preparados = ProcesarPedidoAConfirmar(pedidos[index]);

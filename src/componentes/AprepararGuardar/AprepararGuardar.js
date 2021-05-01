@@ -1,4 +1,5 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
+import ModoPreparar from "./ModoPreparar";
 import { useHistory } from "react-router";
 import { toast } from "react-toastify";
 import { BASE_URL } from "../../BaseURL.json";
@@ -7,12 +8,18 @@ import "./AprepararGuardar.css";
 const ProcesarPedido = (pedidos) => {
   let pedidosProcesados = [];
   if (Object.keys(pedidos).length === 0) return [];
+
+  /*
+    Agrupo el resumen y el detalle formando un objeto con los campos necesarios para armar 
+    la tabla
+  */
   pedidosProcesados = pedidos.Resumido.reduce((acum, actual) => {
     let resultado = {
       ...actual,
       Fecha: new Date(actual.Fecha).toLocaleDateString(),
       Productos: [],
     };
+    //recorro el detalle para obtener todos los productos de un pedido
     pedidos.Detallado.forEach(
       ({
         IdPedido,
@@ -40,6 +47,7 @@ const ProcesarPedido = (pedidos) => {
   return pedidosProcesados;
 };
 
+/* Metodos de filtrado */
 const FiltrarCliente = (cliente, pedidos) => {
   return pedidos.filter((pedido) => pedido.Cliente.includes(cliente));
 };
@@ -56,19 +64,15 @@ const Filtrar = (value, pedidos) => {
   }
   return resultado;
 };
+/*  */
 
-const calcularTara = (tara) => {
-  let tarasTemp = tara;
-  tarasTemp.TaraTotal = 0;
-  tarasTemp.Taras.forEach((tara) => {
-    tarasTemp.TaraTotal += tara.subTotal;
-  });
-  return tarasTemp;
-};
+/* Proceso el pedido que voy a guardar para enviarlo a la api */
 const ProcesarParaGuardar = (pedido) => {
   let PedidoProcesado = {};
+
   PedidoProcesado.Numero = pedido.Pedido;
   PedidoProcesado.Fecha = new Date(Date.now()).toISOString();
+
   PedidoProcesado.Productos = pedido.Productos.map(
     ({ idPedidosProd, IdMedidaPrinc, Cantidad, Pesaje }) => ({
       IdPreparado: 0,
@@ -89,21 +93,27 @@ const ProcesarParaGuardar = (pedido) => {
 };
 
 function AprepararGuardar() {
+  /* Variables de estado */
   const [pedidos, setPedidos] = useState([]);
   const [pedidosFiltrados, setPedidosFiltrados] = useState([]);
   const [modoPreparar, setModoPreparar] = useState(false);
   const [pedidoSeleccionado, setPedidoSeleccionado] = useState({});
   const [isLoading, setIsLoading] = useState(false);
   const { push } = useHistory();
+
   const pedirPedidosAPreparar = async () => {
     let pedidosProcesados = [];
+
     const { usuario, Token } = JSON.parse(localStorage.getItem("auth")) || {};
     if (!Token) return;
+
     try {
       const result = await fetch(
         `${BASE_URL}iPedidosSP/PedidosParaPreparar?pUsuario=${usuario}&pToken=${Token}`
       );
       setIsLoading(false);
+
+      /* si la api devuelve un estado difetente a ok compruebo que el error no sea de auth */
       if (result.status !== 200) {
         if (result.status === 401) {
           localStorage.removeItem("auth");
@@ -122,6 +132,8 @@ function AprepararGuardar() {
       console.log(err);
     }
   };
+
+  /* Manejadores de Eventos  */
   const handleGuardarPreparacion = (pedido) => async (e) => {
     const pedidoProcesado = ProcesarParaGuardar(pedido);
     const auth = JSON.parse(localStorage.getItem("auth")) || {};
@@ -153,6 +165,7 @@ function AprepararGuardar() {
       console.log(err);
     }
   };
+
   const handlePreparar = (producto) => (e) => {
     setPedidoSeleccionado(producto);
     setModoPreparar(true);
@@ -171,6 +184,7 @@ function AprepararGuardar() {
     setPedidosFiltrados(resultado);
   };
 
+  /* Efectos */
   useEffect(() => {
     setPedidosFiltrados(pedidos);
   }, [pedidos]);
@@ -254,336 +268,5 @@ function AprepararGuardar() {
     </div>
   );
 }
-
-const ModoPreparar = ({ pedido, salir, onGuardar }) => {
-  const [pedidoApreparar, setPedidoApreparar] = useState(pedido);
-  const [productoApesar, setProductoApesar] = useState();
-  const handlePesar = (productoApesar) => (e) => {
-    setProductoApesar(productoApesar);
-  };
-  const handleGuardarPesaje = (pesaje) => (e) => {
-    const { producto, PesoBruto, Taras, PesoPorPieza, PesoNeto } = pesaje;
-    let ProductoPesado = pedidoApreparar.Productos;
-    ProductoPesado[producto.index].Pesaje = {
-      PesoBruto,
-      Taras,
-      PesoPorPieza,
-      PesoNeto,
-    };
-    ProductoPesado[producto.index].CantidadAnterior =
-      ProductoPesado[producto.index].Cantidad;
-    ProductoPesado[producto.index].Cantidad = producto.Cantidad;
-
-    setPedidoApreparar({ ...pedidoApreparar, Productos: ProductoPesado });
-    setProductoApesar(undefined);
-  };
-
-  const handleEliminarPesaje = (index) => (e) => {
-    let ProductoPesado = pedidoApreparar.Productos;
-    ProductoPesado[index].Pesaje = null;
-    ProductoPesado[index].Cantidad = ProductoPesado[index].CantidadAnterior;
-    setPedidoApreparar({
-      ...pedidoApreparar,
-      Productos: ProductoPesado,
-    });
-  };
-  const handleCancelarPesaje = (e) => {
-    setProductoApesar(null);
-  };
-  return !productoApesar ? (
-    <div className="contenedor-tabla">
-      <div className="contenedor-cliente">
-        <div className="datos">
-          <span>Cliente: {pedidoApreparar.Cliente}</span>
-
-          <span>Pedido: {pedidoApreparar.Pedido}</span>
-
-          <span>Fecha: {pedidoApreparar.Fecha}</span>
-        </div>
-        <div className="botones">
-          <button
-            onClick={salir}
-            className="fas fa-window-close btn btn-red"></button>
-          <button
-            disabled={pedidoApreparar.Productos.some(({ Pesaje }) => !Pesaje)}
-            onClick={onGuardar(pedidoApreparar)}
-            className="btn">
-            Guardar
-          </button>
-        </div>
-      </div>
-      <table className="tabla tabla-pedidos tabla-preparar">
-        <thead>
-          <tr>
-            <th>CODIGO</th>
-            <th>PRESENTACION</th>
-            <th>CANTIDAD</th>
-            <th>PESO</th>
-            <th>PESO POR PIEZA</th>
-          </tr>
-        </thead>
-        <tbody>
-          {pedidoApreparar.Productos?.map(
-            ({ Codigo, Presentacion, Cantidad, Medida, Pesaje }, indexProd) => (
-              <tr key={indexProd}>
-                <td>{Codigo}</td>
-                <td>
-                  <span className="titulo">{Presentacion}</span>
-                  {!Pesaje ? (
-                    <button
-                      onClick={handlePesar({
-                        ...pedidoApreparar.Productos[indexProd],
-                        index: indexProd,
-                      })}
-                      className="btn">
-                      Pesar
-                    </button>
-                  ) : (
-                    <button
-                      className="btn"
-                      onClick={handleEliminarPesaje(indexProd)}>
-                      Cancelar
-                    </button>
-                  )}
-                </td>
-                <td>{`${Cantidad} ${Medida}`}</td>
-                <td>{`${Pesaje?.PesoNeto || 0}`}</td>
-                <td>{`${Pesaje?.PesoPorPieza || 0}`}</td>
-              </tr>
-            )
-          )}
-        </tbody>
-      </table>
-      <hr />
-    </div>
-  ) : (
-    <ModoPesar
-      producto={productoApesar}
-      onGuardar={handleGuardarPesaje}
-      onCancelar={handleCancelarPesaje}
-    />
-  );
-};
-
-const ModoPesar = ({ producto, onGuardar, onCancelar }) => {
-  const [pesaje, setPesaje] = useState({
-    TaraTotal: 0,
-    PesoNeto: 0,
-    PesoPorPieza: 0,
-    PesoBruto: 0,
-    Taras: null,
-    producto: producto,
-  });
-  const [editPiezas, setEditPiezas] = useState(false);
-  const handleChangeBruto = (e) => {
-    const { value } = e.target;
-
-    calcular({ ...pesaje, PesoBruto: parseFloat(value) });
-  };
-  const handlePiezasClick = (e) => {
-    if (!pesaje.producto.Cantidad) return;
-    setEditPiezas(!editPiezas);
-  };
-  const handleChangePiezas = (e) => {
-    const { value } = e.target;
-
-    let tempProd = pesaje.producto;
-    tempProd.Cantidad = parseFloat(value);
-    calcular({ ...pesaje, producto: tempProd });
-  };
-  const handleChangePeso = (indice) => (e) => {
-    const esNumero = /^[0-9]+([.])?([0-9]+)?$/;
-    let taraTemp = pesaje.Taras;
-
-    if (!e.target.innerText.trim().match(esNumero)) {
-      e.target.innerHTML = "</br>";
-      taraTemp[indice].Peso = 0;
-      taraTemp[indice].subTotal = 0;
-      calcular({ ...pesaje, Taras: taraTemp });
-      return;
-    }
-    taraTemp[indice].subTotal =
-      parseFloat(e.target.innerText) * parseFloat(taraTemp[indice].cantidad);
-    taraTemp[indice].Peso = parseFloat(e.target.innerText);
-
-    calcular({
-      ...pesaje,
-      Taras: taraTemp,
-    });
-  };
-  const handleChange = (indice) => (e) => {
-    const esNumero = /^[0-9]+([.])?([0-9]+)?$/;
-    let taraTemp = pesaje.Taras;
-
-    if (!e.target.innerText.trim().match(esNumero)) {
-      e.target.innerHTML = "</br>";
-      taraTemp[indice].subTotal = 0;
-      taraTemp[indice].cantidad = 0;
-      calcular({ ...pesaje, Taras: taraTemp });
-      return;
-    }
-    taraTemp[indice].subTotal =
-      parseFloat(e.target.innerText) * parseFloat(taraTemp[indice].Peso);
-    taraTemp[indice].cantidad = parseFloat(e.target.innerText);
-
-    calcular({
-      ...pesaje,
-      Taras: taraTemp,
-    });
-  };
-  const pedirTaras = async () => {
-    const user = JSON.parse(localStorage.getItem("auth")) || {};
-    let tarasTemp = [];
-    try {
-      const result = await fetch(
-        `${BASE_URL}iElemTara/ElementosTaraDatos?pUsuario=${user.usuario}&pToken=${user.Token}`
-      );
-      if (result.status !== 200) {
-        throw new Error(result.text);
-      }
-      const json = await result.json();
-      json.forEach((tara) =>
-        tarasTemp.push({
-          ...tara,
-          subTotal: 0,
-          cantidad: 0,
-          PesoEditable: !tara.Peso,
-        })
-      );
-      setPesaje({ ...pesaje, Taras: tarasTemp });
-    } catch (err) {
-      console.log(err);
-    }
-  };
-  const calcular = (taraTemp) => {
-    let taraFinal = calcularTara(taraTemp);
-    if (taraFinal.PesoBruto !== 0) {
-      taraFinal.PesoNeto = taraFinal.PesoBruto - taraFinal.TaraTotal;
-      taraFinal.PesoPorPieza = parseFloat(
-        (taraFinal.PesoNeto / taraTemp.producto.Cantidad).toFixed(3)
-      );
-    }
-
-    setPesaje(taraFinal);
-  };
-
-  useEffect(() => {
-    pedirTaras();
-  }, []);
-
-  return (
-    <div className="contenedor-tabla">
-      <div className="contenedor-cliente">
-        <div className="datos">
-          <span>Codigo: {pesaje.producto.Codigo}</span>
-          <span>Presentacion: {pesaje.producto.Presentacion}</span>
-        </div>
-      </div>
-      <div className="form-tabla">
-        <div className="form-pesaje">
-          <div className="flex-input piezas-input">
-            <label htmlFor="piezas">Piezas Totales</label>
-            <div className="piezas-input-boton">
-              <input
-                min={0}
-                type="number"
-                name="piezas"
-                id="piezas"
-                disabled={!editPiezas}
-                value={pesaje.producto.Cantidad}
-                onChange={handleChangePiezas}
-              />
-              <button onClick={handlePiezasClick}>Cambiar</button>
-            </div>
-          </div>
-          <div className="flex-input bruto-input">
-            <label htmlFor="bruto">Peso Bruto</label>
-            <input
-              type="number"
-              name="bruto"
-              id="bruto"
-              step={0.5}
-              inputMode="decimal"
-              onChange={handleChangeBruto}
-              value={pesaje.PesoBruto}
-            />
-          </div>
-          <div className="flex-input ">
-            <div className="tara-input">
-              <label htmlFor="tara">Tara</label>
-              <input
-                type="number"
-                name="tara"
-                id="tara"
-                disabled
-                value={pesaje.TaraTotal}
-              />
-            </div>
-          </div>
-          <div className="flex-input neto-input">
-            <label htmlFor="neto">Peso Neto</label>
-            <input
-              disabled
-              type="number"
-              name="neto"
-              id="neto"
-              value={pesaje.PesoNeto}
-            />
-          </div>
-          <div className="flex-input pesoPieza-input">
-            <label htmlFor="pesoPieza">Peso por Pieza</label>
-            <input
-              disabled
-              type="number"
-              name="pesoPieza"
-              id="pesoPieza"
-              value={pesaje.PesoPorPieza}
-            />
-          </div>
-          <div className="botones-form">
-            <button onClick={onCancelar} className="boton-form boton-cancelar">
-              Cancelar
-            </button>
-            <button
-              disabled={!(pesaje.PesoPorPieza > 0)}
-              onClick={onGuardar(pesaje)}
-              className="boton-form">
-              Guardar
-            </button>
-          </div>
-        </div>
-        <div className="tara-table">
-          <table>
-            <thead>
-              <tr>
-                <th>Tipo</th>
-                <th>Cantidad</th>
-                <th>Peso</th>
-                <th>SubTotal</th>
-              </tr>
-            </thead>
-            <tbody>
-              {pesaje.Taras?.map((tara, index) => (
-                <tr key={index}>
-                  <td>{tara.Descripcion}</td>
-                  <td
-                    contentEditable
-                    inputMode="decimal"
-                    onSelect={handleChange(index)}></td>
-                  {tara.PesoEditable ? (
-                    <td onSelect={handleChangePeso(index)} contentEditable></td>
-                  ) : (
-                    <td>{tara.Peso}</td>
-                  )}
-                  <td>{tara.subTotal}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      </div>
-    </div>
-  );
-};
 
 export default AprepararGuardar;

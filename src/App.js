@@ -1,4 +1,5 @@
 import "./App.css";
+import "react-toastify/dist/ReactToastify.css";
 import {
   BrowserRouter,
   Switch,
@@ -10,9 +11,8 @@ import {
 import { Login, Carrito, Lista, Dashboard } from "./componentes";
 import { logo } from "./logo.json";
 import { useEffect, useState } from "react";
-import "react-toastify/dist/ReactToastify.css";
 import { ToastContainer } from "react-toastify";
-const url = process.env.PUBLIC_URL;
+
 function App() {
   const [usuario, setUsuario] = useState();
 

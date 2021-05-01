@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import { granVaquero } from "../../GranVaquero.json";
 import { BASE_URL } from "../../BaseURL.json";
 import "./Modal.css";
 const Modal = ({ isOpen, onClose, producto }) => {

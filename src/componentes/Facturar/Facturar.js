@@ -5,6 +5,7 @@ import { BASE_URL } from "../../BaseURL.json";
 import useModal from "../../hooks/useModal";
 import "./Facturar.css";
 
+/* Procesadores */
 const ProcesarPedidosAFacturar = (pedidosBruto) => {
   let pedidosProcesados = [];
   pedidosProcesados = pedidosBruto.reduce(
@@ -78,6 +79,7 @@ const ProcesarPedidoParaGuardar = ({ Pedido, A, B, Productos }) => {
   return pedidoProcesado;
 };
 
+/* Filtros */
 const filtrarPedidoPorId = (id, pedidos) => {
   return pedidos.filter((pedido) => pedido.Pedido.toString().startsWith(id));
 };
@@ -126,6 +128,8 @@ const Facturar = () => {
       console.log(err);
     }
   };
+
+  /* Efectos */
   useEffect(() => {
     pedirPedidosParaFacturar();
   }, []);
@@ -133,6 +137,7 @@ const Facturar = () => {
     setPedidosAFacturarFiltrados(pedidosAFacturar);
   }, [pedidosAFacturar]);
 
+  /* Manejadores de eventos */
   const handleChangeFiltro = (e) => {
     const resultado = filtrar(e.target.value, pedidosAFacturar);
     if (!resultado) return;
@@ -183,6 +188,7 @@ const Facturar = () => {
       console.log(err.message);
     }
   };
+
   return (
     <div className="contenedor-facturar">
       <ModalFactura
@@ -276,6 +282,7 @@ const Facturar = () => {
   );
 };
 
+/* Modales */
 const ModalFactura = ({ isOpen, onClose, pedido, onGuardar }) => {
   const [inputs, setInputs] = useState({ A: 0, B: 0 });
   useEffect(() => {

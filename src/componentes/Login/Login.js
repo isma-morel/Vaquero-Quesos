@@ -66,7 +66,7 @@ const Login = ({ logo, LogSucces }) => {
         <small className="cuenta">
           Si no tiene una cuenta puede comunicarse a <br />
           <span>
-            <a className="email" href="mailto:cuentasVaquero@gmail.com">
+            <a className="email" href="mailto:ventas@quesosvaquero.com">
               ventas@quesosvaquero.com
             </a>
           </span>

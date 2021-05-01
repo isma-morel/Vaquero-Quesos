@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 
 const ModalCarrito = ({ isOpen, onClose, ProductoIndex, setProductos }) => {
   const [producto, setProducto] = useState();
