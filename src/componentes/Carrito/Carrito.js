@@ -82,7 +82,7 @@ const Carrito = () => {
     setProductos(tempProductos);
     localStorage.setItem("carrito", JSON.stringify(tempProductos));
   };
-  return localStorage.getItem("auth") ? (
+  return JSON.parse(localStorage.getItem("auth"))?.TipoCliente === "C" ? (
     <div className="contenedor-pedidos">
       <ModalCarrito
         isOpen={isOpenCarritoModal}

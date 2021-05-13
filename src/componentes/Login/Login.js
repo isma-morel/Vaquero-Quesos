@@ -17,6 +17,8 @@ const Login = ({ logo, LogSucces }) => {
           history.push("/Lista");
           break;
         case "V":
+          setIsVendedor(true);
+          pedirListaClientes(auth);
           break;
         case "S":
           history.push("/Dashboard");
@@ -26,7 +28,31 @@ const Login = ({ logo, LogSucces }) => {
       }
     }
   }, []);
-  const pedirListaClientes = async () => {};
+  const pedirListaClientes = async (auth) => {
+    try {
+      const result = await fetch(
+        `${BASE_URL}iClientesSP/ClientesDelVendedor?pUsuario=${auth.usuario}&pToken=${auth.Token}&pVendedor=${auth.IdCliente}`
+      );
+      if (result.status !== 200) {
+        throw new Error(result.message);
+      }
+
+      const json = await result.json();
+
+      setClientes(
+        json.Clientes.map((cliente) => ({
+          ...cliente,
+          usuario: cliente.Usuario,
+          IdCliente: auth.IdCliente,
+          TipoCliente: "C",
+          isVendedor: true,
+          vendedor: auth,
+        }))
+      );
+    } catch (err) {
+      console.log(err);
+    }
+  };
   const handleSubmit = (e) => {
     e.preventDefault();
     const { target } = e;
@@ -50,17 +76,18 @@ const Login = ({ logo, LogSucces }) => {
           "auth",
           JSON.stringify({ ...json, usuario: target[0].value })
         );
-        LogSucces();
         switch (json.TipoCliente) {
           case "C":
             history.push("/Lista");
+            LogSucces();
             break;
           case "V":
             setIsVendedor(true);
-            pedirListaClientes();
+            pedirListaClientes({ ...json, usuario: target[0].value });
             break;
           case "S":
             history.push("/Dashboard");
+            LogSucces();
             break;
         }
       })
@@ -73,9 +100,7 @@ const Login = ({ logo, LogSucces }) => {
       <img src={logo} alt="Logo Vaquero" />
       <hr />
       {isVendedor ? (
-        <div class="container">
-          <select name="Clientes"></select>
-        </div>
+        <SelecionCliente clientes={clientes} LogSucces={LogSucces} />
       ) : (
         <form onSubmit={handleSubmit} className="container">
           <span className="error">{error}</span>
@@ -104,6 +129,37 @@ const Login = ({ logo, LogSucces }) => {
           </small>
         </form>
       )}
+    </div>
+  );
+};
+
+const SelecionCliente = ({ clientes, LogSucces }) => {
+  const history = useHistory();
+  const [clienteSeleccionado, setClienteSeleccionado] = useState(0);
+
+  const handleClick = (e) => {
+    const Cliente = clientes[clienteSeleccionado];
+    localStorage.removeItem("auth");
+    localStorage.setItem("auth", JSON.stringify({ ...Cliente }));
+    LogSucces();
+    history.push("/Lista");
+  };
+  const handleChangeSelect = (e) => {
+    const { value } = e.target;
+    setClienteSeleccionado(value);
+  };
+  return (
+    <div className="container">
+      <select value={clienteSeleccionado} onChange={handleChangeSelect}>
+        {clientes.map((cliente, i) => (
+          <option value={i} key={i}>
+            {cliente.Nombre}
+          </option>
+        ))}
+      </select>
+      <button className="button" onClick={handleClick}>
+        Seleccionar
+      </button>
     </div>
   );
 };

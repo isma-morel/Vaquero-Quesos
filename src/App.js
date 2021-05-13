@@ -29,7 +29,10 @@ function App() {
       <div className="contenedor">
         <Switch>
           <Route exact path="/Lista">
-            <BasePage usuario={usuario} titulo="MAYORISTAS - 57| 22/01/2021">
+            <BasePage
+              LogSucces={LogSucces}
+              usuario={usuario}
+              titulo="MAYORISTAS - 57| 22/01/2021">
               <Lista />
             </BasePage>
           </Route>
@@ -59,7 +62,15 @@ function App() {
   );
 }
 
-const BasePage = ({ children, titulo, usuario }) => {
+const BasePage = ({ children, titulo, usuario = {}, LogSucces }) => {
+  const handleSwitch = (e) => {
+    localStorage.setItem("auth", JSON.stringify({ ...usuario.vendedor }));
+  };
+  useEffect(() => {
+    if (!usuario.Token) {
+      LogSucces();
+    }
+  }, []);
   return (
     <>
       <div className="botonesNav">
@@ -67,6 +78,11 @@ const BasePage = ({ children, titulo, usuario }) => {
         <Link to="/Logout">
           <i className="fas fa-sign-out-alt"></i>
         </Link>
+        {usuario.isVendedor && (
+          <Link to="/" onClick={handleSwitch}>
+            <i className="fas fa-random"></i>
+          </Link>
+        )}
       </div>
       <div className="contenedor__landing">
         <img src={logo} alt="Logo Vaquero" />

@@ -24,13 +24,17 @@ function Lista() {
 
   useEffect(() => {
     const auth = JSON.parse(localStorage.getItem("auth"));
-    if (auth.TipoCliente === "S") {
+
+    if (auth && auth.TipoCliente === "S") {
       history.push("/Dashboard");
+      return;
+    } else if (auth && auth.TipoCliente === "V") {
+      history.push("/");
       return;
     }
 
     const pedirLista = async () => {
-      if (!auth.IdCliente) localStorage.removeItem("auth");
+      if (!auth || !auth.IdCliente) localStorage.removeItem("auth");
       try {
         const json = await fetch(
           `${BASE_URL}iProductosSP/ProductosDatos?pUsuario=${auth.usuario}&pToken=${auth.Token}`

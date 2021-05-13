@@ -15,7 +15,7 @@ const Dashboard = () => {
     if (!auth) {
       push("/");
     }
-    if (auth.TipoCliente === "C") {
+    if (auth.TipoCliente === "C" || auth.TipoCliente === "V") {
       push("/Lista");
       return;
     }
