@@ -43,7 +43,6 @@ const Login = ({ logo, LogSucces }) => {
         json.Clientes.map((cliente) => ({
           ...cliente,
           usuario: cliente.Usuario,
-          IdCliente: auth.IdCliente,
           TipoCliente: "C",
           isVendedor: true,
           vendedor: auth,
