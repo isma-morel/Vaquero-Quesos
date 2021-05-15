@@ -8,6 +8,7 @@ import {
 } from "../index";
 import { Route, Switch, useHistory, Link } from "react-router-dom";
 import "./Dashboard.css";
+import Taras from "../Taras/Taras";
 const Dashboard = () => {
   const { push } = useHistory();
   useEffect(() => {
@@ -45,6 +46,11 @@ const Dashboard = () => {
             texto: "Estado",
           },
           {
+            to: "/Dashboard/taras",
+            icono: <i className="fas fa-balance-scale"></i>,
+            texto: "Taras",
+          },
+          {
             to: "/Logout",
             icono: <i className="fas fa-sign-out-alt"></i>,
             texto: "salir",
@@ -63,6 +69,9 @@ const Dashboard = () => {
         </Route>
         <Route path="/Dashboard/estado">
           <EstadoPedidos />
+        </Route>
+        <Route path="/Dashboard/taras">
+          <Taras />
         </Route>
         <Route path="/Dashboard">
           <div className="dashboard">

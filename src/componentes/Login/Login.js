@@ -149,7 +149,11 @@ const SelecionCliente = ({ clientes, LogSucces }) => {
   };
   return (
     <div className="container">
-      <select value={clienteSeleccionado} onChange={handleChangeSelect}>
+      <small>Seleccione un usuario para continuar.</small>
+      <select
+        className="usuario"
+        value={clienteSeleccionado}
+        onChange={handleChangeSelect}>
         {clientes.map((cliente, i) => (
           <option value={i} key={i}>
             {cliente.Nombre}

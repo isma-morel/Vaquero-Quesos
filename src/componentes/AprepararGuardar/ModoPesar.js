@@ -90,7 +90,7 @@ const ModoPesar = ({ producto, onGuardar, onCancelar }) => {
     let tarasTemp = [];
     try {
       const result = await fetch(
-        `${BASE_URL}iElemTara/ElementosTaraDatos?pUsuario=${user.usuario}&pToken=${user.Token}`
+        `${BASE_URL}iElemTaraSP/ElementosTaraDatos?pUsuario=${user.usuario}&pToken=${user.Token}`
       );
       if (result.status !== 200) {
         throw new Error(result.text);
