@@ -27,6 +27,12 @@
 .taras .tabla tbody tr td:nth-child(2) {
   width: 100%;
 }
+.taras .contenedor-tabla .contenedor-cliente {
+  margin: 0.5em 0px;
+  font-size: 0.9em;
+  display: flex;
+  justify-content: flex-end;
+}
 .taras .btn {
   background: none;
   border: none;
@@ -44,6 +50,39 @@
 }
 .tara-descripcion .btn.remove {
   color: rgb(201, 11, 11);
+}
+.taras .btn.add {
+  display: block;
+  background: green;
+  padding: 0.2em 0.4em;
+  border-radius: 0.2em;
+  color: white;
+}
+.taras .btn.cancelar {
+  display: block;
+  background: rgb(201, 11, 11);
+  padding: 0.2em 0.4em;
+  border-radius: 0.2em;
+  color: white;
+}
+.taras .overlay {
+  background: rgba(0, 0, 0, 0.3);
+}
+.taras .modal {
+  background: #fafafa;
+  border-radius: 0.2em;
+  padding: 1em;
+}
+.taras .modal form {
+  display: flex;
+  flex-direction: column;
+  padding: 1em;
+}
+.taras .modal form .botonera {
+  display: flex;
+  margin: 1em 2em 0 2em;
+
+  justify-content: space-between;
 }
 @media (max-width: 700px) {
   .taras {

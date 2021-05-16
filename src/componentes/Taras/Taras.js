@@ -1,8 +1,9 @@
 import { useEffect, useState } from "react";
 import { BASE_URL } from "../../BaseURL.json";
 import { toast } from "react-toastify";
-import "./Taras.css";
 import { useHistory } from "react-router";
+import useModal from "../../hooks/useModal";
+import "./Taras.css";
 
 const Filtrar = (value, taras) => {
   let resultado = taras;
@@ -11,13 +12,15 @@ const Filtrar = (value, taras) => {
   );
   return resultado;
 };
-//iElemTaraSP/ElementosTaraDatos?pUsuario=1&pToken=980592
+
 const Taras = () => {
   const [taras, setTaras] = useState();
+  const [taraSeleccionada, setTaraSeleccionada] = useState();
   const [tarasFiltradas, setTarasFiltradas] = useState();
   const [isLoading, setIsLoading] = useState(false);
-  const { push } = useHistory();
+  const [isOpenModal, handleModal] = useModal();
 
+  const { push } = useHistory();
   const pedirTaras = async () => {
     setIsLoading(true);
     const auth = JSON.parse(localStorage.getItem("auth")) || {};
@@ -43,12 +46,22 @@ const Taras = () => {
       setIsLoading(false);
     }
   };
+
   useEffect(() => {
     pedirTaras();
   }, []);
   useEffect(() => {
     setTarasFiltradas(taras);
   }, [taras]);
+  const handleCrear = (e) => {
+    handleModal();
+  };
+  const handleEditar = (tara) => (e) => {
+    alert("editar");
+  };
+  const handleEliminar = (tara) => (e) => {
+    alert("eliminar");
+  };
 
   const handleChangeFiltro = (e) => {
     const resultado = Filtrar(e.target.value, taras);
@@ -73,6 +86,16 @@ const Taras = () => {
         <div className="spin"></div>
       ) : (
         <div className="contenedor-tabla">
+          <ModalForm
+            isOpen={isOpenModal}
+            onClose={handleModal}
+            Tara={taraSeleccionada}
+          />
+          <div className="contenedor-cliente">
+            <button className="btn add" onClick={handleCrear}>
+              Nueva
+            </button>
+          </div>
           <table className="tabla tabla-pedidos">
             <thead>
               <tr>
@@ -88,10 +111,12 @@ const Taras = () => {
                   <td className="tara-descripcion">
                     <span>{tara.Descripcion}</span>
                     <span>
-                      <button className="btn edit">
+                      <button onClick={handleEditar(tara)} className="btn edit">
                         <i className="fas fa-edit"></i>
                       </button>
-                      <button className="btn remove">
+                      <button
+                        onClick={handleEliminar(tara)}
+                        className="btn remove">
                         <i className="fas fa-times"></i>
                       </button>
                     </span>
@@ -105,6 +130,60 @@ const Taras = () => {
           </table>
         </div>
       )}
+    </div>
+  );
+};
+
+const ModalForm = ({ Tara, isOpen, onClose }) => {
+  const [inputs, setInputs] = useState({
+    peso: 0,
+    descripcion: "",
+    inactivo: false,
+  });
+  const handleChange = (e) => {
+    const { target } = e;
+  };
+  const handleSubmit = (e) => {
+    e.preventDefault();
+  };
+  const handleOverlay = (e) => {
+    onClose();
+  };
+  return (
+    <div className={`overlay ${isOpen ? "open" : ""}`} onClick={handleOverlay}>
+      <div onClick={(e) => e.stopPropagation()} className="modal">
+        <form onSubmit={handleSubmit}>
+          <input
+            type="number"
+            step={0.1}
+            className="usuario"
+            placeholder="Peso"
+            name="peso"
+            value={inputs.peso}
+            onChange={handleChange}
+          />
+          <input
+            type="text"
+            className="usuario"
+            placeholder="Descripcion"
+            name="descripcion"
+            value={inputs.descripcion}
+            onChange={handleChange}
+          />
+          <input
+            type="checkbox"
+            name="inactivo"
+            checked={inputs.inactivo}
+            onChange={handleChange}
+          />
+          <div className="botonera">
+            <button className="btn cancelar" onClick={onClose}>
+              Cancelar
+            </button>
+            <button className="btn add">Enviar</button>
+          </div>
+        </form>
+      </div>
     </div>
   );
 };
