@@ -112,12 +112,16 @@ const Taras = () => {
                     <span>{tara.Descripcion}</span>
                     <span>
                       <button onClick={handleEditar(tara)} className="btn edit">
-                        <i className="fas fa-edit"></i>
+                        <i
+                          title="presione para editar"
+                          className="fas fa-edit"></i>
                       </button>
                       <button
                         onClick={handleEliminar(tara)}
                         className="btn remove">
-                        <i className="fas fa-times"></i>
+                        <i
+                          title="Presione para eliminar"
+                          className="fas fa-times"></i>
                       </button>
                     </span>
                   </td>
