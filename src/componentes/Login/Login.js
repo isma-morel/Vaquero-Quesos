@@ -77,16 +77,16 @@ const Login = ({ logo, LogSucces }) => {
         );
         switch (json.TipoCliente) {
           case "C":
-            history.push("/Lista");
             LogSucces();
+            history.push("/Lista");
             break;
           case "V":
             setIsVendedor(true);
             pedirListaClientes({ ...json, usuario: target[0].value });
             break;
           case "S":
-            history.push("/Dashboard");
             LogSucces();
+            history.push("/Dashboard");
             break;
         }
       })

@@ -54,13 +54,39 @@ const Taras = () => {
     setTarasFiltradas(taras);
   }, [taras]);
   const handleCrear = (e) => {
+    setTaraSeleccionada(null);
     handleModal();
   };
   const handleEditar = (tara) => (e) => {
-    alert("editar");
+    setTaraSeleccionada(tara);
+    handleModal();
   };
-  const handleEliminar = (tara) => (e) => {
-    alert("eliminar");
+  const handleEliminar = (tara) => async (e) => {
+    const auth = JSON.parse(localStorage.getItem("auth"));
+    if (!auth) {
+      push("/");
+      return;
+    }
+    try {
+      const result = await fetch(
+        `${BASE_URL}iElemTaraSP/Borrar?pUsuario=${auth.usuario}&pToken=${auth.Token}&pIdElemTara=${tara.IdElemTara}`,
+        {
+          method: "POST",
+        }
+      );
+      if (result.status !== 200) {
+        if (result.status === 401) {
+          push("/");
+        }
+        throw new Error(result.message);
+      }
+
+      toast.success("Tara eliminada correctamente");
+      pedirTaras();
+    } catch (err) {
+      toast.error("se ha producido un error");
+      console.log(err);
+    }
   };
 
   const handleChangeFiltro = (e) => {
@@ -87,9 +113,11 @@ const Taras = () => {
       ) : (
         <div className="contenedor-tabla">
           <ModalForm
+            key={isOpenModal}
             isOpen={isOpenModal}
             onClose={handleModal}
             Tara={taraSeleccionada}
+            pedirTaras={pedirTaras}
           />
           <div className="contenedor-cliente">
             <button className="btn add" onClick={handleCrear}>
@@ -138,17 +166,74 @@ const Taras = () => {
   );
 };
 
-const ModalForm = ({ Tara, isOpen, onClose }) => {
+const ModalForm = ({ Tara, isOpen, onClose, pedirTaras }) => {
+  const { push } = useHistory();
   const [inputs, setInputs] = useState({
     peso: 0,
     descripcion: "",
     inactivo: false,
   });
+  const guardarTara = async () => {
+    const auth = JSON.parse(localStorage.getItem("auth"));
+    if (!auth) {
+      push("/");
+      return;
+    }
+    const result = await fetch(
+      `${BASE_URL}iElemTaraSP/Guardar?pUsuario=${auth.usuario}&pToken=${
+        auth.Token
+      }&pIdElemTara=${Tara ? Tara.IdElemTara : 0}&pDescripcion=${
+        inputs.descripcion
+      }&pPeso=${parseFloat(inputs.peso)}&pInactivo=${inputs.inactivo}`,
+      {
+        method: "POST",
+      }
+    );
+
+    if (result.status !== 200) {
+      if (result.status === 401) {
+        toast.error("error");
+        push("/");
+      }
+      throw new Error(result.message);
+    }
+
+    toast.success("Tara cargada correctamente");
+    pedirTaras();
+    onClose();
+
+    try {
+    } catch (err) {
+      toast.error("ocurrio un error.");
+      console.log(err);
+    }
+
+    //iElemTaraSP/Guardar?pUsuario={pUsuario}&pToken={pToken}&pIdElemTara={pIdElemTara}&pDescripcion={pDescripcion}&pPeso={pPeso}&pInactivo={pInactivo}
+  };
+  useEffect(() => {
+    if (!Tara) {
+      return;
+    }
+    setInputs({
+      peso: Tara.Peso,
+      descripcion: Tara.Descripcion,
+      inactivo: Tara.Inactivo,
+    });
+  }, []);
   const handleChange = (e) => {
     const { target } = e;
+    setInputs({
+      ...inputs,
+      [target.name]:
+        target.type === "checkbox"
+          ? target.checked
+          : target.value.toUpperCase(),
+    });
   };
   const handleSubmit = (e) => {
+    e.stopPropagation();
     e.preventDefault();
+    guardarTara();
   };
   const handleOverlay = (e) => {
     onClose();
@@ -160,6 +245,7 @@ const ModalForm = ({ Tara, isOpen, onClose }) => {
           <input
             type="number"
             step={0.1}
+            min={0}
             className="usuario"
             placeholder="Peso"
             name="peso"
@@ -174,11 +260,20 @@ const ModalForm = ({ Tara, isOpen, onClose }) => {
             value={inputs.descripcion}
             onChange={handleChange}
           />
+          <label
+            htmlFor="inactivo"
+            className={`inactivo ${
+              inputs.inactivo ? "btn cancelar" : "btn add"
+            }`}>
+            Inactivo {inputs.inactivo ? "si" : "no"}
+          </label>
           <input
+            id="inactivo"
             type="checkbox"
             name="inactivo"
             checked={inputs.inactivo}
             onChange={handleChange}
+            hidden
           />
           <div className="botonera">
             <button className="btn cancelar" onClick={onClose}>

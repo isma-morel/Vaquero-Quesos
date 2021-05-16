@@ -93,6 +93,9 @@ const Dashboard = () => {
               </Link>
               <div></div>
               <div></div>
+              <Link to="/Dashboard/taras">
+                <i className="fas fa-balance-scale"></i>
+              </Link>
               <Link to="/Logout">
                 <i className="fas fa-sign-out-alt"></i>
               </Link>
