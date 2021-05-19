@@ -58,12 +58,18 @@
   border-radius: 0.2em;
   color: white;
 }
+.taras .btn.add:disabled {
+  background: rgba(0, 128, 0, 0.733);
+}
 .taras .btn.cancelar {
   display: block;
   background: rgb(201, 11, 11);
   padding: 0.2em 0.4em;
   border-radius: 0.2em;
   color: white;
+}
+.taras .btn.cancelar:disabled {
+  background: rgba(201, 11, 11, 0.726);
 }
 .taras .overlay {
   background: rgba(0, 0, 0, 0.3);
@@ -80,16 +86,20 @@
 }
 .taras .modal form .botonera {
   display: flex;
-  margin: 1em 2em 0 2em;
-
+  margin: 2em 2em 0 2em;
   justify-content: space-between;
 }
 .taras .modal form .inactivo {
-  margin: 1.5em;
+  margin: 0.5em auto 0.2em 0.2em;
+  width: 100%;
   user-select: none;
+  text-align: center;
   transition: all ease 0.2s;
+  box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.5);
 }
-
+.taras .modal form .contenedor-inputs label {
+  margin: 0.2em 0.4em;
+}
 @media (max-width: 700px) {
   .taras {
     padding-top: 0;

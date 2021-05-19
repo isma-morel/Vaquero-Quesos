@@ -128,8 +128,9 @@ const Taras = () => {
             <thead>
               <tr>
                 <th>PESO</th>
-                <th className="tara-descripcion-header">DESCRIPCION</th>
+                <th className="">DESCRIPCION</th>
                 <th>INACTIVO</th>
+                <th>PESO VARIABLE</th>
               </tr>
             </thead>
             <tbody>
@@ -156,6 +157,9 @@ const Taras = () => {
                   <td style={{ textAlign: "center" }}>
                     {tara.Inactivo ? <i className="fa fa-check"></i> : null}
                   </td>
+                  <td style={{ textAlign: "center" }}>
+                    {tara.EditaPeso ? <i className="fa fa-check"></i> : null}
+                  </td>
                 </tr>
               ))}
             </tbody>
@@ -168,10 +172,12 @@ const Taras = () => {
 
 const ModalForm = ({ Tara, isOpen, onClose, pedirTaras }) => {
   const { push } = useHistory();
+  const [isLoading, setIsLoading] = useState(false);
   const [inputs, setInputs] = useState({
     peso: 0,
     descripcion: "",
     inactivo: false,
+    editaPeso: false,
   });
   const guardarTara = async () => {
     const auth = JSON.parse(localStorage.getItem("auth"));
@@ -179,36 +185,39 @@ const ModalForm = ({ Tara, isOpen, onClose, pedirTaras }) => {
       push("/");
       return;
     }
-    const result = await fetch(
-      `${BASE_URL}iElemTaraSP/Guardar?pUsuario=${auth.usuario}&pToken=${
-        auth.Token
-      }&pIdElemTara=${Tara ? Tara.IdElemTara : 0}&pDescripcion=${
-        inputs.descripcion
-      }&pPeso=${parseFloat(inputs.peso)}&pInactivo=${inputs.inactivo}`,
-      {
-        method: "POST",
-      }
-    );
-
-    if (result.status !== 200) {
-      if (result.status === 401) {
-        toast.error("error");
-        push("/");
-      }
-      throw new Error(result.message);
-    }
-
-    toast.success("Tara cargada correctamente");
-    pedirTaras();
-    onClose();
 
     try {
+      setIsLoading(true);
+      const result = await fetch(
+        `${BASE_URL}iElemTaraSP/Guardar?pUsuario=${auth.usuario}&pToken=${
+          auth.Token
+        }&pIdElemTara=${Tara ? Tara.IdElemTara : 0}&pDescripcion=${
+          inputs.descripcion
+        }&pPeso=${parseFloat(inputs.peso)}&pEditaPeso=${
+          inputs.editaPeso
+        }&pInactivo=${inputs.inactivo}`,
+        {
+          method: "POST",
+        }
+      );
+
+      if (result.status !== 200) {
+        if (result.status === 401) {
+          toast.error("error");
+          push("/");
+        }
+        throw new Error(result.message);
+      }
+
+      toast.success("Tara cargada correctamente");
+      pedirTaras();
+      onClose();
     } catch (err) {
       toast.error("ocurrio un error.");
       console.log(err);
+    } finally {
+      setIsLoading(false);
     }
-
-    //iElemTaraSP/Guardar?pUsuario={pUsuario}&pToken={pToken}&pIdElemTara={pIdElemTara}&pDescripcion={pDescripcion}&pPeso={pPeso}&pInactivo={pInactivo}
   };
   useEffect(() => {
     if (!Tara) {
@@ -218,6 +227,7 @@ const ModalForm = ({ Tara, isOpen, onClose, pedirTaras }) => {
       peso: Tara.Peso,
       descripcion: Tara.Descripcion,
       inactivo: Tara.Inactivo,
+      editaPeso: Tara.EditaPeso,
     });
   }, []);
   const handleChange = (e) => {
@@ -233,6 +243,7 @@ const ModalForm = ({ Tara, isOpen, onClose, pedirTaras }) => {
   const handleSubmit = (e) => {
     e.stopPropagation();
     e.preventDefault();
+    console.log("esaca");
     guardarTara();
   };
   const handleOverlay = (e) => {
@@ -242,24 +253,30 @@ const ModalForm = ({ Tara, isOpen, onClose, pedirTaras }) => {
     <div className={`overlay ${isOpen ? "open" : ""}`} onClick={handleOverlay}>
       <div onClick={(e) => e.stopPropagation()} className="modal">
         <form onSubmit={handleSubmit}>
-          <input
-            type="number"
-            step={0.1}
-            min={0}
-            className="usuario"
-            placeholder="Peso"
-            name="peso"
-            value={inputs.peso}
-            onChange={handleChange}
-          />
-          <input
-            type="text"
-            className="usuario"
-            placeholder="Descripcion"
-            name="descripcion"
-            value={inputs.descripcion}
-            onChange={handleChange}
-          />
+          <div className="contenedor-inputs">
+            <label>Peso</label>
+            <input
+              type="number"
+              step={0.1}
+              min={0}
+              className="usuario"
+              placeholder="Peso"
+              name="peso"
+              value={inputs.peso}
+              onChange={handleChange}
+            />
+          </div>
+          <div className="contenedor-inputs">
+            <label>Descripcion</label>
+            <input
+              type="text"
+              className="usuario"
+              placeholder="Descripcion"
+              name="descripcion"
+              value={inputs.descripcion}
+              onChange={handleChange}
+            />
+          </div>
           <label
             htmlFor="inactivo"
             className={`inactivo ${
@@ -275,11 +292,31 @@ const ModalForm = ({ Tara, isOpen, onClose, pedirTaras }) => {
             onChange={handleChange}
             hidden
           />
+          <label
+            htmlFor="editaPeso"
+            className={`inactivo ${
+              !inputs.editaPeso ? "btn cancelar" : "btn add"
+            }`}>
+            Edita Peso {inputs.editaPeso ? "si" : "no"}
+          </label>
+          <input
+            id="editaPeso"
+            type="checkbox"
+            name="editaPeso"
+            checked={inputs.editaPeso}
+            onChange={handleChange}
+            hidden
+          />
           <div className="botonera">
-            <button className="btn cancelar" onClick={onClose}>
+            <button
+              disabled={isLoading}
+              className="btn cancelar"
+              onClick={onClose}>
               Cancelar
             </button>
-            <button className="btn add">Enviar</button>
+            <button disabled={isLoading} className="btn add">
+              Enviar
+            </button>
           </div>
         </form>
       </div>
