@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { BASE_URL } from "../../BaseURL.json";
 
 const calcularTara = (tara) => {
@@ -21,7 +21,6 @@ const ModoPesar = ({ producto, onGuardar, onCancelar }) => {
   });
 
   const [editPiezas, setEditPiezas] = useState(false);
-
   /* Manejadores de eventos */
   const handleChangeBruto = (e) => {
     const { value } = e.target;
@@ -45,9 +44,8 @@ const ModoPesar = ({ producto, onGuardar, onCancelar }) => {
   const handleChangePeso = (indice) => (e) => {
     const esNumero = /^[0-9]+([.])?([0-9]+)?$/;
     let taraTemp = pesaje.Taras;
-
     if (!e.target.innerText.trim().match(esNumero)) {
-      e.target.innerHTML = "</br>";
+      e.target.innerHTML = "<br/>";
       taraTemp[indice].Peso = 0;
       taraTemp[indice].subTotal = 0;
       calcular({ ...pesaje, Taras: taraTemp });
@@ -226,8 +224,18 @@ const ModoPesar = ({ producto, onGuardar, onCancelar }) => {
                     contentEditable
                     inputMode="decimal"
                     onSelect={handleChange(index)}></td>
-                  {tara.PesoEditable ? (
-                    <td onSelect={handleChangePeso(index)} contentEditable></td>
+                  {tara.EditaPeso ? (
+                    <td
+                      contentEditable
+                      suppressContentEditableWarning={true}
+                      onBlur={(e) =>
+                        e.target.innerHTML === "<br>"
+                          ? (e.target.innerHTML = "0")
+                          : null
+                      }
+                      onSelect={handleChangePeso(index)}>
+                      0
+                    </td>
                   ) : (
                     <td>{tara.Peso}</td>
                   )}

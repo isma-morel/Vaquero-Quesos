@@ -232,8 +232,13 @@ const ModalForm = ({ Tara, isOpen, onClose, pedirTaras }) => {
   }, []);
   const handleChange = (e) => {
     const { target } = e;
+    let inputsTemp = inputs;
+    if (target.name === "editaPeso" && target.checked) {
+      inputsTemp.peso = 0;
+    }
+
     setInputs({
-      ...inputs,
+      ...inputsTemp,
       [target.name]:
         target.type === "checkbox"
           ? target.checked
@@ -256,6 +261,7 @@ const ModalForm = ({ Tara, isOpen, onClose, pedirTaras }) => {
           <div className="contenedor-inputs">
             <label>Peso</label>
             <input
+              disabled={inputs.editaPeso}
               type="number"
               step={0.1}
               min={0}
