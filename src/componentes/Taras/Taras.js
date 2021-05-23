@@ -48,6 +48,11 @@ const Taras = () => {
   };
 
   useEffect(() => {
+    const auth = JSON.parse(localStorage.getItem("auth"));
+    if (!auth) {
+      push("/");
+      return;
+    }
     pedirTaras();
   }, []);
   useEffect(() => {

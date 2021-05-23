@@ -12,9 +12,12 @@ const Carrito = () => {
   const [productoEditable, setProductoEditable] = useState(null);
   const [productos, setProductos] = useState([]);
   const [user, setUser] = useState();
+  const confirmarUsuario = () =>
+    JSON.parse(localStorage.getItem("auth"))?.TipoCliente === "C";
   useEffect(() => {
     const carrito = JSON.parse(localStorage.getItem("carrito")) || [];
     const usuario = JSON.parse(localStorage.getItem("auth"));
+    !confirmarUsuario() && history.push("/");
     setUser(usuario);
     setProductos(carrito);
   }, []);
@@ -82,7 +85,7 @@ const Carrito = () => {
     setProductos(tempProductos);
     localStorage.setItem("carrito", JSON.stringify(tempProductos));
   };
-  return JSON.parse(localStorage.getItem("auth"))?.TipoCliente === "C" ? (
+  return (
     <div className="contenedor-pedidos">
       <ModalCarrito
         isOpen={isOpenCarritoModal}
@@ -148,8 +151,6 @@ const Carrito = () => {
         ) : null}
       </div>
     </div>
-  ) : (
-    <Redirect to="/" />
   );
 };
 

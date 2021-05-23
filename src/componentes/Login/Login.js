@@ -11,22 +11,15 @@ const Login = ({ logo, LogSucces }) => {
   const [clientes, setClientes] = useState([]);
   useEffect(() => {
     const auth = JSON.parse(localStorage.getItem("auth"));
-    if (auth) {
-      switch (auth.TipoCliente) {
-        case "C":
-          history.push("/Lista");
-          break;
-        case "V":
-          setIsVendedor(true);
-          pedirListaClientes(auth);
-          break;
-        case "S":
-          history.push("/Dashboard");
-          break;
-        default:
-          break;
-      }
-    }
+    const tipo = {
+      C: () => history.push("/Lista"),
+      V: () => {
+        setIsVendedor(true);
+        pedirListaClientes(auth);
+      },
+      S: () => history.push("/Dashboard"),
+    };
+    if (auth) tipo[auth.TipoCliente]();
   }, []);
   const pedirListaClientes = async (auth) => {
     try {
@@ -54,6 +47,20 @@ const Login = ({ logo, LogSucces }) => {
   };
   const handleSubmit = (e) => {
     e.preventDefault();
+    const tipo = {
+      S: () => {
+        LogSucces();
+        history.push("/Dashboard");
+      },
+      C: () => {
+        LogSucces();
+        history.push("/Lista");
+      },
+      V: (json, target) => {
+        setIsVendedor(true);
+        pedirListaClientes({ ...json, usuario: target[0].value });
+      },
+    };
     const { target } = e;
     setLoading(true);
     fetch(
@@ -75,20 +82,8 @@ const Login = ({ logo, LogSucces }) => {
           "auth",
           JSON.stringify({ ...json, usuario: target[0].value })
         );
-        switch (json.TipoCliente) {
-          case "C":
-            LogSucces();
-            history.push("/Lista");
-            break;
-          case "V":
-            setIsVendedor(true);
-            pedirListaClientes({ ...json, usuario: target[0].value });
-            break;
-          case "S":
-            LogSucces();
-            history.push("/Dashboard");
-            break;
-        }
+
+        tipo[json.TipoCliente](json, target);
       })
       .catch((err) => setError(err.message))
       .finally(() => setLoading(false));

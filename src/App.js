@@ -39,6 +39,7 @@ function App() {
 
           <Route exact path="/Carrito">
             <BasePage
+              LogSucces={LogSucces}
               usuario={usuario}
               titulo={`CARRITO - ${usuario?.Nombre} `}>
               <Carrito />

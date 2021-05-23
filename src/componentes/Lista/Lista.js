@@ -24,12 +24,12 @@ function Lista() {
 
   useEffect(() => {
     const auth = JSON.parse(localStorage.getItem("auth"));
-
-    if (auth && auth.TipoCliente === "S") {
-      history.push("/Dashboard");
-      return;
-    } else if (auth && auth.TipoCliente === "V") {
-      history.push("/");
+    const tipo = {
+      S: () => history.push("/Dashboard"),
+      V: () => history.push("/"),
+    };
+    if (auth && auth.TipoCliente !== "C") {
+      tipo[auth.TipoCliente]();
       return;
     }
 
