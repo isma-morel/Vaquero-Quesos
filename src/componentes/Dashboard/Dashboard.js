@@ -13,11 +13,9 @@ const Dashboard = () => {
   const { push } = useHistory();
   useEffect(() => {
     const auth = JSON.parse(localStorage.getItem("auth"));
-    if (!auth) {
+
+    if (auth?.TipoCliente !== "S") {
       push("/");
-    }
-    if (auth.TipoCliente === "C" || auth.TipoCliente === "V") {
-      push("/Lista");
       return;
     }
   }, []);
