@@ -147,7 +147,9 @@ const ModoPesar = ({ producto, onGuardar, onCancelar }) => {
                 value={pesaje.producto.Cantidad}
                 onChange={handleChangePiezas}
               />
-              <button onClick={handlePiezasClick}>Cambiar</button>
+              <button onClick={handlePiezasClick}>
+                {!editPiezas ? "Cambiar" : "Cambiando"}
+              </button>
             </div>
           </div>
           <div className="flex-input bruto-input">
