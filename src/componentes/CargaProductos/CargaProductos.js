@@ -1,14 +1,15 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useHistory } from "react-router";
 import { toast } from "react-toastify";
 import { BASE_URL } from "../../BaseURL.json";
 import "./CargaProductos.css";
-
+import "./AddOrEdit.css";
 const CargaProductos = () => {
   const [productos, setProductos] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isEditOrAdd, setIsEditOrAdd] = useState(false);
   const [productoSeleccionado, setProductoSeleccionado] = useState();
+
   const { push } = useHistory();
   const obtenerPedidos = async () => {
     setIsLoading(true);
@@ -94,89 +95,159 @@ const CargaProductos = () => {
 };
 
 const AddOrEdit = ({ productoSeleccionado, onClose }) => {
+  const referencedElement = useRef();
+  const [imagen, setImagen] = useState();
+  const [medidas, setMedidas] = useState([]);
+  const [inputs, setInputs] = useState({
+    ...productoSeleccionado,
+  });
+  const { push } = useHistory();
+  const pedirMedidas = async () => {
+    const auth = JSON.parse(localStorage.getItem("auth"));
+    if (!auth) return push("/");
+
+    try {
+      const resultado = await fetch(
+        `${BASE_URL}iMedidasSP/MedidasDatos?pUsuario=${auth.usuario}&pToken=${auth.Token}`
+      );
+
+      if (resultado.status !== 200) {
+        if (resultado.status === 401) return push("/");
+        throw new Error(resultado.text());
+      }
+      const json = await resultado.json();
+      console.table(json);
+      setMedidas(json);
+    } catch (err) {
+      toast.error("ocurrio un error.");
+      console.log(err);
+    }
+  };
+  const pedirFoto = async () => {
+    try {
+      const result = await fetch(
+        `${BASE_URL}iProductosSP/Foto?idProducto=${productoSeleccionado.IdProducto}`
+      );
+      const json = await result.json();
+      setImagen(`data:image/png;base64,${json.Foto}`);
+    } catch (err) {
+      toast.error("ocurrio un error.");
+      console.log(err);
+    }
+  };
+
+  useEffect(() => {
+    pedirMedidas();
+    if (productoSeleccionado?.TieneFoto) {
+      pedirFoto();
+    }
+  }, []);
+
+  const onFileChange = (e) => {
+    setImagen(e.target.files[0]);
+  };
+
   return (
-    <div style={{ minHeight: "100%", width: "100%" }}>
-      <div
-        style={{
-          display: "flex",
-          width: "80%",
-          alignItems: "center",
-          justifyContent: "center",
-          gap: "2em",
-          margin: "auto",
-        }}>
-        <div
-          style={{
-            display: "flex",
-            overflow: "hidden",
-            flexDirection: "column",
-            gap: ".2em",
-          }}>
+    <div className="AddOrEdit">
+      <div className="contenedor">
+        <div className="contenedor-imagen">
           <img
-            style={{
-              width: "200px",
-              height: "200px",
-              borderRadius: ".2em",
-              margin: "auto",
-            }}
-            src="https://quesosvaquero.com/img/quesos/Parmesano-media-horma.jpg"
-            alt=""
+            className="imagen"
+            src={
+              imagen
+                ? typeof imagen !== "string"
+                  ? URL.createObjectURL(imagen)
+                  : imagen
+                : ""
+            }
+            alt="Imagen ilustrativa"
           />
-          <button style={{ width: "100px", margin: "auto" }}>Subir</button>
+          <input
+            type="file"
+            name="file"
+            id="file"
+            accept="image/*"
+            onChange={onFileChange}
+            ref={referencedElement}
+          />
+          <button
+            onClick={(e) => {
+              referencedElement.current.click();
+            }}>
+            <i className="fas fa-upload"></i>
+            <span> Subir</span>
+          </button>
         </div>
-        <div
-          style={{
-            display: "flex",
-            flexDirection: "column",
-            justifyContent: "center",
-            alignItems: "flex-start",
-            alignSelf: "flex-start",
-            gap: "1em",
-          }}>
-          <div style={{ display: "flex", flexDirection: "column" }}>
+        <div className="contenedor-inputs">
+          <div>
             <span>Codigo</span>
-            <input type="text" />
+            <input type="text" name="Codigo" value={inputs["Codigo"]} />
           </div>
-          <div style={{ display: "flex", flexDirection: "column" }}>
+          <div>
             <span>Descripcion</span>
-            <input type="text" />
+            <input
+              type="text"
+              name="Descripcion"
+              value={inputs["Descripcion"]}
+            />
           </div>
-          <div style={{ display: "flex", flexDirection: "column" }}>
+          <div>
             <span>Presentacion</span>
-            <input type="text" />
+            <input
+              type="text"
+              name="Presentacion"
+              value={inputs["Presentacion"]}
+            />
           </div>
-          <div style={{ display: "flex", flexDirection: "column" }}>
+          <div>
             <span>Medida Principal</span>
             <input type="text" />
           </div>
         </div>
-        <div
-          style={{
-            display: "flex",
-            flexDirection: "column",
-            justifyContent: "center",
-            alignItems: "flex-start",
-            alignSelf: "flex-start",
-            gap: "1em",
-          }}>
-          <div style={{ display: "flex", flexDirection: "column" }}>
+        <div className="contenedor-inputs">
+          <div>
             <span>Peso Promedio</span>
-            <input type="text" />
+            <input
+              type="number"
+              min={0}
+              step={0.1}
+              name="PesoPromedio"
+              value={inputs["PesoPromedio"]}
+            />
           </div>
-          <div style={{ display: "flex", flexDirection: "column" }}>
+          <div>
             <span>Porcentaje de Desvio</span>
-            <input type="text" />
+            <input
+              type="number"
+              min={0}
+              step={0.1}
+              name="PorcDesvio"
+              value={inputs["PorcDesvio"]}
+            />
+          </div>
+          <div>
+            <label htmlFor="Inactivo">
+              {inputs["Inactivo"] ? "true" : "false"}
+            </label>
+            <input
+              hidden
+              type="checkbox"
+              name="Inactivo"
+              id="Inactivo"
+              checked={inputs["Inactivo"]}
+            />
           </div>
         </div>
-        <div></div>
+        <div className="contenedor-medidas"></div>
       </div>
-      <div style={{ width: "100%", textAlign: "center", padding: "2em" }}>
-        <button
-          style={{ margin: "auto", marginRight: "1em" }}
-          onClick={onClose}>
+      <div className="botonera">
+        <button className="boton cancelar" onClick={onClose}>
           Cancelar
         </button>
-        <button style={{ margin: "auto" }}>Guardar</button>
+        {productoSeleccionado ? (
+          <button className="boton cancelar">Eliminar</button>
+        ) : null}
+        <button className="boton">Guardar</button>
       </div>
     </div>
   );

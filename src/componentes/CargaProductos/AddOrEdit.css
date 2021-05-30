@@ -1,0 +1,69 @@
+.AddOrEdit {
+  min-height: 100%;
+  width: 100%;
+}
+.AddOrEdit .contenedor {
+  display: flex;
+  flex-direction: row;
+  width: 80%;
+  align-items: center;
+  justify-content: center;
+  gap: 2em;
+  margin: auto;
+}
+.AddOrEdit .contenedor .contenedor-imagen {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2em;
+}
+.AddOrEdit .contenedor .contenedor-imagen .imagen {
+  width: 200px;
+  height: 200px;
+  border-radius: 0.2em;
+  margin: auto;
+  border-radius: 0.2em;
+  object-fit: contain;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.AddOrEdit .contenedor .contenedor-imagen input[type="file"] {
+  display: none;
+}
+.AddOrEdit .contenedor .contenedor-imagen button {
+  width: 100px;
+  margin: auto;
+}
+.AddOrEdit .contenedor .contenedor-inputs {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+  align-self: flex-start;
+  gap: 1em;
+}
+.AddOrEdit .contenedor .contenedor-inputs div {
+  display: flex;
+  flex-direction: column;
+}
+.AddOrEdit .botonera {
+  width: 100%;
+  text-align: center;
+  padding: 2em;
+}
+.AddOrEdit .botonera .boton {
+  margin: auto;
+}
+.AddOrEdit .botonera .cancelar {
+  margin-right: 1em;
+}
+
+@media screen and (max-width: 700px) {
+  .AddOrEdit .contenedor {
+    flex-direction: column;
+  }
+  .AddOrEdit .contenedor .contenedor-inputs {
+    align-self: center;
+    align-items: center;
+  }
+}
