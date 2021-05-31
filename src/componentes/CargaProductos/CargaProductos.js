@@ -116,7 +116,13 @@ const AddOrEdit = ({ productoSeleccionado, onClose }) => {
         throw new Error(resultado.text());
       }
       const json = await resultado.json();
-      console.table(json);
+      if (productoSeleccionado) {
+        json.forEach((medida) => {
+          medida.incluida = productoSeleccionado.Medidas.some(
+            (prodMed) => prodMed.IdMedida === medida.IdMedida
+          );
+        });
+      }
       setMedidas(json);
     } catch (err) {
       toast.error("ocurrio un error.");
@@ -125,11 +131,14 @@ const AddOrEdit = ({ productoSeleccionado, onClose }) => {
   };
   const pedirFoto = async () => {
     try {
+      const reader = new FileReader();
       const result = await fetch(
         `${BASE_URL}iProductosSP/Foto?idProducto=${productoSeleccionado.IdProducto}`
       );
       const json = await result.json();
-      setImagen(`data:image/png;base64,${json.Foto}`);
+      const aver = await fetch(`data:image/png;base64,${json.Foto}`);
+      const blob = await aver.blob();
+      setImagen(blob);
     } catch (err) {
       toast.error("ocurrio un error.");
       console.log(err);
@@ -138,6 +147,7 @@ const AddOrEdit = ({ productoSeleccionado, onClose }) => {
 
   useEffect(() => {
     pedirMedidas();
+    //console.table(productoSeleccionado.Medidas);
     if (productoSeleccionado?.TieneFoto) {
       pedirFoto();
     }
@@ -146,6 +156,11 @@ const AddOrEdit = ({ productoSeleccionado, onClose }) => {
   const onFileChange = (e) => {
     setImagen(e.target.files[0]);
   };
+  const handleInputChange = (e) => {
+    const { name, value, type, checked } = e.target;
+
+    setInputs({ ...inputs, [name]: type === "checkbox" ? checked : value });
+  };
 
   return (
     <div className="AddOrEdit">
@@ -153,13 +168,7 @@ const AddOrEdit = ({ productoSeleccionado, onClose }) => {
         <div className="contenedor-imagen">
           <img
             className="imagen"
-            src={
-              imagen
-                ? typeof imagen !== "string"
-                  ? URL.createObjectURL(imagen)
-                  : imagen
-                : ""
-            }
+            src={imagen ? URL.createObjectURL(imagen) : ""}
             alt="Imagen ilustrativa"
           />
           <input
@@ -181,13 +190,19 @@ const AddOrEdit = ({ productoSeleccionado, onClose }) => {
         <div className="contenedor-inputs">
           <div>
             <span>Codigo</span>
-            <input type="text" name="Codigo" value={inputs["Codigo"]} />
+            <input
+              type="text"
+              name="Codigo"
+              onChange={handleInputChange}
+              value={inputs["Codigo"]}
+            />
           </div>
           <div>
             <span>Descripcion</span>
             <input
               type="text"
               name="Descripcion"
+              onChange={handleInputChange}
               value={inputs["Descripcion"]}
             />
           </div>
@@ -196,12 +211,20 @@ const AddOrEdit = ({ productoSeleccionado, onClose }) => {
             <input
               type="text"
               name="Presentacion"
+              onChange={handleInputChange}
               value={inputs["Presentacion"]}
             />
           </div>
           <div>
             <span>Medida Principal</span>
-            <input type="text" />
+            <select
+              name="medidaPrincipal"
+              id="medidaPrincipal"
+              value={productoSeleccionado?.Medidas?.[0].IdMedida}>
+              {medidas.map((medida) => (
+                <option value={medida.IdMedida}>{medida.Descripcion}</option>
+              ))}
+            </select>
           </div>
         </div>
         <div className="contenedor-inputs">
@@ -212,6 +235,7 @@ const AddOrEdit = ({ productoSeleccionado, onClose }) => {
               min={0}
               step={0.1}
               name="PesoPromedio"
+              onChange={handleInputChange}
               value={inputs["PesoPromedio"]}
             />
           </div>
@@ -222,24 +246,40 @@ const AddOrEdit = ({ productoSeleccionado, onClose }) => {
               min={0}
               step={0.1}
               name="PorcDesvio"
+              onChange={handleInputChange}
               value={inputs["PorcDesvio"]}
             />
           </div>
           <div>
-            <label htmlFor="Inactivo">
-              {inputs["Inactivo"] ? "true" : "false"}
+            <label
+              className={`Inactivo  ${inputs["Inactivo"] ? "true" : "false"}`}
+              htmlFor="Inactivo">
+              {`Inactivo ${inputs["Inactivo"] ? "Si" : "No"}`}
             </label>
             <input
               hidden
               type="checkbox"
               name="Inactivo"
               id="Inactivo"
+              onChange={handleInputChange}
               checked={inputs["Inactivo"]}
             />
           </div>
         </div>
-        <div className="contenedor-medidas"></div>
+        <div className="contenedor-medidas contenedor-inputs">
+          <span>Medidas</span>
+          {productoSeleccionado?.Medidas.map((medida) => (
+            <div>
+              <span>{medida.DescripcionUM}</span>
+              <input type="number" />
+            </div>
+          ))}
+          <button>
+            <i className="fas fa-plus"></i>
+          </button>
+        </div>
       </div>
+
       <div className="botonera">
         <button className="boton cancelar" onClick={onClose}>
           Cancelar
