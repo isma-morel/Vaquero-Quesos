@@ -4,6 +4,7 @@ import { toast } from "react-toastify";
 import { BASE_URL } from "../../BaseURL.json";
 import "./CargaProductos.css";
 import "./AddOrEdit.css";
+import useModal from "../../hooks/useModal";
 const CargaProductos = () => {
   const [productos, setProductos] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -59,6 +60,7 @@ const CargaProductos = () => {
         <AddOrEdit
           productoSeleccionado={productoSeleccionado}
           onClose={onCloseAddOrEdit}
+          setProductoSeleccionado={setProductoSeleccionado}
         />
       ) : (
         <div className="contenedor-tabla">
@@ -94,14 +96,20 @@ const CargaProductos = () => {
   );
 };
 
-const AddOrEdit = ({ productoSeleccionado, onClose }) => {
+const AddOrEdit = ({
+  productoSeleccionado,
+  setProductoSeleccionado,
+  onClose,
+}) => {
   const referencedElement = useRef();
   const [imagen, setImagen] = useState();
   const [medidas, setMedidas] = useState([]);
   const [inputs, setInputs] = useState({
     ...productoSeleccionado,
   });
+  const [isOpenModal, handleModal] = useModal();
   const { push } = useHistory();
+
   const pedirMedidas = async () => {
     const auth = JSON.parse(localStorage.getItem("auth"));
     if (!auth) return push("/");
@@ -147,7 +155,7 @@ const AddOrEdit = ({ productoSeleccionado, onClose }) => {
 
   useEffect(() => {
     pedirMedidas();
-    //console.table(productoSeleccionado.Medidas);
+
     if (productoSeleccionado?.TieneFoto) {
       pedirFoto();
     }
@@ -161,9 +169,40 @@ const AddOrEdit = ({ productoSeleccionado, onClose }) => {
 
     setInputs({ ...inputs, [name]: type === "checkbox" ? checked : value });
   };
+  const handleSabeModal = (medidaSeleccionada) => (e) => {
+    console.log(productoSeleccionado.Medidas, medidas);
+    if (
+      productoSeleccionado?.Medidas?.some((medida) => {
+        return medida.DescripcionUM === medidas[medidaSeleccionada].Descripcion;
+      })
+    )
+      return;
+
+    const Medidas = productoSeleccionado?.Medidas;
+
+    Medidas.push({
+      ...medidas[medidaSeleccionada],
+      DescripcionUM: medidas[medidaSeleccionada].Descripcion,
+    });
+
+    setProductoSeleccionado({ ...productoSeleccionado, Medidas });
+  };
+  const handleRemove = (index) => (e) => {
+    const Medidas = productoSeleccionado.Medidas;
+
+    Medidas.splice(index, 1);
+
+    setProductoSeleccionado({ ...productoSeleccionado, Medidas });
+  };
 
   return (
     <div className="AddOrEdit">
+      <ModalMedidas
+        medidas={medidas}
+        isOpen={isOpenModal}
+        onClose={handleModal}
+        onSabe={handleSabeModal}
+      />
       <div className="contenedor">
         <div className="contenedor-imagen">
           <img
@@ -220,9 +259,9 @@ const AddOrEdit = ({ productoSeleccionado, onClose }) => {
             <select
               name="medidaPrincipal"
               id="medidaPrincipal"
-              value={productoSeleccionado?.Medidas?.[0].IdMedida}>
-              {medidas.map((medida) => (
-                <option value={medida.IdMedida}>{medida.Descripcion}</option>
+              value={productoSeleccionado?.Medidas?.[0]?.IdMedida}>
+              {productoSeleccionado?.Medidas?.map((medida) => (
+                <option value={medida.IdMedida}>{medida.DescripcionUM}</option>
               ))}
             </select>
           </div>
@@ -268,13 +307,19 @@ const AddOrEdit = ({ productoSeleccionado, onClose }) => {
         </div>
         <div className="contenedor-medidas contenedor-inputs">
           <span>Medidas</span>
-          {productoSeleccionado?.Medidas.map((medida) => (
+          {productoSeleccionado?.Medidas.map((medida, index) => (
             <div>
-              <span>{medida.DescripcionUM}</span>
+              <span>
+                {medida.DescripcionUM}
+                <i
+                  onClick={handleRemove(index)}
+                  style={{ marginLeft: "1em", cursor: "pointer" }}
+                  className="fas fa-times"></i>
+              </span>
               <input type="number" />
             </div>
           ))}
-          <button>
+          <button onClick={handleModal}>
             <i className="fas fa-plus"></i>
           </button>
         </div>
@@ -292,5 +337,32 @@ const AddOrEdit = ({ productoSeleccionado, onClose }) => {
     </div>
   );
 };
+const ModalMedidas = ({ onSabe, onClose, isOpen, medidas }) => {
+  const [medidaSeleccionada, setMedidaSeleccionada] = useState(0);
 
+  const handleChange = (e) => {
+    const { target } = e;
+    setMedidaSeleccionada(target.value);
+  };
+
+  return (
+    <div className={`overlay ${isOpen ? "open" : ""}`}>
+      <div className="modal">
+        <div className="modal-body">
+          <select value={medidaSeleccionada} onChange={handleChange}>
+            {medidas?.map((medida, index) => (
+              <option key={index} value={index}>
+                {medida.Descripcion}
+              </option>
+            ))}
+          </select>
+        </div>
+        <div className="modal-botonera">
+          <button onClick={onClose}>CerrarModal</button>
+          <button onClick={onSabe(medidaSeleccionada)}>Aceptar</button>
+        </div>
+      </div>
+    </div>
+  );
+};
 export default CargaProductos;
