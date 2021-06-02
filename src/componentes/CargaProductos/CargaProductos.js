@@ -41,7 +41,10 @@ const CargaProductos = () => {
   }, []);
 
   const handleRowClick = (index) => (e) => {
-    setProductoSeleccionado(productos[index]);
+    setProductoSeleccionado({
+      ...productos[index],
+      medidaPrincipal: productos[index].Medidas[0].IdMedida,
+    });
     setIsEditOrAdd(true);
   };
   const handleAddClick = (e) => {
@@ -170,7 +173,6 @@ const AddOrEdit = ({
     setInputs({ ...inputs, [name]: type === "checkbox" ? checked : value });
   };
   const handleSabeModal = (medidaSeleccionada) => (e) => {
-    console.log(productoSeleccionado.Medidas, medidas);
     if (
       productoSeleccionado?.Medidas?.some((medida) => {
         return medida.DescripcionUM === medidas[medidaSeleccionada].Descripcion;
@@ -184,12 +186,11 @@ const AddOrEdit = ({
       ...medidas[medidaSeleccionada],
       DescripcionUM: medidas[medidaSeleccionada].Descripcion,
     });
-
+    handleModal();
     setProductoSeleccionado({ ...productoSeleccionado, Medidas });
   };
   const handleRemove = (index) => (e) => {
     const Medidas = productoSeleccionado.Medidas;
-
     Medidas.splice(index, 1);
 
     setProductoSeleccionado({ ...productoSeleccionado, Medidas });
@@ -259,7 +260,8 @@ const AddOrEdit = ({
             <select
               name="medidaPrincipal"
               id="medidaPrincipal"
-              value={productoSeleccionado?.Medidas?.[0]?.IdMedida}>
+              onChange={handleInputChange}
+              value={inputs["medidaPrincipal"]}>
               {productoSeleccionado?.Medidas?.map((medida) => (
                 <option value={medida.IdMedida}>{medida.DescripcionUM}</option>
               ))}
