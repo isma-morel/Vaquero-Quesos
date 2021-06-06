@@ -296,8 +296,7 @@ const AddOrEdit = ({
         }
         throw new Error(result.message);
       }
-
-      const json = await result.json();
+      toast.success("Producto Guardado con exito");
     } catch (error) {
       console.log(error);
       toast.error("se produjo un error");
@@ -423,12 +422,25 @@ const AddOrEdit = ({
         <div className="contenedor-medidas contenedor-inputs">
           <span>Medidas</span>
           {inputs?.Medidas.map((medida, index) => (
-            <div>
-              <span>
+            <div key={index}>
+              <span className="medidas-descripcion">
                 {medida.DescripcionUM}
                 <i
                   onClick={handleRemove(index)}
-                  style={{ marginLeft: "1em", cursor: "pointer" }}
+                  className="medidas-descripcion-eliminar"
+                  style={{
+                    fontSize: ".9em",
+                    cursor: "pointer",
+                    background: "red",
+                    padding: ".2em .4em",
+                    margin: ".2em auto .2em 1em",
+                    borderRadius: ".2em",
+                    color: "white",
+                    position: "absolute",
+                    right: "0",
+                    top: "0",
+                    transform: "translateY(-20%)",
+                  }}
                   className="fas fa-times"></i>
               </span>
               <input
@@ -440,7 +452,7 @@ const AddOrEdit = ({
               />
             </div>
           ))}
-          <button onClick={handleModal}>
+          <button className="boton-mas" onClick={handleModal}>
             <i className="fas fa-plus"></i>
           </button>
         </div>
@@ -450,7 +462,7 @@ const AddOrEdit = ({
         <button className="boton cancelar" onClick={onClose}>
           Cancelar
         </button>
-        <button className="boton" onClick={handleGuardar}>
+        <button className="boton aceptar" onClick={handleGuardar}>
           Guardar
         </button>
       </div>
@@ -480,8 +492,12 @@ const ModalMedidas = ({ onSabe, onClose, isOpen, medidas }) => {
           </select>
         </div>
         <div className="modal-botonera">
-          <button onClick={onClose}>CerrarModal</button>
-          <button onClick={onSabe(medidaSeleccionada)}>Aceptar</button>
+          <button className="cancelar" onClick={onClose}>
+            Cancelar
+          </button>
+          <button className="aceptar" onClick={onSabe(medidaSeleccionada)}>
+            Aceptar
+          </button>
         </div>
       </div>
     </div>
