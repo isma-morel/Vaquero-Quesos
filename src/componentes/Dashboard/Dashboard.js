@@ -5,6 +5,7 @@ import {
   AprepararGuardar,
   Facturar,
   EstadoPedidos,
+  CargaProductos,
 } from "../index";
 import { Route, Switch, useHistory, Link } from "react-router-dom";
 import "./Dashboard.css";
@@ -49,6 +50,11 @@ const Dashboard = () => {
             texto: "Taras",
           },
           {
+            to: "/Dashboard/productos",
+            icono: <i className="fas fa-cheese"></i>,
+            texto: "Productos",
+          },
+          {
             to: "/Logout",
             icono: <i className="fas fa-sign-out-alt"></i>,
             texto: "salir",
@@ -70,6 +76,9 @@ const Dashboard = () => {
         </Route>
         <Route path="/Dashboard/taras">
           <Taras />
+        </Route>
+        <Route path="/Dashboard/productos">
+          <CargaProductos />
         </Route>
         <Route path="/Dashboard">
           <div className="dashboard">
@@ -94,6 +103,11 @@ const Dashboard = () => {
               <Link to="/Dashboard/taras">
                 <i className="fas fa-balance-scale"></i>
               </Link>
+              <Link to="/Dashboard/productos">
+                <i className="fas fa-cheese"></i>
+              </Link>
+              <div></div>
+              <div></div>
               <Link to="/Logout">
                 <i className="fas fa-sign-out-alt"></i>
               </Link>

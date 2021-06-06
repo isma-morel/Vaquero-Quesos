@@ -1,0 +1,177 @@
+.AddOrEdit {
+  min-height: 100%;
+  width: 100%;
+}
+.AddOrEdit .contenedor {
+  display: flex;
+  flex-direction: row;
+  width: 80%;
+  align-items: center;
+  justify-content: center;
+  gap: 2em;
+  margin: auto;
+}
+.AddOrEdit .contenedor input,
+.AddOrEdit .contenedor select {
+  padding: 0.3em;
+}
+.AddOrEdit .contenedor .contenedor-imagen {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2em;
+  width: 100%;
+}
+.AddOrEdit .contenedor .contenedor-imagen .imagen {
+  width: 200px;
+  height: 200px;
+  border-radius: 0.2em;
+  margin: auto;
+  border-radius: 0.2em;
+  object-fit: contain;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.AddOrEdit .contenedor .contenedor-imagen input[type="file"] {
+  display: none;
+}
+.AddOrEdit .contenedor .contenedor-imagen button {
+  width: 100px;
+  margin: auto;
+  background: none;
+  border: none;
+  padding: 0.4em 0.8em;
+  background: rgb(184, 139, 26);
+  color: white;
+  border-radius: 0.2em;
+  cursor: pointer;
+}
+.AddOrEdit .contenedor .contenedor-inputs {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+  align-self: flex-start;
+  gap: 1em;
+}
+.AddOrEdit .contenedor .contenedor-inputs div {
+  display: flex;
+  flex-direction: column;
+}
+
+.AddOrEdit .contenedor .contenedor-medidas {
+  overflow-y: auto;
+  max-height: 50vh;
+  min-width: 200px;
+  display: flex;
+  flex-direction: column;
+  gap: 1em;
+}
+.AddOrEdit .contenedor .contenedor-medidas .medidas-descripcion {
+  display: block;
+  width: 100%;
+  position: relative;
+}
+.AddOrEdit
+  .contenedor
+  .contenedor-medidas
+  .medidas-descripcion
+  .medidas-descripcion-eliminar {
+  font-size: 0.9em;
+  cursor: pointer;
+  background: red;
+  padding: 0.2em 0.4em;
+  margin: 0.2em auto 0.2em 1em;
+  border-radius: 0.2em;
+  color: white;
+  position: absolute;
+  right: 0;
+  top: 0;
+  transform: translateY(-20%);
+}
+.AddOrEdit .contenedor .contenedor-medidas input[type="number"] {
+  width: 100%;
+}
+.AddOrEdit .contenedor .contenedor-medidas .boton-mas {
+  border-radius: 50%;
+  padding: 0.5em;
+  border: none;
+  background: rgb(184, 139, 26);
+  color: white;
+  cursor: pointer;
+  align-self: center;
+}
+.AddOrEdit .botonera {
+  width: 100%;
+  text-align: center;
+  padding: 2em;
+}
+.AddOrEdit .botonera .boton {
+  margin: auto;
+  background: none;
+  border: none;
+  padding: 0.4em 0.8em;
+  border-radius: 0.2em;
+  cursor: pointer;
+}
+.AddOrEdit .botonera .cancelar {
+  margin-right: 1em;
+  background: red;
+  color: white;
+}
+.AddOrEdit .botonera .aceptar {
+  background: green;
+  color: white;
+}
+
+.AddOrEdit .contenedor .contenedor-inputs .Inactivo {
+  align-self: center;
+  justify-self: center;
+  margin-top: 1em;
+  padding: 0.4em 0.8em;
+  border-radius: 0.2em;
+  color: white;
+  cursor: pointer;
+  user-select: none;
+}
+.AddOrEdit .contenedor .contenedor-inputs .Inactivo.true {
+  background-color: green;
+}
+.AddOrEdit .contenedor .contenedor-inputs .Inactivo.false {
+  background-color: red;
+}
+
+@media screen and (max-width: 950px) {
+  .AddOrEdit .contenedor {
+    flex-direction: column;
+  }
+  .AddOrEdit .contenedor .contenedor-inputs {
+    align-self: center;
+    align-items: center;
+  }
+}
+
+/* Modal */
+.modal-body {
+  margin: 1em auto;
+}
+.modal-body select {
+  padding: 0.3em;
+  min-width: 100%;
+}
+.modal-botonera button {
+  margin: auto 0.5em;
+  padding: 0.4em 0.8em;
+  border: none;
+  background: none;
+  border-radius: 0.2em;
+  cursor: pointer;
+}
+.modal-botonera button.cancelar {
+  background: red;
+  color: white;
+}
+.modal-botonera button.aceptar {
+  background: green;
+  color: white;
+}

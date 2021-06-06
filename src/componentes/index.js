@@ -10,3 +10,4 @@ export { default as AprepararGuardar } from "./AprepararGuardar/AprepararGuardar
 export { default as Facturar } from "./Facturar/Facturar";
 export { default as EstadoPedidos } from "./EstadoPedidos/EstadoPedidos";
 export { default as Taras } from "./Taras/Taras";
+export { default as CargaProductos } from "./CargaProductos/CargaProductos";
