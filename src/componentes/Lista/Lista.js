@@ -36,18 +36,21 @@ function Lista() {
     const pedirLista = async () => {
       if (!auth || !auth.IdCliente) localStorage.removeItem("auth");
       try {
-        const json = await fetch(
+        const result = await fetch(
           `${BASE_URL}iProductosSP/ProductosDatos?pUsuario=${auth.usuario}&pToken=${auth.Token}`
         );
-        if (json.status !== 200) {
-          if (json.status === 401) {
+        if (result.status !== 200) {
+          if (result.status === 401) {
             localStorage.removeItem("auth");
             history.push("/");
           }
           throw new Error("se ha producido un error");
         }
-        const result = await json.json();
-        setProductosState(result);
+        const json = await result.json();
+        json.forEach((productos) => {
+          productos.Medidas.splice(0, 1);
+        });
+        setProductosState(json);
       } catch (err) {
         console.log(err);
       }
