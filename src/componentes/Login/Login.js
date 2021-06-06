@@ -73,7 +73,7 @@ const Login = ({ logo, LogSucces }) => {
         return result.json();
       })
       .then((json) => {
-        if (json.IdCliente === 0) {
+        if (json.IdCliente === 0 || json.Inactivo) {
           target[1].value = "";
           throw new Error("usuario o contraseña incorrecta.");
         }

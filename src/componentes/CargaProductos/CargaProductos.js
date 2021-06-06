@@ -5,6 +5,44 @@ import { BASE_URL } from "../../BaseURL.json";
 import "./CargaProductos.css";
 import "./AddOrEdit.css";
 import useModal from "../../hooks/useModal";
+
+const obtenerImagen = (imagen) =>
+  new Promise((resolve, reject) => {
+    let reader = new FileReader();
+    reader.onloadend = function (e) {
+      resolve(e.target.result);
+    };
+    reader.onerror = function (e) {
+      reject(e.target.error);
+    };
+    reader.readAsDataURL(imagen);
+  });
+
+const procesarProductoParaGuardar = ({
+  IdProducto,
+  Descripcion,
+  Presentacion,
+  Codigo,
+  Inactivo,
+  PesoPromedio,
+  PorcDesvio,
+  medidaPrincipal,
+  Medidas,
+  pFoto,
+}) => ({
+  pIdProducto: IdProducto || 0,
+  pDescripcion: Descripcion,
+  pCodigo: Codigo,
+  pIdMedidaPrinc: medidaPrincipal || Medidas[0].IdMedida,
+  pPresentacion: Presentacion,
+  PesoPromedio: PesoPromedio || 0,
+  PorcDesvio: PorcDesvio || 0,
+  Inactivo: Inactivo || false,
+  pFoto: pFoto || null,
+  pMedidas: Medidas,
+});
+
+/* Formulario de listado de productos */
 const CargaProductos = () => {
   const [productos, setProductos] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -53,6 +91,7 @@ const CargaProductos = () => {
   const onCloseAddOrEdit = (e) => {
     setIsEditOrAdd(false);
     setProductoSeleccionado(null);
+    obtenerPedidos();
   };
 
   return (
@@ -99,12 +138,14 @@ const CargaProductos = () => {
   );
 };
 
+/* Formulario de carga de productos */
 const AddOrEdit = ({
   productoSeleccionado,
   setProductoSeleccionado,
   onClose,
 }) => {
   const referencedElement = useRef();
+  const [isLoading, setIsLoading] = useState(false);
   const [imagen, setImagen] = useState();
   const [medidas, setMedidas] = useState([]);
   const [inputs, setInputs] = useState({
@@ -157,8 +198,14 @@ const AddOrEdit = ({
   };
 
   useEffect(() => {
+    let medidas = [...productoSeleccionado?.Medidas] || [];
     pedirMedidas();
-
+    medidas.splice(0, 1);
+    setInputs({
+      ...inputs,
+      medidaPrincipal: productoSeleccionado?.Medidas?.[0]?.IdMedida || 0,
+      Medidas: medidas,
+    });
     if (productoSeleccionado?.TieneFoto) {
       pedirFoto();
     }
@@ -170,24 +217,37 @@ const AddOrEdit = ({
   const handleInputChange = (e) => {
     const { name, value, type, checked } = e.target;
 
-    setInputs({ ...inputs, [name]: type === "checkbox" ? checked : value });
+    setInputs({
+      ...inputs,
+      [name]:
+        type === "checkbox"
+          ? checked
+          : type === "number"
+          ? parseFloat(value)
+          : value,
+    });
   };
   const handleSabeModal = (medidaSeleccionada) => (e) => {
     if (
-      productoSeleccionado?.Medidas?.some((medida) => {
-        return medida.DescripcionUM === medidas[medidaSeleccionada].Descripcion;
-      })
+      inputs?.Medidas?.some(
+        (medida) =>
+          medida.DescripcionUM === medidas[medidaSeleccionada].Descripcion
+      )
     )
       return;
 
-    const Medidas = productoSeleccionado?.Medidas;
+    const Medidas = inputs?.Medidas || [];
 
     Medidas.push({
       ...medidas[medidaSeleccionada],
       DescripcionUM: medidas[medidaSeleccionada].Descripcion,
+      Factor: 0,
     });
     handleModal();
-    setProductoSeleccionado({ ...productoSeleccionado, Medidas });
+    setInputs({
+      ...inputs,
+      ["medidaPrincipal"]: medidas[medidaSeleccionada].IdMedida,
+    });
   };
   const handleRemove = (index) => (e) => {
     const Medidas = productoSeleccionado.Medidas;
@@ -195,8 +255,61 @@ const AddOrEdit = ({
 
     setProductoSeleccionado({ ...productoSeleccionado, Medidas });
   };
+  const handleMedidaChange = (index) => (e) => {
+    const { value } = e.target;
 
-  return (
+    let productoSeleccionadoTemp = inputs;
+
+    productoSeleccionadoTemp.Medidas[index].Factor = parseFloat(value);
+
+    setInputs({ ...productoSeleccionadoTemp });
+  };
+
+  const handleGuardar = async (e) => {
+    let foto = null;
+    const auth = JSON.parse(localStorage.getItem("auth"));
+    if (!auth) return push("/");
+    setIsLoading(true);
+    try {
+      if (imagen) {
+        foto = await obtenerImagen(imagen);
+        foto = foto.split(",")[1];
+      }
+      const productoAGuardar = procesarProductoParaGuardar({
+        ...inputs,
+        pFoto: foto,
+      });
+      const result = await fetch(
+        `${BASE_URL}iProductosSP/Guardar?pUsuario=${auth.usuario}&pToken=${auth.Token}`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(productoAGuardar),
+        }
+      );
+
+      if (result.status !== 200) {
+        if (result.status === 401) {
+          push("/");
+        }
+        throw new Error(result.message);
+      }
+
+      const json = await result.json();
+    } catch (error) {
+      console.log(error);
+      toast.error("se produjo un error");
+    } finally {
+      setIsLoading(false);
+      onClose();
+    }
+  };
+
+  return isLoading ? (
+    <div className="spin"></div>
+  ) : (
     <div className="AddOrEdit">
       <ModalMedidas
         medidas={medidas}
@@ -231,7 +344,7 @@ const AddOrEdit = ({
           <div>
             <span>Codigo</span>
             <input
-              type="text"
+              type="number"
               name="Codigo"
               onChange={handleInputChange}
               value={inputs["Codigo"]}
@@ -262,7 +375,7 @@ const AddOrEdit = ({
               id="medidaPrincipal"
               onChange={handleInputChange}
               value={inputs["medidaPrincipal"]}>
-              {productoSeleccionado?.Medidas?.map((medida) => (
+              {inputs?.Medidas?.map((medida) => (
                 <option value={medida.IdMedida}>{medida.DescripcionUM}</option>
               ))}
             </select>
@@ -309,7 +422,7 @@ const AddOrEdit = ({
         </div>
         <div className="contenedor-medidas contenedor-inputs">
           <span>Medidas</span>
-          {productoSeleccionado?.Medidas.map((medida, index) => (
+          {inputs?.Medidas.map((medida, index) => (
             <div>
               <span>
                 {medida.DescripcionUM}
@@ -318,7 +431,13 @@ const AddOrEdit = ({
                   style={{ marginLeft: "1em", cursor: "pointer" }}
                   className="fas fa-times"></i>
               </span>
-              <input type="number" />
+              <input
+                type="number"
+                min={0}
+                step={0.01}
+                onChange={handleMedidaChange(index)}
+                value={medida.Factor}
+              />
             </div>
           ))}
           <button onClick={handleModal}>
@@ -331,14 +450,15 @@ const AddOrEdit = ({
         <button className="boton cancelar" onClick={onClose}>
           Cancelar
         </button>
-        {productoSeleccionado ? (
-          <button className="boton cancelar">Eliminar</button>
-        ) : null}
-        <button className="boton">Guardar</button>
+        <button className="boton" onClick={handleGuardar}>
+          Guardar
+        </button>
       </div>
     </div>
   );
 };
+
+/* Formulario de medidas */
 const ModalMedidas = ({ onSabe, onClose, isOpen, medidas }) => {
   const [medidaSeleccionada, setMedidaSeleccionada] = useState(0);
 
