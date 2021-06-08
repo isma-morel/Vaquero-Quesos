@@ -8,13 +8,17 @@
   transition: all 1s ease;
   font-size: clamp(0.8em, 2vw, 1em);
 }
-.carga-productos .tabla tbody tr {
-  cursor: pointer;
-  transition: background-color 0.2s ease;
+.carga-productos .tabla tbody tr td.descripcion {
+  display: flex;
+  justify-content: space-between;
 }
-.carga-productos .tabla tbody tr:hover {
+.carga-productos .tabla tbody tr td.descripcion button {
+  background: none;
+  border: none;
   cursor: pointer;
-  background: #003cff41;
+  margin: 0px 0.5em;
+  font-size: 1.5em;
+  color: rgb(179, 128, 19);
 }
 .carga-productos .tabla thead th:nth-child(2) {
   width: 50%;

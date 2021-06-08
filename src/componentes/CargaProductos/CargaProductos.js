@@ -121,12 +121,20 @@ const CargaProductos = () => {
             </thead>
             <tbody>
               {productos.map(({ Codigo, Descripcion, Presentacion }, index) => (
-                <tr
-                  key={index}
-                  title="Presione el click para editar"
-                  onClick={handleRowClick(index)}>
+                <tr key={index}>
                   <td>{Codigo}</td>
-                  <td>{Descripcion}</td>
+                  <td className="descripcion">
+                    <div>
+                      <span>{Descripcion}</span>
+                    </div>
+                    <div>
+                      <button onClick={handleRowClick(index)}>
+                        <i
+                          title="presione para editar"
+                          className="fas fa-edit"></i>
+                      </button>
+                    </div>
+                  </td>
                   <td>{Presentacion}</td>
                 </tr>
               ))}
@@ -422,7 +430,7 @@ const AddOrEdit = ({
           </div>
         </div>
         <div className="contenedor-medidas contenedor-inputs">
-          <span>Medidas</span>
+          <span>Medidas / Factor</span>
           {inputs?.Medidas?.map((medida, index) => (
             <div key={index}>
               <span className="medidas-descripcion">
