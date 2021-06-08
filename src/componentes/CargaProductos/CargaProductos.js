@@ -198,7 +198,9 @@ const AddOrEdit = ({
   };
 
   useEffect(() => {
-    let medidas = [...productoSeleccionado?.Medidas] || [];
+    let medidas = productoSeleccionado?.Medidas
+      ? [...productoSeleccionado?.Medidas]
+      : [];
     pedirMedidas();
     medidas.splice(0, 1);
     setInputs({
@@ -421,7 +423,7 @@ const AddOrEdit = ({
         </div>
         <div className="contenedor-medidas contenedor-inputs">
           <span>Medidas</span>
-          {inputs?.Medidas.map((medida, index) => (
+          {inputs?.Medidas?.map((medida, index) => (
             <div key={index}>
               <span className="medidas-descripcion">
                 {medida.DescripcionUM}
