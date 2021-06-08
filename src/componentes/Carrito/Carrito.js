@@ -26,9 +26,13 @@ const Carrito = () => {
   };
   const handleConfirmar = async (e) => {
     handleConfirmacionModal();
+    console.log(user);
     let pedido = {
       Numero: 0,
       IdCliente: user.IdCliente,
+      IdClienteRegistro: user.vendedor
+        ? user.vendedor.IdCliente
+        : user.IdCliente,
       Observacion: "",
       Productos: [],
     };

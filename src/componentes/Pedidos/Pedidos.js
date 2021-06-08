@@ -46,6 +46,8 @@ const ProcesarPedido = (pedidos) => {
                 Medida,
                 IdMedidaPrinc,
                 MedidaPrinc,
+                NuevoPedido: false,
+                DesecharFaltante: false,
               },
             ],
           },
@@ -97,16 +99,26 @@ const filtrar = (value, pedidos) => {
 */
 const ProcesarPedidoAConfirmar = ({ Productos }) => {
   let Preparados = [];
-
-  Productos.map(({ CantidadPreparar, idPedidosProd, IdMedidaPrinc }) => {
-    if (CantidadPreparar > 0) {
-      Preparados.push({
-        idPedidosProd,
-        IdMedidaPrinc,
-        CantidadPrinc: CantidadPreparar,
-      });
+  console.log(Productos);
+  Productos.map(
+    ({
+      CantidadPreparar,
+      idPedidosProd,
+      IdMedidaPrinc,
+      DesecharFaltante,
+      NuevoPedido,
+    }) => {
+      if (CantidadPreparar > 0) {
+        Preparados.push({
+          idPedidosProd,
+          IdMedidaPrinc,
+          CantidadPrinc: CantidadPreparar,
+          NuevoPedido,
+          DesecharFaltante,
+        });
+      }
     }
-  });
+  );
 
   return Preparados;
 };
@@ -147,13 +159,18 @@ const Pedidos = () => {
 
   /* Manejadores de eventos */
   const handleConfirmar = (index) => async (e) => {
-    const { usuario, Token } = JSON.parse(localStorage.getItem("auth")) || {};
+    const { usuario, Token, IdCliente } =
+      JSON.parse(localStorage.getItem("auth")) || {};
     let Preparados = ProcesarPedidoAConfirmar(pedidos[index]);
+    console.log(pedidos[index]);
     if (Preparados.length === 0) return;
-    let PedidosPreparados = { PedidosAPrepararTodos: Preparados };
+    let PedidosPreparados = {
+      PedidosAPrepararTodos: Preparados,
+      IdPedido: pedidos[index].IdPedido,
+    };
     try {
       const result = await fetch(
-        `${BASE_URL}iPedidosSP/APrepararGuardar?pUsuario=${usuario}&pToken=${Token}`,
+        `${BASE_URL}iPedidosSP/APrepararGuardar?pUsuario=${usuario}&pToken=${Token}&pIdClienteRegistro=${IdCliente}`,
         {
           method: "POST",
           headers: {
@@ -190,7 +207,7 @@ const Pedidos = () => {
     let pedidosTemp = pedidosFiltrados;
 
     pedidosTemp[index].Productos[indexProd].CantidadPreparar =
-      parseInt(target.value) || "";
+      parseInt(target.value) >= 0 ? parseInt(target.value) : "";
 
     setPedidosFiltrados([...pedidosTemp]);
   };
@@ -216,7 +233,7 @@ const Pedidos = () => {
             onChange={handleChangeFiltro}
           />
         </div>
-        <span className="titulo">Pedidos</span>
+        <span className="titulo">Confirmacion de Pedidos</span>
         <hr />
       </div>
 
@@ -258,6 +275,14 @@ const Pedidos = () => {
                       <td>
                         <div>
                           <span className="titulo">{Presentacion}</span>
+                        </div>
+                        <div hidden={!(CantidadPreparar < Cantidad)}>
+                          <button>
+                            <i className="fas fa-plus"></i>
+                          </button>
+                          <button>
+                            <i className="fas fa-trash"></i>
+                          </button>
                         </div>
                       </td>
                       <td>{`${Cantidad} ${Medida || ""}`}</td>
