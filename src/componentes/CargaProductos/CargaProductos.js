@@ -260,10 +260,10 @@ const AddOrEdit = ({
     });
   };
   const handleRemove = (index) => (e) => {
-    const Medidas = productoSeleccionado.Medidas;
+    const Medidas = inputs.Medidas;
     Medidas.splice(index, 1);
 
-    setProductoSeleccionado({ ...productoSeleccionado, Medidas });
+    setInputs({ ...inputs, Medidas });
   };
   const handleMedidaChange = (index) => (e) => {
     const { value } = e.target;
