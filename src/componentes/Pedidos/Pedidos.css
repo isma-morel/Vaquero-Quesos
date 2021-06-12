@@ -123,6 +123,37 @@
   text-align: left;
   position: inherit;
 }
+.tabla.tabla-pedidos tbody tr td:nth-child(2) {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+}
+.tabla.tabla-pedidos tbody tr td:nth-child(2) .boton {
+  margin: auto 0.5em;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0.2em;
+  border-radius: 0.2em;
+  transition: all 0.2s ease;
+}
+.tabla.tabla-pedidos tbody tr td:nth-child(2) .boton.nuevo {
+  color: green;
+}
+.tabla.tabla-pedidos tbody tr td:nth-child(2) .boton.eliminar {
+  color: red;
+}
+.tabla.tabla-pedidos tbody tr td:nth-child(2) .boton.eliminar.seleccionado {
+  color: white;
+  background: red;
+}
+.tabla.tabla-pedidos tbody tr td:nth-child(2) .boton.nuevo.seleccionado {
+  color: white;
+  background: green;
+}
+.tabla.tabla-pedidos tbody tr td:nth-child(2) .boton:disabled {
+  color: gray;
+}
 .tabla.tabla-pedidos tbody tr td:nth-child(1) {
   font-size: 1.2em;
 }

@@ -46,7 +46,7 @@ const ProcesarPedido = (pedidos) => {
                 Medida,
                 IdMedidaPrinc,
                 MedidaPrinc,
-                NuevoPedido: false,
+                NuevoPedido: true,
                 DesecharFaltante: false,
               },
             ],
@@ -63,6 +63,8 @@ const ProcesarPedido = (pedidos) => {
         Medida,
         IdMedidaPrinc,
         MedidaPrinc,
+        NuevoPedido: true,
+        DesecharFaltante: false,
       });
       return [...acum];
     },
@@ -99,7 +101,6 @@ const filtrar = (value, pedidos) => {
 */
 const ProcesarPedidoAConfirmar = ({ Productos }) => {
   let Preparados = [];
-  console.log(Productos);
   Productos.map(
     ({
       CantidadPreparar,
@@ -108,15 +109,13 @@ const ProcesarPedidoAConfirmar = ({ Productos }) => {
       DesecharFaltante,
       NuevoPedido,
     }) => {
-      if (CantidadPreparar > 0) {
-        Preparados.push({
-          idPedidosProd,
-          IdMedidaPrinc,
-          CantidadPrinc: CantidadPreparar,
-          NuevoPedido,
-          DesecharFaltante,
-        });
-      }
+      Preparados.push({
+        idPedidosProd,
+        IdMedidaPrinc,
+        CantidadPrinc: CantidadPreparar,
+        NuevoPedido,
+        DesecharFaltante,
+      });
     }
   );
 
@@ -209,7 +208,38 @@ const Pedidos = () => {
     pedidosTemp[index].Productos[indexProd].CantidadPreparar =
       parseInt(target.value) >= 0 ? parseInt(target.value) : "";
 
+    if (
+      pedidosTemp[index].Productos[indexProd].CantidadPreparar >=
+      pedidosTemp[index].Productos[indexProd].Cantidad
+    ) {
+      pedidosTemp[index].Productos[indexProd].NuevoPedido = false;
+      pedidosTemp[index].Productos[indexProd].DesecharFaltante = false;
+    }
+    if (
+      pedidosTemp[index].Productos[indexProd].CantidadPreparar <
+        pedidosTemp[index].Productos[indexProd].Cantidad &&
+      !pedidosTemp[index].Productos[indexProd].DesecharFaltante &&
+      !pedidosTemp[index].Productos[indexProd].NuevoPedido
+    ) {
+      pedidosTemp[index].Productos[indexProd].NuevoPedido = true;
+    }
+
     setPedidosFiltrados([...pedidosTemp]);
+  };
+  const handleDescartarNuevoClick = (tipo, index, indexProd) => (e) => {
+    const pedidoTemp = pedidosFiltrados;
+    const Tipos = {
+      Descartar: () => {
+        pedidoTemp[index].Productos[indexProd].DesecharFaltante = true;
+        pedidoTemp[index].Productos[indexProd].NuevoPedido = false;
+      },
+      Nuevo: () => {
+        pedidoTemp[index].Productos[indexProd].NuevoPedido = true;
+        pedidoTemp[index].Productos[indexProd].DesecharFaltante = false;
+      },
+    };
+    Tipos[tipo]();
+    setPedidosFiltrados([...pedidoTemp]);
   };
 
   /* Efecto encargado de actualizar la lista de pedidos que se va a renderizar */
@@ -267,6 +297,8 @@ const Pedidos = () => {
                       Medida,
                       CantidadPreparar,
                       MedidaPrinc,
+                      DesecharFaltante,
+                      NuevoPedido,
                     },
                     indexProd
                   ) => (
@@ -277,10 +309,26 @@ const Pedidos = () => {
                           <span className="titulo">{Presentacion}</span>
                         </div>
                         <div hidden={!(CantidadPreparar < Cantidad)}>
-                          <button>
+                          <button
+                            onClick={handleDescartarNuevoClick(
+                              "Nuevo",
+                              index,
+                              indexProd
+                            )}
+                            className={`boton nuevo ${
+                              NuevoPedido ? "seleccionado" : ""
+                            }`}>
                             <i className="fas fa-plus"></i>
                           </button>
-                          <button>
+                          <button
+                            onClick={handleDescartarNuevoClick(
+                              "Descartar",
+                              index,
+                              indexProd
+                            )}
+                            className={`boton eliminar ${
+                              DesecharFaltante ? "seleccionado" : ""
+                            }`}>
                             <i className="fas fa-trash"></i>
                           </button>
                         </div>
