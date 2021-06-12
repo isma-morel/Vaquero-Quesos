@@ -35,6 +35,11 @@ const Dashboard = () => {
             texto: "Preparacion",
           },
           {
+            to: "/Dashboard/consultaPreparados",
+            icono: <i className="fas fa-check"></i>,
+            texto: "Confirmados",
+          },
+          {
             to: "/Dashboard/facturar",
             icono: <i className="fas fa-file-invoice-dollar"></i>,
             texto: "Facturar",
@@ -80,6 +85,9 @@ const Dashboard = () => {
         <Route path="/Dashboard/productos">
           <CargaProductos />
         </Route>
+        <Route path="/Dashboard/consultaPreparados">
+          <AprepararGuardar isConsulta={true} />
+        </Route>
         <Route path="/Dashboard">
           <div className="dashboard">
             <div className="grid">
@@ -108,6 +116,9 @@ const Dashboard = () => {
               </Link>
               <div></div>
               <div></div>
+              <Link to="/Dashboard/consultaPreparados">
+                <i className="fas fa-check"></i>
+              </Link>
               <Link to="/Logout">
                 <i className="fas fa-sign-out-alt"></i>
               </Link>

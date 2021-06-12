@@ -92,7 +92,7 @@ const ProcesarParaGuardar = (pedido) => {
   return PedidoProcesado;
 };
 
-function AprepararGuardar() {
+function AprepararGuardar({ isConsulta }) {
   /* Variables de estado */
   const [pedidos, setPedidos] = useState([]);
   const [pedidosFiltrados, setPedidosFiltrados] = useState([]);
@@ -221,6 +221,7 @@ function AprepararGuardar() {
                     <span>Fecha: {Fecha}</span>
                   </div>
                   <button
+                    hidden={isConsulta}
                     onClick={handlePreparar(pedidosFiltrados[index])}
                     className="btn">
                     Preparar
