@@ -139,7 +139,7 @@ function AprepararGuardar({ isConsulta }) {
     const auth = JSON.parse(localStorage.getItem("auth")) || {};
     try {
       const result = await fetch(
-        `${BASE_URL}iPedidosSP/PrepararGuardar?pUsuario=${auth.usuario}&pToken=${auth.Token}`,
+        `${BASE_URL}iPedidosSP/PrepararGuardar?pUsuario=${auth.usuario}&pToken=${auth.Token}&pIdClienteRegistro=${auth.IdCliente}`,
         {
           method: "POST",
           headers: {
