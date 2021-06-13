@@ -82,8 +82,9 @@
   .tabla.tabla.tabla-pedidos.tabla-preparar
   tr
   td
-  button {
+  .boton.pesaje {
   padding: 3px 6px;
+  margin: auto 0.2em;
   background: rgb(179, 128, 19);
   color: white;
   border: none;
@@ -97,7 +98,7 @@
   .tabla.tabla.tabla-pedidos.tabla-preparar
   tr
   td
-  button:hover {
+  .boton.pesaje:hover {
   background: rgba(179, 128, 19, 0.726);
 }
 .preparar

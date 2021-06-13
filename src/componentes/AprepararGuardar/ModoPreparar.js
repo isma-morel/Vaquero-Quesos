@@ -21,6 +21,13 @@ const ModoPreparar = ({ pedido, salir, onGuardar }) => {
     ProductoPesado[producto.index].CantidadAnterior =
       ProductoPesado[producto.index].Cantidad;
     ProductoPesado[producto.index].Cantidad = producto.Cantidad;
+    if (
+      ProductoPesado[producto.index].CantidadAnterior <=
+      ProductoPesado[producto.index].Cantidad
+    ) {
+      ProductoPesado[producto.index].NuevoPedido = false;
+      ProductoPesado[producto.index].DesecharFaltante = false;
+    }
 
     setPedidoApreparar({ ...pedidoApreparar, Productos: ProductoPesado });
     setProductoApesar(undefined);
@@ -28,12 +35,27 @@ const ModoPreparar = ({ pedido, salir, onGuardar }) => {
 
   const handleEliminarPesaje = (index) => (e) => {
     let ProductoPesado = pedidoApreparar.Productos;
-    ProductoPesado[index].Pesaje = null;
+    ProductoPesado[index].Pesaje = undefined;
     ProductoPesado[index].Cantidad = ProductoPesado[index].CantidadAnterior;
     setPedidoApreparar({
       ...pedidoApreparar,
       Productos: ProductoPesado,
     });
+  };
+  const handleDescartarNuevoClick = (tipo, indexProd) => (e) => {
+    const pedidoTemp = pedidoApreparar;
+    const Tipos = {
+      Descartar: () => {
+        pedidoTemp.Productos[indexProd].DesecharFaltante = true;
+        pedidoTemp.Productos[indexProd].NuevoPedido = false;
+      },
+      Nuevo: () => {
+        pedidoTemp.Productos[indexProd].NuevoPedido = true;
+        pedidoTemp.Productos[indexProd].DesecharFaltante = false;
+      },
+    };
+    Tipos[tipo]();
+    setPedidoApreparar({ ...pedidoTemp });
   };
   const handleCancelarPesaje = (e) => {
     setProductoApesar(null);
@@ -54,7 +76,27 @@ const ModoPreparar = ({ pedido, salir, onGuardar }) => {
             onClick={salir}
             className="fas fa-window-close btn btn-red"></button>
           <button
-            disabled={pedidoApreparar.Productos.some(({ Pesaje }) => !Pesaje)}
+            disabled={pedidoApreparar.Productos.some(
+              ({
+                NuevoPedido,
+                DesecharFaltante,
+                Pesaje,
+                Cantidad,
+                CantidadAnterior,
+              }) => {
+                if (!Pesaje && !NuevoPedido && !DesecharFaltante) {
+                  return true;
+                }
+                if (
+                  CantidadAnterior > Cantidad &&
+                  !NuevoPedido &&
+                  !DesecharFaltante
+                ) {
+                  return true;
+                }
+                return false;
+              }
+            )}
             onClick={onGuardar(pedidoApreparar)}
             className="btn">
             Guardar
@@ -82,6 +124,9 @@ const ModoPreparar = ({ pedido, salir, onGuardar }) => {
                 Pesaje,
                 pesoMaximo,
                 pesoMinimo,
+                NuevoPedido,
+                DesecharFaltante,
+                CantidadAnterior,
               },
               indexProd
             ) => (
@@ -89,22 +134,50 @@ const ModoPreparar = ({ pedido, salir, onGuardar }) => {
                 <td>{Codigo}</td>
                 <td>
                   <span className="titulo">{Presentacion}</span>
-                  {!Pesaje ? (
-                    <button
-                      onClick={handlePesar({
-                        ...pedidoApreparar.Productos[indexProd],
-                        index: indexProd,
-                      })}
-                      className="btn">
-                      Pesar
-                    </button>
-                  ) : (
-                    <button
-                      className="btn"
-                      onClick={handleEliminarPesaje(indexProd)}>
-                      Cancelar
-                    </button>
-                  )}
+                  <div style={{ display: "flex" }}>
+                    <div
+                      hidden={
+                        !(
+                          Pesaje === undefined ||
+                          CantidadAnterior === null ||
+                          CantidadAnterior > Cantidad
+                        )
+                      }>
+                      <button
+                        onClick={handleDescartarNuevoClick("Nuevo", indexProd)}
+                        className={`boton nuevo ${
+                          NuevoPedido ? "seleccionado" : ""
+                        }`}>
+                        <i className="fas fa-plus"></i>
+                      </button>
+                      <button
+                        onClick={handleDescartarNuevoClick(
+                          "Descartar",
+                          indexProd
+                        )}
+                        className={`boton eliminar ${
+                          DesecharFaltante ? "seleccionado" : ""
+                        }`}>
+                        <i className="fas fa-trash"></i>
+                      </button>
+                    </div>
+                    {!Pesaje ? (
+                      <button
+                        onClick={handlePesar({
+                          ...pedidoApreparar.Productos[indexProd],
+                          index: indexProd,
+                        })}
+                        className="boton pesaje">
+                        Pesar
+                      </button>
+                    ) : (
+                      <button
+                        className="boton pesaje"
+                        onClick={handleEliminarPesaje(indexProd)}>
+                        Cancelar
+                      </button>
+                    )}
+                  </div>
                 </td>
                 <td>{`${Cantidad} ${Medida}`}</td>
                 <td>{`${Pesaje?.PesoNeto || 0}`}</td>
