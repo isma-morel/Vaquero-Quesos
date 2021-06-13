@@ -310,6 +310,7 @@ const Pedidos = () => {
                         </div>
                         <div hidden={!(CantidadPreparar < Cantidad)}>
                           <button
+                            title="Presione para cargar el faltante a un nuevo pedido"
                             onClick={handleDescartarNuevoClick(
                               "Nuevo",
                               index,
@@ -321,6 +322,7 @@ const Pedidos = () => {
                             <i className="fas fa-plus"></i>
                           </button>
                           <button
+                            title="Presione para desehar el faltante"
                             onClick={handleDescartarNuevoClick(
                               "Descartar",
                               index,

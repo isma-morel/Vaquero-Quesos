@@ -144,6 +144,7 @@ const ModoPreparar = ({ pedido, salir, onGuardar }) => {
                         )
                       }>
                       <button
+                        title="Presione para cargar el faltante a un nuevo pedido"
                         onClick={handleDescartarNuevoClick("Nuevo", indexProd)}
                         className={`boton nuevo ${
                           NuevoPedido ? "seleccionado" : ""
@@ -151,6 +152,7 @@ const ModoPreparar = ({ pedido, salir, onGuardar }) => {
                         <i className="fas fa-plus"></i>
                       </button>
                       <button
+                        title="Presione para desechar el faltante"
                         onClick={handleDescartarNuevoClick(
                           "Descartar",
                           indexProd
