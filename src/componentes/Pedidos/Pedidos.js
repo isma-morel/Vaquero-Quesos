@@ -136,7 +136,7 @@ const Pedidos = () => {
       const result = await fetch(
         `${BASE_URL}iPedidosSP/PedidosPendientes?pUsuario=${usuario}&pToken=${Token}`
       );
-      setIsLoading(false);
+
       if (result.status !== 200) {
         if (result.status === 401) {
           localStorage.removeItem("auth");
@@ -153,6 +153,8 @@ const Pedidos = () => {
     } catch (err) {
       toast.error("ha ocurrido un error");
       console.log(err.message);
+    } finally {
+      setIsLoading(false);
     }
   };
 

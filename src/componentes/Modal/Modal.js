@@ -7,6 +7,7 @@ const Modal = ({ isOpen, onClose, producto }) => {
     cantidad: 0,
     medida: medidaDefault,
   });
+  const [isLoading, setIsLoading] = useState(false);
   const [foto, setFoto] = useState();
   useEffect(() => {
     const pedirFoto = async (idProducto) => {
@@ -21,9 +22,12 @@ const Modal = ({ isOpen, onClose, producto }) => {
         setFoto(`data:image/png;base64,${json.Foto}`);
       } catch (err) {
         console.log(err);
+      } finally {
+        setIsLoading(false);
       }
     };
     if (producto.TieneFoto) {
+      setIsLoading(true);
       pedirFoto(producto.IdProducto);
     } else {
       setFoto(null);
@@ -70,13 +74,19 @@ const Modal = ({ isOpen, onClose, producto }) => {
   return (
     <div className={`overlay ${isOpen ? "open" : ""}`}>
       <div className="card-producto">
-        {producto.TieneFoto && (
-          <img
-            className="imagen-producto"
-            src={foto}
-            alt="Imagen ilustrativa"
-          />
-        )}
+        {producto.TieneFoto ? (
+          !isLoading ? (
+            <img
+              className="imagen-producto"
+              src={foto}
+              alt="Imagen ilustrativa"
+            />
+          ) : (
+            <div
+              className="spin"
+              style={{ margin: "auto", borderTop: "5px solid #cf963c" }}></div>
+          )
+        ) : null}
         <div className="texto-producto">
           <h2 className="producto">{producto.Descripcion}</h2>
           <h3 className="descripcion">{producto.Presentacion}</h3>

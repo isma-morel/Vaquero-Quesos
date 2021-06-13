@@ -127,7 +127,6 @@ function AprepararGuardar({ isConsulta }) {
       const result = await fetch(
         `${BASE_URL}iPedidosSP/PedidosParaPreparar?pUsuario=${usuario}&pToken=${Token}`
       );
-      setIsLoading(false);
 
       /* si la api devuelve un estado difetente a ok compruebo que el error no sea de auth */
       if (result.status !== 200) {
@@ -146,6 +145,8 @@ function AprepararGuardar({ isConsulta }) {
     } catch (err) {
       toast.error("a ocurrido un error");
       console.log(err);
+    } finally {
+      setIsLoading(false);
     }
   };
 
