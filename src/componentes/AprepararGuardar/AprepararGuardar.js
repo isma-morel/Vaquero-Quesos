@@ -92,16 +92,17 @@ const ProcesarParaGuardar = (pedido) => {
       idPedidosProd,
       IdMedidaPrinc: IdMedidaPrinc || 1,
       Cantidad,
-      PesoBruto: Pesaje.PesoBruto,
+      PesoBruto: Pesaje?.PesoBruto || 0,
       DesecharFaltante,
       NuevoPedido,
-      Tara: Pesaje.Taras.map(({ IdElemTara, cantidad, Peso }) => ({
-        IdPreparado: 0,
-        idPedidosProd,
-        IdElemTara,
-        Cantidad: cantidad,
-        Peso,
-      })),
+      Tara:
+        Pesaje?.Taras?.map(({ IdElemTara, cantidad, Peso }) => ({
+          IdPreparado: 0,
+          idPedidosProd,
+          IdElemTara,
+          Cantidad: cantidad,
+          Peso,
+        })) || [],
     })
   );
   return PedidoProcesado;
@@ -151,6 +152,7 @@ function AprepararGuardar({ isConsulta }) {
   /* Manejadores de Eventos  */
   const handleGuardarPreparacion = (pedido) => async (e) => {
     const pedidoProcesado = ProcesarParaGuardar(pedido);
+    console.log(pedidoProcesado);
     const auth = JSON.parse(localStorage.getItem("auth")) || {};
     try {
       const result = await fetch(
