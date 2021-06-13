@@ -29,6 +29,8 @@ const ProcesarPedido = (pedidos) => {
         Cantidad,
         Medida,
         IdMedidaPrinc,
+        pesoMaximo,
+        pesoMinimo,
       }) => {
         if (actual.IdPedido === IdPedido) {
           resultado.Productos.push({
@@ -38,6 +40,10 @@ const ProcesarPedido = (pedidos) => {
             Cantidad,
             IdMedidaPrinc,
             Medida,
+            pesoMaximo,
+            pesoMinimo,
+            NuevoPedido: false,
+            DesecharFaltante: false,
           });
         }
       }
@@ -74,12 +80,21 @@ const ProcesarParaGuardar = (pedido) => {
   PedidoProcesado.Fecha = new Date(Date.now()).toISOString();
 
   PedidoProcesado.Productos = pedido.Productos.map(
-    ({ idPedidosProd, IdMedidaPrinc, Cantidad, Pesaje }) => ({
+    ({
+      idPedidosProd,
+      IdMedidaPrinc,
+      Cantidad,
+      Pesaje,
+      DesecharFaltante,
+      NuevoPedido,
+    }) => ({
       IdPreparado: 0,
       idPedidosProd,
       IdMedidaPrinc: IdMedidaPrinc || 1,
       Cantidad,
       PesoBruto: Pesaje.PesoBruto,
+      DesecharFaltante,
+      NuevoPedido,
       Tara: Pesaje.Taras.map(({ IdElemTara, cantidad, Peso }) => ({
         IdPreparado: 0,
         idPedidosProd,
@@ -123,7 +138,7 @@ function AprepararGuardar({ isConsulta }) {
       }
 
       const json = await result.json();
-
+      console.log(json);
       pedidosProcesados = await ProcesarPedido(json);
 
       setPedidos(pedidosProcesados);

@@ -193,6 +193,13 @@ const ModoPesar = ({ producto, onGuardar, onCancelar }) => {
               type="number"
               name="pesoPieza"
               id="pesoPieza"
+              className={`${
+                pesaje.PesoPorPieza > 0 &&
+                (pesaje.PesoPorPieza < producto.pesoMinimo ||
+                  pesaje.PesoPorPieza > producto.pesoMaximo)
+                  ? "pesoRojo"
+                  : ""
+              }`}
               value={pesaje.PesoPorPieza}
             />
           </div>

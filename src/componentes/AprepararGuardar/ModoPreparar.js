@@ -73,7 +73,18 @@ const ModoPreparar = ({ pedido, salir, onGuardar }) => {
         </thead>
         <tbody>
           {pedidoApreparar.Productos?.map(
-            ({ Codigo, Presentacion, Cantidad, Medida, Pesaje }, indexProd) => (
+            (
+              {
+                Codigo,
+                Presentacion,
+                Cantidad,
+                Medida,
+                Pesaje,
+                pesoMaximo,
+                pesoMinimo,
+              },
+              indexProd
+            ) => (
               <tr key={indexProd}>
                 <td>{Codigo}</td>
                 <td>
@@ -97,7 +108,14 @@ const ModoPreparar = ({ pedido, salir, onGuardar }) => {
                 </td>
                 <td>{`${Cantidad} ${Medida}`}</td>
                 <td>{`${Pesaje?.PesoNeto || 0}`}</td>
-                <td>{`${Pesaje?.PesoPorPieza || 0}`}</td>
+                <td
+                  className={`${
+                    Pesaje?.PesoPorPieza > 0 &&
+                    (Pesaje?.PesoPorPieza < pesoMinimo ||
+                      Pesaje?.PesoPorPieza > pesoMaximo)
+                      ? "pesoRojo"
+                      : ""
+                  }`}>{`${Pesaje?.PesoPorPieza || 0}`}</td>
               </tr>
             )
           )}

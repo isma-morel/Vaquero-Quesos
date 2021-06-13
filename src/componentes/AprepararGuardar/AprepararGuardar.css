@@ -100,6 +100,15 @@
   button:hover {
   background: rgba(179, 128, 19, 0.726);
 }
+.preparar
+  .contenedor-tabla
+  .tabla.tabla.tabla-pedidos.tabla-preparar
+  tr
+  td.pesoRojo {
+  background: red;
+  color: white;
+  font-weight: bold;
+}
 
 /* Formulario de pesaje  */
 .form-tabla {
@@ -139,6 +148,7 @@
 .form-tabla .tara-table table tbody tr td:nth-child(1) {
   text-align: left;
 }
+
 .form-pesaje {
   padding: 1rem 0px;
   display: flex;
@@ -201,6 +211,10 @@
 }
 .form-pesaje .botones-form .boton-cancelar {
   background-color: rgb(201, 11, 11);
+}
+.form-pesaje .pesoRojo {
+  background: red;
+  color: white;
 }
 
 @media (max-width: 700px) {
