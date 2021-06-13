@@ -139,7 +139,7 @@ function AprepararGuardar({ isConsulta }) {
       }
 
       const json = await result.json();
-      console.log(json);
+
       pedidosProcesados = await ProcesarPedido(json);
 
       setPedidos(pedidosProcesados);
