@@ -14,6 +14,7 @@ const ProcesarPedido = (pedidos) => {
     la tabla
   */
   pedidosProcesados = pedidos.Resumido.reduce((acum, actual) => {
+    console.log(actual);
     let resultado = {
       ...actual,
       Fecha: new Date(actual.Fecha).toLocaleDateString(),
@@ -78,6 +79,8 @@ const ProcesarParaGuardar = (pedido) => {
 
   PedidoProcesado.Numero = pedido.Pedido;
   PedidoProcesado.Fecha = new Date(Date.now()).toISOString();
+  PedidoProcesado.IdCliente = pedido.IdCliente;
+  PedidoProcesado.IdPedido = pedido.IdPedido;
 
   PedidoProcesado.Productos = pedido.Productos.map(
     ({
