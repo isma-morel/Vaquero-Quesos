@@ -26,7 +26,7 @@ const Carrito = () => {
   };
   const handleConfirmar = async (e) => {
     handleConfirmacionModal();
-    console.log(user);
+
     let pedido = {
       Numero: 0,
       IdCliente: user.IdCliente,
@@ -38,11 +38,11 @@ const Carrito = () => {
     };
 
     productos.map((producto) => {
-      const { Medidas, cantidad, medida, IdProducto } = producto;
+      const { Medidas, cantidad, medida, IdProducto, IdMedidaPrinc } = producto;
       pedido.Productos = [
         ...pedido.Productos,
         {
-          IdMedidaPrinc: Medidas[0].IdMedida,
+          IdMedidaPrinc: IdMedidaPrinc,
           CantidadPrinc: cantidad,
           IdMedida: medida,
           Cantidad: cantidad,
@@ -52,6 +52,7 @@ const Carrito = () => {
         },
       ];
     });
+
     try {
       const result = await fetch(
         `${BASE_URL}iPedidosSP/Guardar?pUsuario=${user.usuario}&pToken=${user.Token}`,
