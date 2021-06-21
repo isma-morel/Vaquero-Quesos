@@ -148,11 +148,10 @@ const Facturar = () => {
     handleModal();
   };
   const handleGuardar = ({ A, B, index }) => {
-    const pedidosTemp = pedidosAFacturar;
+    const pedidosTemp = pedidosAFacturarFiltrados;
     pedidosTemp[index].A = A;
     pedidosTemp[index].B = B;
-
-    setPedidosAFacturar([...pedidosTemp]);
+    setPedidosAFacturarFiltrados([...pedidosTemp]);
     setPedidoAjustar(null);
     handleModal();
   };
