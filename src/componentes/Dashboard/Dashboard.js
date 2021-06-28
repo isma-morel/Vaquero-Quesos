@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import {
   SlideMenu,
   Pedidos,
@@ -6,12 +6,53 @@ import {
   Facturar,
   EstadoPedidos,
   CargaProductos,
+  Permisos,
 } from "../index";
 import { Route, Switch, useHistory, Link } from "react-router-dom";
 import "./Dashboard.css";
 import Taras from "../Taras/Taras";
+import { BASE_URL } from "../../BaseURL.json";
+import { toast } from "react-toastify";
 const Dashboard = () => {
   const { push } = useHistory();
+  const [items, setItems] = useState([]);
+  const Iconos = {
+    Pedidos: <i className="fas fa-list-ul"></i>,
+    Preparacion: <i className="fas fa-receipt"></i>,
+    Confirmados: <i className="fas fa-check"></i>,
+    Facturar: <i className="fas fa-file-invoice-dollar"></i>,
+    Estado: <i className="fas fa-calendar-check"></i>,
+    Taras: <i className="fas fa-balance-scale"></i>,
+    Productos: <i className="fas fa-cheese"></i>,
+    Permisos: <i className="fas fa-key"></i>,
+  };
+  const traerPermisos = async (auth) => {
+    try {
+      const result = await fetch(
+        `${BASE_URL}iMenusSP/Permisos?pUsuario=${auth.usuario}&pToken=${auth.Token}&pIdCliente=${auth.IdCliente}`
+      );
+      if (result.status !== 200) {
+        toast.error("se produjo un error.");
+        push("/");
+        return;
+      }
+      const json = await result.json();
+      auth.permisos = json.filter((menu) => menu.Seleccionado);
+      localStorage.setItem("auth", JSON.stringify(auth));
+      setItems([
+        ...auth.permisos.map(({ NombrePantalla, Titulo }) => ({
+          to: "/Dashboard/" + NombrePantalla,
+          icono: Iconos[Titulo],
+          texto: Titulo,
+        })),
+        {
+          to: "/Logout",
+          icono: <i className="fas fa-sign-out-alt"></i>,
+          texto: "salir",
+        },
+      ]);
+    } catch (err) {}
+  };
   useEffect(() => {
     const auth = JSON.parse(localStorage.getItem("auth"));
 
@@ -19,80 +60,58 @@ const Dashboard = () => {
       push("/");
       return;
     }
+    traerPermisos(auth);
   }, []);
   return (
     <div className="contenedor">
-      <SlideMenu
-        Items={[
-          {
-            to: "/Dashboard/pedidos",
-            icono: <i className="fas fa-list-ul"></i>,
-            texto: "Pedidos",
-          },
-          {
-            to: "/Dashboard/preparacion",
-            icono: <i className="fas fa-receipt"></i>,
-            texto: "Preparacion",
-          },
-          {
-            to: "/Dashboard/consultaPreparados",
-            icono: <i className="fas fa-check"></i>,
-            texto: "Confirmados",
-          },
-          {
-            to: "/Dashboard/facturar",
-            icono: <i className="fas fa-file-invoice-dollar"></i>,
-            texto: "Facturar",
-          },
-          {
-            to: "/Dashboard/estado",
-            icono: <i className="fas fa-calendar-check"></i>,
-            texto: "Estado",
-          },
-          {
-            to: "/Dashboard/taras",
-            icono: <i className="fas fa-balance-scale"></i>,
-            texto: "Taras",
-          },
-          {
-            to: "/Dashboard/productos",
-            icono: <i className="fas fa-cheese"></i>,
-            texto: "Productos",
-          },
-          {
-            to: "/Logout",
-            icono: <i className="fas fa-sign-out-alt"></i>,
-            texto: "salir",
-          },
-        ]}
-      />
+      <SlideMenu Items={items} />
       <Switch>
         <Route path="/Dashboard/pedidos">
-          <Pedidos />
+          <Pedidos idPermiso={1} />
         </Route>
         <Route path="/Dashboard/preparacion">
-          <AprepararGuardar />
-        </Route>
-        <Route path="/Dashboard/facturar">
-          <Facturar />
-        </Route>
-        <Route path="/Dashboard/estado">
-          <EstadoPedidos />
-        </Route>
-        <Route path="/Dashboard/taras">
-          <Taras />
-        </Route>
-        <Route path="/Dashboard/productos">
-          <CargaProductos />
+          <AprepararGuardar idPermiso={2} />
         </Route>
         <Route path="/Dashboard/consultaPreparados">
-          <AprepararGuardar isConsulta={true} />
+          <AprepararGuardar isConsulta={true} idPermiso={3} />
         </Route>
+        <Route path="/Dashboard/facturar">
+          <Facturar idPermiso={4} />
+        </Route>
+        <Route path="/Dashboard/estado">
+          <EstadoPedidos idPermiso={5} />
+        </Route>
+        <Route path="/Dashboard/taras">
+          <Taras idPermiso={6} />
+        </Route>
+        <Route path="/Dashboard/productos">
+          <CargaProductos idPermiso={7} />
+        </Route>
+        <Route path="/Dashboard/permisos">
+          <Permisos idPermiso={8} />
+        </Route>
+
         <Route path="/Dashboard">
           <div className="dashboard">
             <div className="grid">
               <div></div>
-              <Link to="/Dashboard/pedidos">
+              <div></div>
+              <div></div>
+              {items.map((item, index) => (
+                <>
+                  {index % 2 === 0 ? (
+                    <>
+                      <div></div>
+                      <div></div>
+                    </>
+                  ) : null}
+                  <Link title={item.texto} to={item.to}>
+                    {item.icono}
+                  </Link>
+                </>
+              ))}
+
+              {/* <Link to="/Dashboard/pedidos">
                 <i className="fas fa-list-ul"></i>
               </Link>
               <Link to="/Dashboard/preparacion">
@@ -118,10 +137,10 @@ const Dashboard = () => {
               <div></div>
               <Link to="/Dashboard/consultaPreparados">
                 <i className="fas fa-check"></i>
-              </Link>
-              <Link to="/Logout">
+              </Link> */}
+              {/* <Link to="/Logout">
                 <i className="fas fa-sign-out-alt"></i>
-              </Link>
+              </Link> */}
             </div>
           </div>
         </Route>
