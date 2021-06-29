@@ -111,7 +111,7 @@ const ProcesarParaGuardar = (pedido) => {
   return PedidoProcesado;
 };
 
-function AprepararGuardar({ isConsulta }) {
+function AprepararGuardar({ isConsulta, idPermiso }) {
   /* Variables de estado */
   const [pedidos, setPedidos] = useState([]);
   const [pedidosFiltrados, setPedidosFiltrados] = useState([]);
@@ -123,8 +123,10 @@ function AprepararGuardar({ isConsulta }) {
   const pedirPedidosAPreparar = async () => {
     let pedidosProcesados = [];
 
-    const { usuario, Token } = JSON.parse(localStorage.getItem("auth")) || {};
-    if (!Token) return;
+    const { usuario, Token, permisos } =
+      JSON.parse(localStorage.getItem("auth")) || {};
+    if (!Token || !permisos.some(({ IdMenu }) => IdMenu === idPermiso))
+      return push("/");
 
     try {
       const result = await fetch(

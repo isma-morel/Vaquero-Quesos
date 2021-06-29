@@ -43,7 +43,7 @@ const procesarProductoParaGuardar = ({
 });
 
 /* Formulario de listado de productos */
-const CargaProductos = () => {
+const CargaProductos = ({ idPermiso }) => {
   const [productos, setProductos] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isEditOrAdd, setIsEditOrAdd] = useState(false);
@@ -54,7 +54,8 @@ const CargaProductos = () => {
     setIsLoading(true);
     try {
       const auth = JSON.parse(localStorage.getItem("auth"));
-      if (!auth) return push("/");
+      if (!auth || !auth.permisos.some(({ IdMenu }) => IdMenu === idPermiso))
+        return push("/");
 
       const result = await fetch(
         `${BASE_URL}iProductosSP/ProductosDatos?pUsuario=${auth.usuario}&pToken=${auth.Token}`

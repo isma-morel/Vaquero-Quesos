@@ -1,6 +1,6 @@
 import React from "react";
 
-const Permisos = () => {
+const Permisos = ({ idPermiso }) => {
   return (
     <div>
       <h1>PERMISOS</h1>

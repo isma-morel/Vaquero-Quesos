@@ -7,11 +7,11 @@
 }
 
 .dashboard .grid {
-  width: 80%;
+  width: 30%;
   margin: auto;
   text-align: center;
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(2, 1fr);
   row-gap: 1em;
   column-gap: 1em;
   padding: 1em;
@@ -31,4 +31,9 @@
 }
 .dashboard .grid a i {
   margin: auto 0.2em;
+}
+@media (max-width: 800px) {
+  .dashboard .grid {
+    width: 80%;
+  }
 }

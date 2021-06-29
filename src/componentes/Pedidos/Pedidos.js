@@ -122,15 +122,17 @@ const ProcesarPedidoAConfirmar = ({ Productos }) => {
   return Preparados;
 };
 
-const Pedidos = () => {
+const Pedidos = ({ idPermiso }) => {
   const [pedidos, setPedidos] = useState([]);
   const [pedidosFiltrados, setPedidosFiltrados] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const { push } = useHistory();
 
   const PedirPedidos = async () => {
-    const { usuario, Token } = JSON.parse(localStorage.getItem("auth")) || {};
-    if (!Token) return;
+    const { usuario, Token, permisos } =
+      JSON.parse(localStorage.getItem("auth")) || {};
+    if (!Token || !permisos.some(({ IdMenu }) => IdMenu === idPermiso))
+      return push("/");
 
     try {
       const result = await fetch(

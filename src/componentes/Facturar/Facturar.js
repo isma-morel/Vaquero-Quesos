@@ -99,7 +99,7 @@ const filtrar = (value, pedidos) => {
   return resultado;
 };
 
-const Facturar = () => {
+const Facturar = ({ idPermiso }) => {
   const [isOpenModal, handleModal] = useModal();
   const [pedidosAFacturarFiltrados, setPedidosAFacturarFiltrados] = useState();
   const [pedidosAFacturar, setPedidosAFacturar] = useState();
@@ -108,6 +108,11 @@ const Facturar = () => {
 
   const pedirPedidosParaFacturar = async () => {
     const auth = JSON.parse(localStorage.getItem("auth"));
+    if (
+      !auth.Token ||
+      !auth.permisos.some(({ IdMenu }) => IdMenu === idPermiso)
+    )
+      return push("/");
     try {
       const result = await fetch(
         `${BASE_URL}iPedidosSP/ParaFacturar?pUsuario=${auth.usuario}&pToken=${auth.Token}`

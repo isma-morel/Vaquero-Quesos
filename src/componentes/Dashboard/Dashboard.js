@@ -94,53 +94,11 @@ const Dashboard = () => {
         <Route path="/Dashboard">
           <div className="dashboard">
             <div className="grid">
-              <div></div>
-              <div></div>
-              <div></div>
               {items.map((item, index) => (
-                <>
-                  {index % 2 === 0 ? (
-                    <>
-                      <div></div>
-                      <div></div>
-                    </>
-                  ) : null}
-                  <Link title={item.texto} to={item.to}>
-                    {item.icono}
-                  </Link>
-                </>
+                <Link key={index} title={item.texto} to={item.to}>
+                  {item.icono}
+                </Link>
               ))}
-
-              {/* <Link to="/Dashboard/pedidos">
-                <i className="fas fa-list-ul"></i>
-              </Link>
-              <Link to="/Dashboard/preparacion">
-                <i className="fas fa-receipt"></i>
-              </Link>
-              <div></div>
-              <div></div>
-              <Link to="/Dashboard/facturar">
-                <i className="fas fa-file-invoice-dollar"></i>
-              </Link>
-              <Link to="/Dashboard/estado">
-                <i className="fas fa-calendar-check"></i>
-              </Link>
-              <div></div>
-              <div></div>
-              <Link to="/Dashboard/taras">
-                <i className="fas fa-balance-scale"></i>
-              </Link>
-              <Link to="/Dashboard/productos">
-                <i className="fas fa-cheese"></i>
-              </Link>
-              <div></div>
-              <div></div>
-              <Link to="/Dashboard/consultaPreparados">
-                <i className="fas fa-check"></i>
-              </Link> */}
-              {/* <Link to="/Logout">
-                <i className="fas fa-sign-out-alt"></i>
-              </Link> */}
             </div>
           </div>
         </Route>

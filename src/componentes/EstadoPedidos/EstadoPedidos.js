@@ -81,7 +81,7 @@ const filtrar = (value, pedidos) => {
   return resultado;
 };
 
-const EstadoPedidos = () => {
+const EstadoPedidos = ({ idPermiso }) => {
   const [pedidos, setPedidos] = useState();
   const [pedidosFiltrados, setPediosFiltrados] = useState();
   const { push } = useHistory();
@@ -89,9 +89,16 @@ const EstadoPedidos = () => {
     const auth = JSON.parse(localStorage.getItem("auth")) || {};
     let pedidosProcesados;
     try {
+      if (
+        !auth.Token ||
+        !auth.permisos.some(({ IdMenu }) => IdMenu === idPermiso)
+      )
+        return push("/");
+
       const result = await fetch(
         `${BASE_URL}iPedidosSP/PedidosPorEstado?pUsuario=${auth.usuario}&pToken=${auth.Token}`
       );
+
       if (result.status !== 200) {
         if (result.status === 401) {
           localStorage.removeItem("auth");
