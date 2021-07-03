@@ -13,19 +13,21 @@ import "./Dashboard.css";
 import Taras from "../Taras/Taras";
 import { BASE_URL } from "../../BaseURL.json";
 import { toast } from "react-toastify";
+
+const Iconos = {
+  Pedidos: <i className="fas fa-list-ul"></i>,
+  Preparacion: <i className="fas fa-receipt"></i>,
+  Confirmados: <i className="fas fa-check"></i>,
+  Facturar: <i className="fas fa-file-invoice-dollar"></i>,
+  Estado: <i className="fas fa-calendar-check"></i>,
+  Taras: <i className="fas fa-balance-scale"></i>,
+  Productos: <i className="fas fa-cheese"></i>,
+  Permisos: <i className="fas fa-key"></i>,
+};
+
 const Dashboard = () => {
   const { push } = useHistory();
   const [items, setItems] = useState([]);
-  const Iconos = {
-    Pedidos: <i className="fas fa-list-ul"></i>,
-    Preparacion: <i className="fas fa-receipt"></i>,
-    Confirmados: <i className="fas fa-check"></i>,
-    Facturar: <i className="fas fa-file-invoice-dollar"></i>,
-    Estado: <i className="fas fa-calendar-check"></i>,
-    Taras: <i className="fas fa-balance-scale"></i>,
-    Productos: <i className="fas fa-cheese"></i>,
-    Permisos: <i className="fas fa-key"></i>,
-  };
   const traerPermisos = async (auth) => {
     try {
       const result = await fetch(
@@ -107,4 +109,4 @@ const Dashboard = () => {
   );
 };
 
-export default Dashboard;
+export { Iconos, Dashboard as default };

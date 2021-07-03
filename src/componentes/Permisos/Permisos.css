@@ -1,0 +1,36 @@
+.permisos {
+  display: flex;
+  width: 80%;
+  height: 100vh;
+  margin: auto;
+  justify-content: center;
+  padding-top: 5em;
+}
+.permiso h2 {
+  align-self: flex-start;
+}
+.permisos-container {
+  display: flex column;
+  text-align: center;
+  width: 100%;
+  align-items: center;
+}
+.permisos-container .usuario {
+  width: clamp(15em, 2vw, 20em);
+}
+.permisos-container-checks {
+  display: flex;
+  justify-content: space-around;
+  width: 50%;
+  margin: 3em auto;
+}
+.permiso-check {
+  padding: 1em;
+  color: white;
+  background-color: red;
+  border-radius: 0.2em;
+  margin: 0.2em auto;
+  display: inline-block;
+  cursor: pointer;
+  user-select: none;
+}
