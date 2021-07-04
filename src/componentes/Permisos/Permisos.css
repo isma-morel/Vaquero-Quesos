@@ -34,3 +34,6 @@
   cursor: pointer;
   user-select: none;
 }
+.permiso-check.seleccionado {
+  background-color: green;
+}

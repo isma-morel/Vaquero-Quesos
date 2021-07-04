@@ -35,6 +35,7 @@ const Dashboard = () => {
       );
       if (result.status !== 200) {
         toast.error("se produjo un error.");
+        localStorage.removeItem("auth");
         push("/");
         return;
       }
