@@ -4,7 +4,6 @@ import { toast } from "react-toastify";
 import { BASE_URL } from "../../BaseURL.json";
 import { Iconos } from "../Dashboard/Dashboard";
 import "./Permisos.css";
-const { usuario, Token, permisos } = JSON.parse(localStorage.getItem("auth"));
 
 const Permisos = ({ idPermiso }) => {
   const [listaPermisos, setListaPermisos] = useState([]);
@@ -16,6 +15,10 @@ const Permisos = ({ idPermiso }) => {
   const [isLoadingPermisosCliente, setIsLoadingPermisosCliente] =
     useState(false);
   const { push } = useHistory();
+  const { usuario, Token, permisos } = JSON.parse(
+    localStorage.getItem("auth") || []
+  );
+
   const pedirListaPermisos = async () => {
     if (!Token || !permisos.some(({ IdMenu }) => IdMenu === idPermiso))
       return push("/");
@@ -24,12 +27,15 @@ const Permisos = ({ idPermiso }) => {
     );
 
     if (result.status !== 200) {
-      throw new Error("error al obtener los datos");
+      toast.error("error al obtener los datos");
+      return;
     }
 
     const json = await result.json();
     setListaPermisos([
-      ...json.map((permiso) => ({ ...permiso, Seleccionado: false })),
+      ...json
+        .map((permiso) => ({ ...permiso, Seleccionado: false }))
+        .sort((permisoA, permisoB) => permisoA.IdMenu > permisoB.IdMenu),
     ]);
     try {
     } catch (err) {
@@ -71,6 +77,28 @@ const Permisos = ({ idPermiso }) => {
       setIsLoadingPermisosCliente(false);
     }
   };
+  const guardarPermisosDelCliente = async () => {
+    /* iMenusSP/Guardar?pUsuario={pUsuario}&pToken={pToken}&pIdCliente={pIdCliente} */
+    try {
+      await fetch(
+        `${BASE_URL}iMenusSP/Guardar?pUsuario=${usuario}&pToken=${Token}&pIdCliente=${clienteSeleccionado}`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(listaPermisos),
+        }
+      );
+      toast.success("Permisos guardados correctamente");
+    } catch (err) {
+      toast.error("se produjo un error al guardar los permisos");
+      console.log(err);
+    } finally {
+      pedirPermisoDelCliente();
+    }
+  };
+
   useEffect(() => {
     pedirListaPermisos();
     pedirListaClientes();
@@ -87,8 +115,11 @@ const Permisos = ({ idPermiso }) => {
         ? { ...permiso, Seleccionado: true }
         : { ...permiso, Seleccionado: false }
     );
-    setListaPermisos(listaTemp);
+    setListaPermisos(
+      listaTemp.sort((prodA, prodB) => prodA.IdMenu > prodB.IdMenu)
+    );
   }, [permisosClienteSeleccionado]);
+
   const handleCheck = (e) => {
     const { name, checked } = e.target;
     const permisosNuevo = listaPermisos.map((permiso) =>
@@ -99,6 +130,18 @@ const Permisos = ({ idPermiso }) => {
   const handleSelect = (e) => {
     const { value } = e.target;
     setClienteSeleccionado(value);
+  };
+  const handleSeleccionarTodos = () => {
+    const permisosTemp = listaPermisos.map((permiso) => ({
+      ...permiso,
+      Seleccionado: true,
+    }));
+    setListaPermisos(permisosTemp);
+  };
+  const handleGuardar = (e) => {
+    if (clienteSeleccionado == 0) return;
+    setIsLoadingPermisosCliente(true);
+    guardarPermisosDelCliente();
   };
   return (
     <div className="permisos">
@@ -119,6 +162,9 @@ const Permisos = ({ idPermiso }) => {
               </option>
             ))}
           </select>
+          <button className="btn btn-todos" onClick={handleSeleccionarTodos}>
+            Seleccionar Todos
+          </button>
           {isLoadingPermisosCliente ? (
             <div className="container">
               <div style={{ marginTop: "0px" }} className="spin"></div>
@@ -148,7 +194,9 @@ const Permisos = ({ idPermiso }) => {
             </div>
           )}
           <div>
-            <button className="btn btn-guardar">Guardar</button>
+            <button onClick={handleGuardar} className="btn btn-guardar">
+              Guardar
+            </button>
           </div>
         </div>
       )}

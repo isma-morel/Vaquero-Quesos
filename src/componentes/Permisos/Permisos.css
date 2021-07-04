@@ -6,8 +6,24 @@
   justify-content: center;
   padding-top: 5em;
 }
-.permiso h2 {
+.permisos h2 {
   align-self: flex-start;
+  margin-bottom: 0.5em;
+}
+.permisos .btn {
+  background: none;
+  border: none;
+  padding: 0.6em 0.8em;
+  color: white;
+  cursor: pointer;
+  border-radius: 0.2em;
+}
+.permisos .btn.btn-guardar {
+  background-color: green;
+  margin: auto 0.3em;
+}
+.permisos .btn.btn-todos {
+  background-color: rgb(179, 128, 19);
 }
 .permisos-container {
   display: flex column;
@@ -20,6 +36,7 @@
 }
 .permisos-container-checks {
   display: flex;
+  flex-wrap: wrap;
   justify-content: space-around;
   width: 50%;
   margin: 3em auto;
