@@ -23,6 +23,7 @@ const Iconos = {
   Taras: <i className="fas fa-balance-scale"></i>,
   Productos: <i className="fas fa-cheese"></i>,
   Permisos: <i className="fas fa-key"></i>,
+  "Actualizar Clientes": <i className="fas fa-sync-alt"></i>,
 };
 
 const Dashboard = () => {
@@ -93,6 +94,9 @@ const Dashboard = () => {
         <Route path="/Dashboard/permisos">
           <Permisos idPermiso={8} />
         </Route>
+        <Route path="/Dashboard/actualizarClientes">
+          <ActualizarClientes idPermiso={10} />
+        </Route>
 
         <Route path="/Dashboard">
           <div className="dashboard">
@@ -106,6 +110,112 @@ const Dashboard = () => {
           </div>
         </Route>
       </Switch>
+    </div>
+  );
+};
+
+const ActualizarClientes = ({ idPermiso }) => {
+  const { push } = useHistory();
+  const [isLoading, setIsLoading] = useState(false);
+  const handleAceptar = async (e) => {
+    const { usuario, Token, permisos } =
+      JSON.parse(localStorage.getItem("auth")) || {};
+    if (!Token || !permisos.some(({ IdMenu }) => IdMenu === idPermiso))
+      return push("/");
+    setIsLoading(true);
+    try {
+      await fetch(`${BASE_URL}Finnegans/procesarClientes`);
+      toast.success("Clientes Actualizados con exito.");
+      push("/Dashboard");
+    } catch (err) {
+      toast.error("Ocurrio un error, por favor intentelo de nuevo mas tarde.");
+      console.log(err);
+    } finally {
+      setIsLoading(false);
+    }
+
+    //Finnegans/procesarClientes
+  };
+  return (
+    <div className="overlay open" style={{ background: "rgba(0,0,0,.5)" }}>
+      <div
+        style={{
+          background: "#fff",
+          position: "relative",
+          width: "20em",
+          borderRadius: ".2em",
+          boxShadow: "0px 0px 25px rgba(0,0,0,.3) ",
+          border: "1px solid rgba(0,0,0,.3)",
+        }}>
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            height: "100%",
+            width: "100%",
+            justifyContent: "space-between",
+            alignContent: "space-between",
+          }}>
+          <div
+            style={{
+              textAlign: "center",
+              padding: "1em",
+              height: "50%",
+              display: "flex",
+              flexDirection: "column",
+              justifyContent: "center",
+              alignItems: "center",
+            }}>
+            <p style={{ userSelect: "none" }}>
+              Seguro que desea actualizar los Clientes?
+              <br />
+              <small>(este proceso podria tomar algunos segundos.)</small>
+            </p>
+            {isLoading && (
+              <div>
+                <div
+                  style={{
+                    margin: ".3em auto",
+                    width: "2em",
+                    height: "2em",
+                    border: "2px solid #fff",
+                    borderTop: "2px solid #484848",
+                  }}
+                  className="spin"></div>
+              </div>
+            )}
+          </div>
+          <div style={{ padding: "1em", textAlign: "center" }}>
+            <button
+              style={{
+                margin: "0px 0.35em",
+                color: "white",
+                background: "none",
+                border: "none",
+                borderRadius: ".2em",
+                padding: "0.4em 0.6em",
+                backgroundColor: "red",
+              }}
+              onClick={(e) => push("/Dashboard")}>
+              Cancelar
+            </button>
+            <button
+              style={{
+                margin: "0px 0.35em",
+                color: "white",
+                background: "none",
+                border: "none",
+                borderRadius: ".2em",
+                padding: "0.4em 0.6em",
+                backgroundColor: "green",
+              }}
+              onClick={handleAceptar}>
+              {" "}
+              Aceptar
+            </button>
+          </div>
+        </div>
+      </div>
     </div>
   );
 };

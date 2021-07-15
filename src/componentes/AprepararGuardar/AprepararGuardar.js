@@ -158,7 +158,6 @@ function AprepararGuardar({ isConsulta, idPermiso }) {
   /* Manejadores de Eventos  */
   const handleGuardarPreparacion = (pedido) => async (e) => {
     const pedidoProcesado = ProcesarParaGuardar(pedido);
-    console.log(pedidoProcesado);
     const auth = JSON.parse(localStorage.getItem("auth")) || {};
     try {
       const result = await fetch(
