@@ -78,7 +78,9 @@ const filtrarPedidoPorId = (id, pedidos) => {
 };
 
 const filtrarPedidoPorCliente = (cliente, pedidos) => {
-  return pedidos.filter((pedido) => pedido.Cliente.includes(cliente));
+  return pedidos.filter((pedido) =>
+    pedido.Cliente.toLowerCase().includes(cliente.toLowerCase())
+  );
 };
 
 /* Metodo que se encarga de discernir entre el tipo de filtrado que se va a aplicar

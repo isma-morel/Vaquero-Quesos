@@ -85,7 +85,9 @@ const filtrarPedidoPorId = (id, pedidos) => {
 };
 
 const filtrarPedidoPorCliente = (cliente, pedidos) => {
-  return pedidos.filter((pedido) => pedido.Cliente.includes(cliente));
+  return pedidos.filter((pedido) =>
+    pedido.Cliente.toLowerCase().includes(cliente.toLowerCase())
+  );
 };
 
 const filtrar = (value, pedidos) => {

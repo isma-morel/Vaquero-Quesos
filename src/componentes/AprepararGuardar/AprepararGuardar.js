@@ -56,7 +56,9 @@ const ProcesarPedido = (pedidos) => {
 
 /* Metodos de filtrado */
 const FiltrarCliente = (cliente, pedidos) => {
-  return pedidos.filter((pedido) => pedido.Cliente.includes(cliente));
+  return pedidos.filter((pedido) =>
+    pedido.Cliente.toLowerCase().includes(cliente.toLowerCase())
+  );
 };
 const FiltrarPedido = (id, pedidos) => {
   return pedidos.filter((pedido) => pedido.Pedido.toString().startsWith(id));
