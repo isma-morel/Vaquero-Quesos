@@ -56,7 +56,7 @@ const Permisos = ({ idPermiso }) => {
         `${BASE_URL}iClientesSP/ClientesDatos?pUsuario=${usuario}&pToken=${Token}`
       );
       const json = await result.json();
-      setListaClientes(json.filter(({ TipoCliente }) => TipoCliente !== "C"));
+      setListaClientes(json.filter(({ TipoCliente }) => TipoCliente === "S"));
     } catch (err) {
       toast.error("ocurrio un error al obtener los Usuarios.");
       console.log(err);
