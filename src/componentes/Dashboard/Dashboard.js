@@ -77,7 +77,7 @@ const Dashboard = () => {
           <AprepararGuardar idPermiso={2} />
         </Route>
         <Route path="/Dashboard/consultaPreparados">
-          <AprepararGuardar isConsulta={true} idPermiso={3} />
+          <Facturar isConsulta={true} idPermiso={3} />
         </Route>
         <Route path="/Dashboard/facturar">
           <Facturar idPermiso={4} />

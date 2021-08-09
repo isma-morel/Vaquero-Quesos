@@ -101,11 +101,12 @@ const filtrar = (value, pedidos) => {
   return resultado;
 };
 
-const Facturar = ({ idPermiso }) => {
+const Facturar = ({ idPermiso, isConsulta }) => {
   const [isOpenModal, handleModal] = useModal();
   const [pedidosAFacturarFiltrados, setPedidosAFacturarFiltrados] = useState();
   const [pedidosAFacturar, setPedidosAFacturar] = useState();
   const [pedidoAjustar, setPedidoAjustar] = useState();
+  const [isLoadPDF, setIsLoadPDF] = useState(false);
   const { push } = useHistory();
 
   const pedirPedidosParaFacturar = async () => {
@@ -194,6 +195,24 @@ const Facturar = ({ idPermiso }) => {
       console.log(err.message);
     }
   };
+  const handleImprimir = (pedidoAImprimir) => async (e) => {
+    const { usuario, Token } = JSON.parse(localStorage.getItem("auth")) || {};
+    if (pedidoAImprimir === 0) return;
+    setIsLoadPDF(true);
+    try {
+      const result = await fetch(
+        `${BASE_URL}iPedidosSP/pedidoPesoImpresion?pUsuario=${usuario}&pToken=${Token}&pNumeroPedido=${pedidoAImprimir}`
+      );
+      const pdf = await result.json();
+      const win = window.open(`data:application/pdf;base64,${pdf}`, "_blank");
+      win.focus();
+    } catch (err) {
+      toast.error("ocurrio un error. intentelo de nuevo mas tarde");
+      console.log(err);
+    } finally {
+      setIsLoadPDF(false);
+    }
+  };
 
   return (
     <div className="contenedor-facturar">
@@ -211,7 +230,9 @@ const Facturar = ({ idPermiso }) => {
             placeholder="Filtro"
             onChange={handleChangeFiltro}
           />
-          <span className="titulo">Facturación</span>
+          <span className="titulo">
+            {isConsulta ? "Pesajes" : "Facturacion"}
+          </span>
         </div>
         <hr />
       </div>
@@ -224,22 +245,35 @@ const Facturar = ({ idPermiso }) => {
                   <span>Cliente: {Cliente}</span>
                   <span>Pedido: {Pedido}</span>
                 </div>
-                <span className="porcentajes">
-                  A: {A}% - B: {B}%
-                </span>
-                <div className="botones">
-                  <button
-                    onClick={handleAjustar(index)}
-                    className="btn ajustar">
-                    Ajustar
-                  </button>
-                  <button
-                    onClick={handleGuardarPedido(index)}
-                    disabled={!(A || B) || A + B !== 100}
-                    className="btn">
-                    Guardar
-                  </button>
-                </div>
+                {!isConsulta ? (
+                  <span className="porcentajes">
+                    A: {A}% - B: {B}%
+                  </span>
+                ) : null}
+                {!isConsulta ? (
+                  <div className="botones">
+                    <button
+                      onClick={handleAjustar(index)}
+                      className="btn ajustar">
+                      Ajustar
+                    </button>
+                    <button
+                      onClick={handleGuardarPedido(index)}
+                      disabled={!(A || B) || A + B !== 100}
+                      className="btn">
+                      Guardar
+                    </button>
+                  </div>
+                ) : (
+                  <div className="impresion">
+                    <button
+                      onClick={handleImprimir(Pedido)}
+                      disabled={isLoadPDF}
+                      className="btn">
+                      Imprimir
+                    </button>
+                  </div>
+                )}
               </div>
               <table className="tabla tabla-pedidos">
                 <thead>

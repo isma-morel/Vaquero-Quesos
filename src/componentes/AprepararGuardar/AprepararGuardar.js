@@ -214,24 +214,6 @@ function AprepararGuardar({ isConsulta, idPermiso }) {
 
     setPedidoAImprimir(parseInt(value));
   };
-  const handleImprimir = async (e) => {
-    const { usuario, Token } = JSON.parse(localStorage.getItem("auth")) || {};
-    if (pedidoAImprimir === 0) return;
-    setIsLoadPDF(true);
-    try {
-      const result = await fetch(
-        `${BASE_URL}iPedidosSP/pedidoPesoImpresion?pUsuario=${usuario}&pToken=${Token}&pNumeroPedido=${pedidoAImprimir}`
-      );
-      const pdf = await result.json();
-      const win = window.open(`data:application/pdf;base64,${pdf}`, "_blank");
-      win.focus();
-    } catch (err) {
-      toast.error("ocurrio un error. intentelo de nuevo mas tarde");
-      console.log(err);
-    } finally {
-      setIsLoadPDF(false);
-    }
-  };
 
   /* Efectos */
   useEffect(() => {
@@ -252,21 +234,6 @@ function AprepararGuardar({ isConsulta, idPermiso }) {
             placeholder="Filtro"
             onChange={handleChangeFiltro}
           />
-          <div className="impresion">
-            {/* data:application/pdf;base64, */}
-            <input
-              style={{ width: "5em" }}
-              type="number"
-              onChange={handleChangeImprimir}
-              value={pedidoAImprimir}
-            />
-            <button
-              onClick={handleImprimir}
-              disabled={isLoadPDF}
-              className="botonPDF">
-              Imprimir
-            </button>
-          </div>
         </div>
         <span className="titulo">Preparación</span>
         <hr />
