@@ -204,8 +204,12 @@ const Facturar = ({ idPermiso, isConsulta }) => {
         `${BASE_URL}iPedidosSP/pedidoPesoImpresion?pUsuario=${usuario}&pToken=${Token}&pNumeroPedido=${pedidoAImprimir}`
       );
       const pdf = await result.json();
-      const win = window.open(`data:application/pdf;base64,${pdf}`, "_blank");
-      win.focus();
+      const blobe = new Blob([pdf], { type: "data:application/pdf;base64" });
+      //``
+      const win = window.open();
+      win.document.write(
+        `<iframe src='data:application/pdf;base64,${pdf}' frameborder='0' style='border:0;top:0;left:0;bottom:0;right:0;width:100%;height:100%;' allowfullscreen ></iframe>`
+      );
     } catch (err) {
       toast.error("ocurrio un error. intentelo de nuevo mas tarde");
       console.log(err);

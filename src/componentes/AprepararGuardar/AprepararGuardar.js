@@ -209,11 +209,6 @@ function AprepararGuardar({ isConsulta, idPermiso }) {
     if (!resultado) return;
     setPedidosFiltrados(resultado);
   };
-  const handleChangeImprimir = (e) => {
-    const { value } = e.target;
-
-    setPedidoAImprimir(parseInt(value));
-  };
 
   /* Efectos */
   useEffect(() => {
