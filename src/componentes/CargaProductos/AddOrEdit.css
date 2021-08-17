@@ -32,6 +32,18 @@
   justify-content: center;
   align-items: center;
 }
+.AddOrEdit .contenedor .contenedor-imagen .imagen .closeButton {
+  position: absolute;
+  right: 0;
+  top: -1em;
+  border-radius: 0.2em;
+  padding: 0.1em 0.29em;
+  background: rgba(0, 0, 0, 0.2);
+  z-index: 10;
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+  user-select: none;
+  cursor: pointer;
+}
 .AddOrEdit .contenedor .contenedor-imagen input[type="file"] {
   display: none;
 }

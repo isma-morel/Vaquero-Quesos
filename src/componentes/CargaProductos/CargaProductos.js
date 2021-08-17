@@ -342,20 +342,7 @@ const AddOrEdit = ({
           <div>
             {imagen ? (
               <div className="imagen" style={{ position: "relative" }}>
-                <span
-                  onClick={(e) => setImagen(null)}
-                  style={{
-                    position: "absolute",
-                    top: "-1em",
-                    right: "0",
-                    borderRadius: ".2em",
-                    padding: ".1em .29em",
-                    background: "rgba(0,0,0,.2)",
-                    zIndex: "10",
-                    boxShadow: "0px 0px 10px rgba(0,0,0,.2)",
-                    userSelect: "none",
-                    cursor: "pointer",
-                  }}>
+                <span onClick={(e) => setImagen(null)} className="closeButton">
                   X
                 </span>
                 <img
