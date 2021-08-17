@@ -328,12 +328,54 @@ const AddOrEdit = ({
         onSabe={handleSabeModal}
       />
       <div className="contenedor">
-        <div className="contenedor-imagen">
-          <img
-            className="imagen"
-            src={imagen ? URL.createObjectURL(imagen) : ""}
-            alt="Imagen ilustrativa"
-          />
+        <div
+          onDragOver={(e) => e.preventDefault()}
+          onDrop={(e) => {
+            e.preventDefault();
+            const file = e.dataTransfer.files[0];
+            const regex = new RegExp("image");
+            if (file?.type?.match(regex)) {
+              setImagen(file);
+            }
+          }}
+          className="contenedor-imagen">
+          <div>
+            {imagen ? (
+              <div className="imagen" style={{ position: "relative" }}>
+                <span
+                  onClick={(e) => setImagen(null)}
+                  style={{
+                    position: "absolute",
+                    top: "-1em",
+                    right: "0",
+                    borderRadius: ".2em",
+                    padding: ".1em .29em",
+                    background: "rgba(0,0,0,.2)",
+                    zIndex: "10",
+                    boxShadow: "0px 0px 10px rgba(0,0,0,.2)",
+                    userSelect: "none",
+                    cursor: "pointer",
+                  }}>
+                  X
+                </span>
+                <img
+                  className="imagen"
+                  src={imagen ? URL.createObjectURL(imagen) : ""}
+                  alt="Imagen ilustrativa"
+                />
+              </div>
+            ) : (
+              <div
+                onClick={() => referencedElement.current.click()}
+                style={{
+                  border: "1px solid rgba(0,0,0,.3)",
+                  textAlign: "center",
+                }}
+                className="imagen">
+                <span>Arrastre una imagen o haga click en el boton</span>
+              </div>
+            )}
+          </div>
           <input
             type="file"
             name="file"
@@ -354,7 +396,7 @@ const AddOrEdit = ({
           <div>
             <span>Codigo</span>
             <input
-              type="number"
+              type="text"
               name="Codigo"
               onChange={handleInputChange}
               value={inputs["Codigo"]}

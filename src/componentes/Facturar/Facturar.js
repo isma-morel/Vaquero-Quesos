@@ -101,6 +101,18 @@ const filtrar = (value, pedidos) => {
   return resultado;
 };
 
+/**
+ *
+ * @param {*} url - url usado para insertar el pdf en el frame
+ * @returns {String} iframe
+ */
+const Iframe = (url) =>
+  `<iframe
+    src=${url}
+    frameborder="0"
+    style="border:0;top:0;left:0;bottom:0;right:0;width:100%;height:100%;"
+    allowfullscreen></iframe>`;
+
 const Facturar = ({ idPermiso, isConsulta }) => {
   const [isOpenModal, handleModal] = useModal();
   const [pedidosAFacturarFiltrados, setPedidosAFacturarFiltrados] = useState();
@@ -198,18 +210,18 @@ const Facturar = ({ idPermiso, isConsulta }) => {
   const handleImprimir = (pedidoAImprimir) => async (e) => {
     const { usuario, Token } = JSON.parse(localStorage.getItem("auth")) || {};
     if (pedidoAImprimir === 0) return;
+
     setIsLoadPDF(true);
+
     try {
       const result = await fetch(
         `${BASE_URL}iPedidosSP/pedidoPesoImpresion?pUsuario=${usuario}&pToken=${Token}&pNumeroPedido=${pedidoAImprimir}`
       );
+
       const pdf = await result.json();
-      const blobe = new Blob([pdf], { type: "data:application/pdf;base64" });
-      //``
       const win = window.open();
-      win.document.write(
-        `<iframe src='data:application/pdf;base64,${pdf}' frameborder='0' style='border:0;top:0;left:0;bottom:0;right:0;width:100%;height:100%;' allowfullscreen ></iframe>`
-      );
+
+      win.document.write(Iframe(`data:application/pdf;base64,${pdf}`));
     } catch (err) {
       toast.error("ocurrio un error. intentelo de nuevo mas tarde");
       console.log(err);
