@@ -244,7 +244,7 @@ const Facturar = ({ idPermiso, isConsulta }) => {
         onGuardar={handleGuardar}
       />
       <ModalImpresion
-        key={pdfUrl.pedido}
+        key={pdfUrl?.pedido}
         isOpen={isOpenModalImpresion}
         onClose={handleModalImpresion}
         pdfUrl={pdfUrl}
