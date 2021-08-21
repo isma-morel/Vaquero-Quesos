@@ -115,10 +115,12 @@ const Iframe = (url) =>
 
 const Facturar = ({ idPermiso, isConsulta }) => {
   const [isOpenModal, handleModal] = useModal();
+  const [isOpenModalImpresion, handleModalImpresion] = useModal();
   const [pedidosAFacturarFiltrados, setPedidosAFacturarFiltrados] = useState();
   const [pedidosAFacturar, setPedidosAFacturar] = useState();
   const [pedidoAjustar, setPedidoAjustar] = useState();
   const [isLoadPDF, setIsLoadPDF] = useState(false);
+  const [pdfUrl, setPdfUrl] = useState();
   const { push } = useHistory();
 
   const pedirPedidosParaFacturar = async () => {
@@ -219,9 +221,12 @@ const Facturar = ({ idPermiso, isConsulta }) => {
       );
 
       const pdf = await result.json();
-      const win = window.open();
 
-      win.document.write(Iframe(`data:application/pdf;base64,${pdf}`));
+      setPdfUrl({
+        url: `data:application/pdf;base64,${pdf}`,
+        pedido: pedidoAImprimir,
+      });
+      handleModalImpresion();
     } catch (err) {
       toast.error("ocurrio un error. intentelo de nuevo mas tarde");
       console.log(err);
@@ -237,6 +242,12 @@ const Facturar = ({ idPermiso, isConsulta }) => {
         onClose={handleModal}
         pedido={pedidoAjustar}
         onGuardar={handleGuardar}
+      />
+      <ModalImpresion
+        key={pdfUrl.pedido}
+        isOpen={isOpenModalImpresion}
+        onClose={handleModalImpresion}
+        pdfUrl={pdfUrl}
       />
       <div className="controles">
         <div>
@@ -395,6 +406,49 @@ const ModalFactura = ({ isOpen, onClose, pedido, onGuardar }) => {
           </button>
           <button className="confirmar" onClick={handleGuardar}>
             Guardar
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+const ModalImpresion = ({ isOpen, onClose, pdfUrl }) => {
+  const handleClose = (e) => {
+    onClose();
+  };
+  const handleGuardar = (e) => {
+    const a = document.createElement("a");
+    a.href = pdfUrl.url;
+    a.download = `pedido-N${
+      pdfUrl.pedido
+    }-${new Date().toLocaleDateString()}.pdf`;
+    a.click();
+    onClose();
+  };
+  return (
+    <div className={`overlay ${isOpen ? "open" : ""}`}>
+      <div className="card-producto impresion">
+        <embed
+          id="embed"
+          style={{
+            height: "100%",
+            width: "100%",
+            border: 0,
+            top: 0,
+            left: 0,
+            bottom: 0,
+            right: 0,
+          }}
+          src={`${pdfUrl?.url}`}
+          type="application/pdf"
+        />
+        <div className="formulario-botones impresion">
+          <button className="cancelar" onClick={handleClose}>
+            Cerrar
+          </button>
+          <button className="confirmar" onClick={handleGuardar}>
+            Descargar
           </button>
         </div>
       </div>
