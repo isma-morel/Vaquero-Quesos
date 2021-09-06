@@ -19,25 +19,59 @@
   display: flex;
   justify-content: space-between;
 }
-.preparar .controles .impresion {
+.preparar .overlay .card-producto {
+  background: #fafafa;
+
+  border-radius: 5px;
   display: flex;
   justify-content: center;
   align-items: center;
-  margin: 0px 1.5em;
+  flex-direction: column;
+  padding: 1.5em;
+  box-shadow: 1px 1px 15px rgba(0, 0, 0, 0.3);
 }
-.preparar .controles .impresion .botonPDF {
-  align-self: end;
-  padding: 0.65em 0.6em;
-  margin: 0px 0.4em;
-  background: none;
-  color: white;
-  background-color: green;
+.preparar .overlay .card-producto.impresion {
+  width: 50%;
+  height: 90%;
+  overflow: hidden;
+  overflow-y: scroll;
+}
+.preparar .overlay .card-producto .formulario-botones.impresion {
+  justify-content: center;
+  padding: 0.2em 0;
+}
+.preparar .overlay .card-producto .formulario-botones {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  align-items: center;
+  min-width: 80%;
+}
+.preparar .overlay .card-producto .formulario-botones.impresion {
+  justify-content: center;
+  padding: 0.2em 0;
+}
+.preparar .overlay .card-producto .formulario-botones button {
+  margin: 1em;
+  padding: 0.6em 0.8em;
   border: none;
-  border-radius: 0.2em;
+  background: black;
+  color: white;
+  border-radius: 2px;
   cursor: pointer;
 }
-.preparar .controles .impresion button:disabled {
-  background-color: #00800080;
+
+.preparar .overlay .card-producto .formulario-botones button.confirmar {
+  background: green;
+}
+.preparar .overlay .card-producto .formulario-botones button.confirmar:hover {
+  background: rgba(0, 128, 0, 0.726);
+}
+.preparar .overlay .card-producto .formulario-botones button.cancelar {
+  background: rgb(160, 7, 7);
+}
+.preparar .overlay .card-producto .formulario-botones button.cancelar:hover {
+  background: rgba(160, 7, 7, 0.726);
 }
 .preparar .controles input[type="text"],
 .preparar .controles input[type="number"] {

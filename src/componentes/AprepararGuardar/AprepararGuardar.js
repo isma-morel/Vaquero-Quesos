@@ -3,6 +3,7 @@ import ModoPreparar from "./ModoPreparar";
 import { useHistory } from "react-router";
 import { toast } from "react-toastify";
 import { BASE_URL } from "../../BaseURL.json";
+import useModal from "../../hooks/useModal";
 import "./AprepararGuardar.css";
 
 const ProcesarPedido = (pedidos) => {
@@ -117,11 +118,12 @@ function AprepararGuardar({ isConsulta, idPermiso }) {
   /* Variables de estado */
   const [pedidos, setPedidos] = useState([]);
   const [pedidosFiltrados, setPedidosFiltrados] = useState([]);
-  const [pedidoAImprimir, setPedidoAImprimir] = useState(0);
   const [modoPreparar, setModoPreparar] = useState(false);
   const [pedidoSeleccionado, setPedidoSeleccionado] = useState({});
   const [isLoading, setIsLoading] = useState(false);
   const [isLoadPDF, setIsLoadPDF] = useState(false);
+  const [pdfUrl, setPdfUrl] = useState({ url: "", pedido: 0 });
+  const [isOpenModalImpresion, handleModalImpresion] = useModal();
   const { push } = useHistory();
 
   const pedirPedidosAPreparar = async () => {
@@ -159,6 +161,24 @@ function AprepararGuardar({ isConsulta, idPermiso }) {
     }
   };
 
+  const volverAlListado = () => {
+    setModoPreparar(false);
+    setPedidoSeleccionado({});
+    pedirPedidosAPreparar();
+  };
+
+  const imprimirPesaje = async (pedido, usuario, Token) => {
+    try {
+      const result = await fetch(
+        `${BASE_URL}iPedidosSP/pedidoPesoImpresion?pUsuario=${usuario}&pToken=${Token}&pNumeroPedido=${pedido}`
+      );
+
+      const pdf = await result.json();
+
+      setPdfUrl({ url: `data:application/pdf;base64,${pdf}`, pedido });
+      handleModalImpresion();
+    } catch (err) {}
+  };
   /* Manejadores de Eventos  */
   const handleGuardarPreparacion = (pedido) => async (e) => {
     const pedidoProcesado = ProcesarParaGuardar(pedido);
@@ -183,9 +203,8 @@ function AprepararGuardar({ isConsulta, idPermiso }) {
       }
 
       toast.success("Pedido guardado con exito");
-      setModoPreparar(false);
-      setPedidoSeleccionado({});
-      pedirPedidosAPreparar();
+      await imprimirPesaje(pedidoProcesado.Numero, auth.usuario, auth.Token);
+      volverAlListado();
     } catch (err) {
       toast.error("se ah producido un error");
       console.log(err);
@@ -221,6 +240,11 @@ function AprepararGuardar({ isConsulta, idPermiso }) {
 
   return (
     <div className="preparar">
+      <ModalImpresion
+        isOpen={isOpenModalImpresion}
+        onClose={handleModalImpresion}
+        pdfUrl={pdfUrl}
+      />
       <div className="controles">
         <div>
           <input
@@ -295,5 +319,48 @@ function AprepararGuardar({ isConsulta, idPermiso }) {
     </div>
   );
 }
+
+const ModalImpresion = ({ isOpen, onClose, pdfUrl }) => {
+  const handleClose = (e) => {
+    onClose();
+  };
+  const handleGuardar = (e) => {
+    const a = document.createElement("a");
+    a.href = pdfUrl.url;
+    a.download = `pedido-N${
+      pdfUrl.pedido
+    }-${new Date().toLocaleDateString()}.pdf`;
+    a.click();
+    onClose();
+  };
+  return (
+    <div className={`overlay ${isOpen ? "open" : ""}`}>
+      <div className="card-producto impresion">
+        <embed
+          id="embed"
+          style={{
+            height: "100%",
+            width: "100%",
+            border: 0,
+            top: 0,
+            left: 0,
+            bottom: 0,
+            right: 0,
+          }}
+          src={`${pdfUrl?.url}`}
+          type="application/pdf"
+        />
+        <div className="formulario-botones impresion">
+          <button className="cancelar" onClick={handleClose}>
+            Cerrar
+          </button>
+          <button className="confirmar" onClick={handleGuardar}>
+            Descargar
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+};
 
 export default AprepararGuardar;
