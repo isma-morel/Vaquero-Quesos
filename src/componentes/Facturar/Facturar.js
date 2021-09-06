@@ -351,14 +351,13 @@ const Facturar = ({ idPermiso, isConsulta }) => {
 
 /* Modales */
 const ModalFactura = ({ isOpen, onClose, pedido, onGuardar }) => {
-  const [inputs, setInputs] = useState({ A: 0, B: 0 });
+  const [inputs, setInputs] = useState({ A: 0, B: 100 });
   useEffect(() => {
-    if (pedido) setInputs({ A: pedido.A, B: pedido.B });
+    if (pedido) setInputs({ A: pedido.A, B: 100 - pedido.A });
   }, [pedido]);
   const handleChange = (e) => {
-    const { name, value } = e.target;
-
-    setInputs({ ...inputs, [name]: value });
+    const { value } = e.target;
+    setInputs({ A: value, B: 100 - value });
   };
   const handleClose = (e) => {
     setInputs({ A: 0, B: 0 });
@@ -396,7 +395,6 @@ const ModalFactura = ({ isOpen, onClose, pedido, onGuardar }) => {
               inputMode="decimal"
               min={0}
               step={0.1}
-              onChange={handleChange}
             />
           </div>
         </div>
