@@ -7,6 +7,7 @@ import {
   EstadoPedidos,
   CargaProductos,
   Permisos,
+  Usuarios,
 } from "../index";
 import { Route, Switch, useHistory, Link } from "react-router-dom";
 import "./Dashboard.css";
@@ -24,6 +25,7 @@ const Iconos = {
   Productos: <i className="fas fa-cheese"></i>,
   Permisos: <i className="fas fa-key"></i>,
   "Actualizar Clientes": <i className="fas fa-sync-alt"></i>,
+  Usuarios: <i className="fas fa-user"></i>,
 };
 
 const Dashboard = () => {
@@ -96,6 +98,9 @@ const Dashboard = () => {
         </Route>
         <Route path="/Dashboard/actualizarClientes">
           <ActualizarClientes idPermiso={10} />
+        </Route>
+        <Route path="/Dashboard/usuarios">
+          <Usuarios idPermiso={11} />
         </Route>
 
         <Route path="/Dashboard">

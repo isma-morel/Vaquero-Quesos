@@ -1,0 +1,28 @@
+.overlay.open .modal .modal-body .inactivo {
+  font-size: 1.09rem;
+  color: white;
+  padding: 0.3em 0.6em;
+
+  border-radius: 0.2em;
+  cursor: pointer;
+}
+
+.overlay.open .modal .modal-body .inactivo.true {
+  background-color: green;
+}
+.overlay.open .modal .modal-body .inactivo.false {
+  background-color: red;
+}
+.overlay.open .modal .modal-body .Inputs {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  padding: 1em;
+  gap: 2em;
+}
+.overlay.open .modal .modal-body .Inputs .contenedor-input input[type="text"] {
+  font-size: 1.09rem;
+  padding: 0.2em;
+  border-radius: 0.2em;
+  border: 1px solid rgba(0, 0, 0, 0.3);
+}

@@ -12,3 +12,4 @@ export { default as EstadoPedidos } from "./EstadoPedidos/EstadoPedidos";
 export { default as Taras } from "./Taras/Taras";
 export { default as CargaProductos } from "./CargaProductos/CargaProductos";
 export { default as Permisos } from "./Permisos/Permisos";
+export { default as Usuarios } from "./Usuarios/Usuarios";
