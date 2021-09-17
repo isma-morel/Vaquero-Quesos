@@ -192,7 +192,11 @@ const ModalUsuarios = ({ Usuario, onClose, isOpen }) => {
       } = inputs;
       const auth = JSON.parse(localStorage.getItem("auth")) || {};
       const result = await fetch(
-        `${BASE_URL}iClientesSP/Guardar?pUsuario=${auth.usuario}&pToken=${auth.Token}&pNombre=${Nombre}&pTipoCliente=${TipoCliente}&pCodigoSistExt=${CodigoSistExt}&pInactivo=${Inactivo}&pListaPrecio=${ListaPrecio}&pCondicionPago=${CondicionPago}`,
+        `${BASE_URL}iClientesSP/Guardar?pUsuario=${auth.usuario}&pToken=${
+          auth.Token
+        }&pNombre=${Nombre}&pTipoCliente=${TipoCliente}&pCodigoSistExt=${
+          CodigoSistExt ? CodigoSistExt : Nombre
+        }&pInactivo=${Inactivo}&pListaPrecio=${"."}&pCondicionPago=${"."}`,
         { method: "POST" }
       );
 
