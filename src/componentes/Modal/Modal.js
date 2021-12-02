@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { BASE_URL } from "../../BaseURL.json";
 import "./Modal.css";
 const Modal = ({ isOpen, onClose, producto }) => {
@@ -7,8 +7,10 @@ const Modal = ({ isOpen, onClose, producto }) => {
     cantidad: 0,
     medida: medidaDefault,
   });
+
   const [isLoading, setIsLoading] = useState(false);
   const [foto, setFoto] = useState();
+  const inputRef = useRef()
   useEffect(() => {
     const pedirFoto = async (idProducto) => {
       try {
@@ -57,12 +59,12 @@ const Modal = ({ isOpen, onClose, producto }) => {
     }
   };
   const handleGuardarProducto = (e) => {
-    if (inputs.cantidad === "") {
+    if (inputs.cantidad === "" || Number(inputRef.current.value) !== inputs.medida) {
       return;
     }
-    let carrito = JSON.parse(localStorage.getItem("carrito")) || [];
+    let carrito = JSON.parse(sessionStorage.getItem("carrito")) || [];
     carrito = [...carrito, { ...producto, ...inputs }];
-    localStorage.setItem("carrito", JSON.stringify(carrito));
+    sessionStorage.setItem("carrito", JSON.stringify(carrito));
     LimpiarImputs();
     onClose();
   };
@@ -121,7 +123,9 @@ const Modal = ({ isOpen, onClose, producto }) => {
                   checked={inputs.medida === medida.IdMedida}
                   key={medida.IdMedida}
                   value={medida.IdMedida}
+                  ref={inputRef}
                 />
+
                 <label htmlFor={medida.DescripcionUM}>
                   {medida.DescripcionUM}
                 </label>

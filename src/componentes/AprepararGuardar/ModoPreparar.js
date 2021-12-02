@@ -60,6 +60,7 @@ const ModoPreparar = ({ pedido, salir, onGuardar }) => {
   const handleCancelarPesaje = (e) => {
     setProductoApesar(null);
   };
+  console.log(pedidoApreparar)
 
   return !productoApesar ? (
     <div className="contenedor-tabla">

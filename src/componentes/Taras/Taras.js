@@ -23,7 +23,7 @@ const Taras = () => {
   const { push } = useHistory();
   const pedirTaras = async () => {
     setIsLoading(true);
-    const auth = JSON.parse(localStorage.getItem("auth")) || {};
+    const auth = JSON.parse(sessionStorage.getItem("auth")) || {};
     try {
       //pido los datos.
       const result = await fetch(
@@ -48,7 +48,7 @@ const Taras = () => {
   };
 
   useEffect(() => {
-    const auth = JSON.parse(localStorage.getItem("auth"));
+    const auth = JSON.parse(sessionStorage.getItem("auth"));
     if (!auth) {
       push("/");
       return;
@@ -67,7 +67,7 @@ const Taras = () => {
     handleModal();
   };
   const handleEliminar = (tara) => async (e) => {
-    const auth = JSON.parse(localStorage.getItem("auth"));
+    const auth = JSON.parse(sessionStorage.getItem("auth"));
     if (!auth) {
       push("/");
       return;
@@ -141,7 +141,7 @@ const Taras = () => {
             <tbody>
               {tarasFiltradas?.map((tara, index) => (
                 <tr key={index}>
-                  <td style={{ textAlign: "right" }}>{tara.Peso}</td>
+                  <td style={{ textAlign: "right" }}>{parseFloat(tara.Peso).toFixed(2)}</td>
                   <td className="tara-descripcion">
                     <span>{tara.Descripcion}</span>
                     <span>
@@ -185,7 +185,7 @@ const ModalForm = ({ Tara, isOpen, onClose, pedirTaras }) => {
     editaPeso: false,
   });
   const guardarTara = async () => {
-    const auth = JSON.parse(localStorage.getItem("auth"));
+    const auth = JSON.parse(sessionStorage.getItem("auth"));
     if (!auth) {
       push("/");
       return;
@@ -198,7 +198,7 @@ const ModalForm = ({ Tara, isOpen, onClose, pedirTaras }) => {
           auth.Token
         }&pIdElemTara=${Tara ? Tara.IdElemTara : 0}&pDescripcion=${
           inputs.descripcion
-        }&pPeso=${parseFloat(inputs.peso)}&pEditaPeso=${
+        }&pPeso=${parseFloat(inputs.peso).toFixed(2)}&pEditaPeso=${
           inputs.editaPeso
         }&pInactivo=${inputs.inactivo}`,
         {
@@ -241,13 +241,12 @@ const ModalForm = ({ Tara, isOpen, onClose, pedirTaras }) => {
     if (target.name === "editaPeso" && target.checked) {
       inputsTemp.peso = 0;
     }
-
     setInputs({
       ...inputsTemp,
       [target.name]:
         target.type === "checkbox"
           ? target.checked
-          : target.value.toUpperCase(),
+          :  target.name === "peso"? target.value :target.value.toUpperCase(),
     });
   };
   const handleSubmit = (e) => {
@@ -268,12 +267,12 @@ const ModalForm = ({ Tara, isOpen, onClose, pedirTaras }) => {
             <input
               disabled={inputs.editaPeso}
               type="number"
-              step={0.1}
+              step={0.10}
               min={0}
               className="usuario"
               placeholder="Peso"
               name="peso"
-              value={inputs.peso}
+              value={parseFloat(inputs.peso).toFixed(2)}
               onChange={handleChange}
             />
           </div>

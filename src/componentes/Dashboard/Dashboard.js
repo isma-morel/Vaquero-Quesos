@@ -38,13 +38,13 @@ const Dashboard = () => {
       );
       if (result.status !== 200) {
         toast.error("se produjo un error.");
-        localStorage.removeItem("auth");
+        sessionStorage.removeItem("auth");
         push("/");
         return;
       }
       const json = await result.json();
       auth.permisos = json.filter((menu) => menu.Seleccionado);
-      localStorage.setItem("auth", JSON.stringify(auth));
+      sessionStorage.setItem("auth", JSON.stringify(auth));
       setItems([
         ...auth.permisos.map(({ NombrePantalla, Titulo }) => ({
           to: "/Dashboard/" + NombrePantalla,
@@ -60,7 +60,7 @@ const Dashboard = () => {
     } catch (err) {}
   };
   useEffect(() => {
-    const auth = JSON.parse(localStorage.getItem("auth"));
+    const auth = JSON.parse(sessionStorage.getItem("auth"));
 
     if (auth?.TipoCliente !== "S") {
       push("/");
@@ -124,7 +124,7 @@ const ActualizarClientes = ({ idPermiso }) => {
   const [isLoading, setIsLoading] = useState(false);
   const handleAceptar = async (e) => {
     const { usuario, Token, permisos } =
-      JSON.parse(localStorage.getItem("auth")) || {};
+      JSON.parse(sessionStorage.getItem("auth")) || {};
     if (!Token || !permisos.some(({ IdMenu }) => IdMenu === idPermiso))
       return push("/");
     setIsLoading(true);

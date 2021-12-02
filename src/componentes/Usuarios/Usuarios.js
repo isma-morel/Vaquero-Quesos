@@ -6,6 +6,28 @@ import useModal from "../../hooks/useModal";
 
 import "./Usuarios.css";
 
+/* Filtros */
+const filtrarUserPorId = (id, usuarios) => {
+  return usuarios.filter((user) => user.Usuario.toString().startsWith(id));
+};
+
+const filtrarUserPorCliente = (cliente, usuarios) => {
+  return usuarios.filter((user) =>
+    user.Nombre.toLowerCase().includes(cliente.toLowerCase())
+  );
+};
+
+const filtrar = (value, usuarios) => {
+  const esNumero = /^[0-9]+$/;
+  let resultado = usuarios;
+  if (value.match(esNumero)) {
+    resultado = filtrarUserPorId(value, usuarios);
+  } else {
+    resultado = filtrarUserPorCliente(value, usuarios);
+  }
+  return resultado;
+};
+
 const Usuarios = ({ idPermiso }) => {
   const tipoDeClientes = {
     S: "SUPERVISOR",
@@ -14,6 +36,8 @@ const Usuarios = ({ idPermiso }) => {
   };
 
   const [users, setUsers] = useState([]);
+  const [usersFiltrados, setUsersFiltrados] = useState();
+  const [isClick, setIsClick] = useState(false);
   const [usuarioSeleccionado, setUsuarioSeleccionado] = useState({});
   const [isLoading, setIsLoading] = useState(false);
   const { push } = useHistory();
@@ -22,7 +46,7 @@ const Usuarios = ({ idPermiso }) => {
   const obtenerUsuarios = async () => {
     setIsLoading(true);
     try {
-      const auth = JSON.parse(localStorage.getItem("auth")) || {};
+      const auth = JSON.parse(sessionStorage.getItem("auth")) || {};
 
       if (!auth || !auth.permisos.some(({ IdMenu }) => IdMenu === idPermiso))
         return push("/");
@@ -38,7 +62,6 @@ const Usuarios = ({ idPermiso }) => {
       }
 
       const usuarios = await result.json();
-      console.log(usuarios);
       setUsers(usuarios);
     } catch (err) {
       toast.error("se produjo un error al obtener los usuarios");
@@ -52,13 +75,17 @@ const Usuarios = ({ idPermiso }) => {
     obtenerUsuarios();
   }, []);
 
+  useEffect(() => {
+    setUsersFiltrados(users);
+  }, [users]);
+
   const handleAddClick = () => {
     setUsuarioSeleccionado({});
     handleCloseModal(true);
   };
   const handleDeleteClick = (index) => async (e) => {
     try {
-      const auth = JSON.parse(localStorage.getItem("auth")) || {};
+      const auth = JSON.parse(sessionStorage.getItem("auth")) || {};
 
       if (!auth || !auth.permisos.some(({ IdMenu }) => IdMenu === idPermiso))
         return push("/");
@@ -95,6 +122,76 @@ const Usuarios = ({ idPermiso }) => {
     obtenerUsuarios();
     handleCloseModal();
   };
+
+  const handleClickNombre = () => {
+    setIsClick(!isClick);
+    if (isClick) {
+      const listSort = usersFiltrados;
+      listSort.sort((a, b) => {
+        if (a.Nombre > b.Nombre) return -1;
+        if (a.Nombre < b.Nombre) return 1;
+        return 0;
+      });
+      setUsersFiltrados(listSort);
+    } else {
+      const listSort = usersFiltrados;
+      listSort.sort((a, b) => {
+        if (a.Nombre < b.Nombre) return -1;
+        if (a.Nombre > b.Nombre) return 1;
+        return 0;
+      });
+      setUsersFiltrados(listSort);
+    }
+  };
+
+  const handleClickUser = () => {
+    setIsClick(!isClick);
+    if (isClick) {
+      const listSort = usersFiltrados;
+      listSort.sort((a, b) => {
+        if (a.Usuario > b.Usuario) return -1;
+        if (a.Usuario < b.Usuario) return 1;
+        return 0;
+      });
+      setUsersFiltrados(listSort);
+    } else {
+      const listSort = usersFiltrados;
+      listSort.sort((a, b) => {
+        if (a.Usuario < b.Usuario) return -1;
+        if (a.Usuario > b.Usuario) return 1;
+        return 0;
+      });
+      setUsersFiltrados(listSort);
+    }
+  };
+
+  const handleClickTipo = () => {
+    setIsClick(!isClick);
+    if (isClick) {
+      const listSort = usersFiltrados;
+      listSort.sort((a, b) => {
+        if (a.TipoCliente === "C") return -1;
+        if (b.TipoCliente === "C") return 1;
+        return 0;
+      });
+      setUsersFiltrados(listSort);
+    } else {
+      const listSort = usersFiltrados;
+      listSort.sort((a, b) => {
+        if (a.TipoCliente === "S") return -1;
+        if (b.TipoCliente === "S") return 1;
+        return 0;
+      });
+      setUsersFiltrados(listSort);
+    }
+  };
+
+  const handleFiltroChange = ({ target: { value } }) => {
+    const resultado = filtrar(value, users);
+    if (!resultado) return;
+    setUsersFiltrados(resultado);
+  };
+
   return (
     <div className="carga-productos">
       {isLoading ? (
@@ -107,6 +204,10 @@ const Usuarios = ({ idPermiso }) => {
             isOpen={isOpenModal}
           />
           <div className="contenedor-cliente">
+            <div className="input-cliente">
+              <label>Filtro</label>
+              <input onChange={handleFiltroChange} type="text" />
+            </div>
             <button onClick={handleAddClick} className="btn add">
               Nuevo
             </button>
@@ -114,41 +215,54 @@ const Usuarios = ({ idPermiso }) => {
           <table className="tabla tabla-pedidos">
             <thead>
               <tr>
-                <th>USUARIO</th>
-                <th>NOMBRE</th>
+                <th className="sorters" onClick={handleClickUser}>
+                  USUARIO
+                </th>
+                <th className="sorters" onClick={handleClickNombre}>
+                  NOMBRE
+                </th>
                 <th>CONTRASEÑA</th>
-                <th>TIPO</th>
+                <th className="sorters" onClick={handleClickTipo}>
+                  TIPO
+                </th>
               </tr>
             </thead>
 
             <tbody>
-              {users.map(
-                ({ Usuario, Nombre, Contrasenia, TipoCliente }, index) => (
-                  <tr key={index}>
-                    <td>{Usuario}</td>
-                    <td className="descripcion">
-                      <div>
-                        <span>{Nombre}</span>
-                      </div>
-                      <div>
-                        <button onClick={handleEditClick(index)}>
-                          <i
-                            title="presione para editar"
-                            className="fas fa-edit"></i>
-                        </button>
-                        <button
-                          onClick={handleDeleteClick(index)}
-                          style={{ color: "red" }}>
-                          <i
-                            title="presione para borrar"
-                            className="fas fa-trash-alt"></i>
-                        </button>
-                      </div>
-                    </td>
-                    <td>{Contrasenia}</td>
-                    <td>{tipoDeClientes[TipoCliente]}</td>
-                  </tr>
+              {users ? (
+                usersFiltrados?.map(
+                  ({ Usuario, Nombre, Contrasenia, TipoCliente }, index) => (
+                    <tr key={index}>
+                      <td>{Usuario}</td>
+                      <td className="descripcion">
+                        <div>
+                          <span>{Nombre}</span>
+                        </div>
+                        <div>
+                          <button onClick={handleEditClick(index)}>
+                            <i
+                              title="presione para editar"
+                              className="fas fa-edit"
+                            ></i>
+                          </button>
+                          <button
+                            onClick={handleDeleteClick(index)}
+                            style={{ color: "red" }}
+                          >
+                            <i
+                              title="presione para borrar"
+                              className="fas fa-trash-alt"
+                            ></i>
+                          </button>
+                        </div>
+                      </td>
+                      <td>{Contrasenia}</td>
+                      <td>{tipoDeClientes[TipoCliente]}</td>
+                    </tr>
+                  )
                 )
+              ) : (
+                <div>spin</div>
               )}
             </tbody>
           </table>
@@ -190,7 +304,7 @@ const ModalUsuarios = ({ Usuario, onClose, isOpen }) => {
         CondicionPago,
         ListaPrecio,
       } = inputs;
-      const auth = JSON.parse(localStorage.getItem("auth")) || {};
+      const auth = JSON.parse(sessionStorage.getItem("auth")) || {};
       const result = await fetch(
         `${BASE_URL}iClientesSP/Guardar?pUsuario=${auth.usuario}&pToken=${
           auth.Token
@@ -221,7 +335,8 @@ const ModalUsuarios = ({ Usuario, onClose, isOpen }) => {
           <div className="Inputs">
             <div
               className="contenedor-input"
-              style={{ display: "flex", flexDirection: "column" }}>
+              style={{ display: "flex", flexDirection: "column" }}
+            >
               <label htmlFor="">Nombre</label>
               <input
                 onChange={handleInputChange}
@@ -236,7 +351,8 @@ const ModalUsuarios = ({ Usuario, onClose, isOpen }) => {
                 onChange={handleInputChange}
                 value={inputs.TipoCliente}
                 name="TipoCliente"
-                id="">
+                id=""
+              >
                 <option value="C">Cliente</option>
                 <option value="V">Vendedor</option>
                 <option value="S">Supervisor</option>
@@ -248,10 +364,12 @@ const ModalUsuarios = ({ Usuario, onClose, isOpen }) => {
                 flexDirection: "column",
                 justifyContent: "center",
                 alignItems: "center",
-              }}>
+              }}
+            >
               <label
                 htmlFor="inactivo"
-                className={`inactivo ${inputs.Inactivo ? "true" : "false"}`}>
+                className={`inactivo ${inputs.Inactivo ? "true" : "false"}`}
+              >
                 Inactivo {inputs.Inactivo ? "si" : "no"}
               </label>
               <input
@@ -265,7 +383,8 @@ const ModalUsuarios = ({ Usuario, onClose, isOpen }) => {
             </div>
             <div
               className="contenedor-input"
-              style={{ display: "flex", flexDirection: "column" }}>
+              style={{ display: "flex", flexDirection: "column" }}
+            >
               <label htmlFor="">Codigo Sist. Ext.</label>
               <input
                 onChange={handleInputChange}
@@ -281,7 +400,8 @@ const ModalUsuarios = ({ Usuario, onClose, isOpen }) => {
               justifyContent: "center",
               marginTop: "1em",
             }}
-            className="modal-botonera">
+            className="modal-botonera"
+          >
             <button className="cancelar" onClick={onClose}>
               Cancelar
             </button>

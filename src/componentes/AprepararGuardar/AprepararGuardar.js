@@ -5,6 +5,7 @@ import { toast } from "react-toastify";
 import { BASE_URL } from "../../BaseURL.json";
 import useModal from "../../hooks/useModal";
 import "./AprepararGuardar.css";
+import { useLocation } from "react-router-dom";
 
 const ProcesarPedido = (pedidos) => {
   let pedidosProcesados = [];
@@ -30,7 +31,7 @@ const ProcesarPedido = (pedidos) => {
         Presentacion,
         Cantidad,
         Medida,
-        IdMedidaPrinc,
+        idMedidaPrinc,
         pesoMaximo,
         pesoMinimo,
       }) => {
@@ -40,7 +41,7 @@ const ProcesarPedido = (pedidos) => {
             Codigo,
             Presentacion,
             Cantidad,
-            IdMedidaPrinc,
+            idMedidaPrinc,
             Medida,
             pesoMaximo,
             pesoMinimo,
@@ -88,7 +89,7 @@ const ProcesarParaGuardar = (pedido) => {
   PedidoProcesado.Productos = pedido.Productos.map(
     ({
       idPedidosProd,
-      IdMedidaPrinc,
+      idMedidaPrinc,
       Cantidad,
       Pesaje,
       DesecharFaltante,
@@ -96,7 +97,7 @@ const ProcesarParaGuardar = (pedido) => {
     }) => ({
       IdPreparado: 0,
       idPedidosProd,
-      IdMedidaPrinc: IdMedidaPrinc || 1,
+      idMedidaPrinc,
       Cantidad,
       PesoBruto: Pesaje?.PesoBruto || 0,
       DesecharFaltante,
@@ -125,12 +126,13 @@ function AprepararGuardar({ isConsulta, idPermiso }) {
   const [pdfUrl, setPdfUrl] = useState({ url: "", pedido: 0 });
   const [isOpenModalImpresion, handleModalImpresion] = useModal();
   const { push } = useHistory();
+  const location = useLocation();
 
   const pedirPedidosAPreparar = async () => {
     let pedidosProcesados = [];
 
     const { usuario, Token, permisos } =
-      JSON.parse(localStorage.getItem("auth")) || {};
+      JSON.parse(sessionStorage.getItem("auth")) || {};
     if (!Token || !permisos.some(({ IdMenu }) => IdMenu === idPermiso))
       return push("/");
 
@@ -142,7 +144,7 @@ function AprepararGuardar({ isConsulta, idPermiso }) {
       /* si la api devuelve un estado difetente a ok compruebo que el error no sea de auth */
       if (result.status !== 200) {
         if (result.status === 401) {
-          localStorage.removeItem("auth");
+          sessionStorage.removeItem("auth");
           push("/");
         }
         throw new Error(result.statusText);
@@ -151,7 +153,7 @@ function AprepararGuardar({ isConsulta, idPermiso }) {
       const json = await result.json();
 
       pedidosProcesados = await ProcesarPedido(json);
-
+      
       setPedidos(pedidosProcesados);
     } catch (err) {
       toast.error("a ocurrido un error");
@@ -182,7 +184,7 @@ function AprepararGuardar({ isConsulta, idPermiso }) {
   /* Manejadores de Eventos  */
   const handleGuardarPreparacion = (pedido) => async (e) => {
     const pedidoProcesado = ProcesarParaGuardar(pedido);
-    const auth = JSON.parse(localStorage.getItem("auth")) || {};
+    const auth = JSON.parse(sessionStorage.getItem("auth")) || {};
     try {
       const result = await fetch(
         `${BASE_URL}iPedidosSP/PrepararGuardar?pUsuario=${auth.usuario}&pToken=${auth.Token}&pIdClienteRegistro=${auth.IdCliente}`,
@@ -196,7 +198,7 @@ function AprepararGuardar({ isConsulta, idPermiso }) {
       );
       if (result.status !== 200) {
         if (result.status === 401) {
-          localStorage.removeItem("auth");
+          sessionStorage.removeItem("auth");
           push("/");
         }
         throw new Error(result.statusText);
@@ -206,7 +208,7 @@ function AprepararGuardar({ isConsulta, idPermiso }) {
       await imprimirPesaje(pedidoProcesado.Numero, auth.usuario, auth.Token);
       volverAlListado();
     } catch (err) {
-      toast.error("se ah producido un error");
+      toast.error("se ha producido un error");
       console.log(err);
     }
   };
@@ -255,8 +257,11 @@ function AprepararGuardar({ isConsulta, idPermiso }) {
           />
         </div>
         <span className="titulo">Preparación</span>
+        <span className="subtitulo">Pedidos Pendientes: {pedidos && pedidos.length}</span>
         <hr />
       </div>
+      <div className="contenedorPedidos">
+
       {!isLoading ? (
         !modoPreparar ? (
           pedidosFiltrados.map(
@@ -316,6 +321,7 @@ function AprepararGuardar({ isConsulta, idPermiso }) {
       ) : (
         <div className="spin"></div>
       )}
+      </div>
     </div>
   );
 }

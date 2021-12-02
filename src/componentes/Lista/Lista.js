@@ -14,7 +14,7 @@ function Lista() {
   const history = useHistory();
 
   const obtenerCarrito = () => {
-    const carrito = JSON.parse(localStorage.getItem("carrito")) || [];
+    const carrito = JSON.parse(sessionStorage.getItem("carrito")) || [];
     setCantidadProductos(carrito.length);
   };
   const handleCloseModal = (e) => {
@@ -23,7 +23,7 @@ function Lista() {
   };
 
   useEffect(() => {
-    const auth = JSON.parse(localStorage.getItem("auth"));
+    const auth = JSON.parse(sessionStorage.getItem("auth"));
     const tipo = {
       S: () => history.push("/Dashboard"),
       V: () => history.push("/"),
@@ -34,14 +34,14 @@ function Lista() {
     }
 
     const pedirLista = async () => {
-      if (!auth || !auth.IdCliente) localStorage.removeItem("auth");
+      if (!auth || !auth.IdCliente) sessionStorage.removeItem("auth");
       try {
         const result = await fetch(
           `${BASE_URL}iProductosSP/ProductosDatos?pUsuario=${auth.usuario}&pToken=${auth.Token}`
         );
         if (result.status !== 200) {
           if (result.status === 401) {
-            localStorage.removeItem("auth");
+            sessionStorage.removeItem("auth");
             history.push("/");
           }
           throw new Error("se ha producido un error");
@@ -63,7 +63,7 @@ function Lista() {
     SetProductoAagregar(producto);
     handleModal();
   };
-  return localStorage.getItem("auth") ? (
+  return sessionStorage.getItem("auth") ? (
     <>
       {productoAagregar ? (
         <Modal

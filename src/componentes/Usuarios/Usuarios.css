@@ -26,3 +26,22 @@
   border-radius: 0.2em;
   border: 1px solid rgba(0, 0, 0, 0.3);
 }
+
+.carga-productos .contenedor-tabla .contenedor-cliente {
+  display: flex;
+  justify-content: space-between;
+  margin: 15px 0;
+}
+
+.carga-productos .contenedor-tabla .contenedor-cliente .input-cliente {
+  display: flex;
+  flex-direction: column;
+}
+
+.carga-productos .contenedor-tabla .contenedor-cliente .input-cliente > label {
+  font-size: 1.1rem;
+}
+
+.sorters {
+  cursor: pointer;
+}

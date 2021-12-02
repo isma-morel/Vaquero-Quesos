@@ -2,10 +2,9 @@ import { useState, useEffect } from "react";
 
 const ModalCarrito = ({ isOpen, onClose, ProductoIndex, setProductos }) => {
   const [producto, setProducto] = useState();
-
   useEffect(() => {
     /* efecto encargado de obtener el producto que se va a editar. */
-    const carrito = JSON.parse(localStorage.getItem("carrito")) || [];
+    const carrito = JSON.parse(sessionStorage.getItem("carrito")) || [];
     const productoEditado = carrito[ProductoIndex];
     setProducto(productoEditado);
   }, [ProductoIndex, isOpen]);
@@ -30,9 +29,9 @@ const ModalCarrito = ({ isOpen, onClose, ProductoIndex, setProductos }) => {
   };
 
   const handleConfirmar = (e) => {
-    const carrito = JSON.parse(localStorage.getItem("carrito"));
+    const carrito = JSON.parse(sessionStorage.getItem("carrito"));
     carrito[ProductoIndex] = producto;
-    localStorage.setItem("carrito", JSON.stringify(carrito));
+    sessionStorage.setItem("carrito", JSON.stringify(carrito));
     setProductos(carrito);
     onClose();
   };
@@ -41,15 +40,17 @@ const ModalCarrito = ({ isOpen, onClose, ProductoIndex, setProductos }) => {
     <div className={`overlay ${isOpen ? "open" : ""}`}>
       <div className="card-producto">
         <div className="texto-producto">
-          <h2 className="producto">{producto.Descripcion}</h2>
-          <h3 className="descripcion">{producto.Presentacion}</h3>
-
+          <div className="title-producto">
+            <h2 className="producto">{producto.Descripcion}</h2>
+            <h3 className="descripcion">{producto.Presentacion}</h3>
+          </div>
           <div className="input">
             <button
               name="minus"
               onClick={handleClick}
               disabled={!producto.cantidad}
-              className="fas fa-minus boton-input"></button>
+              className="fas fa-minus boton-input"
+            ></button>
 
             <input
               name="cantidad"
@@ -61,7 +62,8 @@ const ModalCarrito = ({ isOpen, onClose, ProductoIndex, setProductos }) => {
             <button
               name="plus"
               onClick={handleClick}
-              className="fas fa-plus boton-input"></button>
+              className="fas fa-plus boton-input"
+            ></button>
           </div>
           <div className="radios">
             {producto.Medidas?.map((medida, index) => (
@@ -87,7 +89,8 @@ const ModalCarrito = ({ isOpen, onClose, ProductoIndex, setProductos }) => {
           <button
             onClick={handleConfirmar}
             disabled={!producto.cantidad}
-            className="boton btn-secondary">
+            className="boton btn-secondary"
+          >
             Modificar
           </button>
         </div>

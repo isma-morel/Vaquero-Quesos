@@ -10,7 +10,7 @@ const Login = ({ logo, LogSucces }) => {
   const [isVendedor, setIsVendedor] = useState(false);
   const [clientes, setClientes] = useState([]);
   useEffect(() => {
-    const auth = JSON.parse(localStorage.getItem("auth"));
+    const auth = JSON.parse(sessionStorage.getItem("auth"));
     const tipo = {
       C: () => history.push("/Lista"),
       V: () => {
@@ -78,7 +78,7 @@ const Login = ({ logo, LogSucces }) => {
           throw new Error("usuario o contraseña incorrecta.");
         }
         setError(null);
-        localStorage.setItem(
+        sessionStorage.setItem(
           "auth",
           JSON.stringify({ ...json, usuario: target[0].value })
         );
@@ -133,8 +133,8 @@ const SelecionCliente = ({ clientes, LogSucces }) => {
 
   const handleClick = (e) => {
     const Cliente = clientes[clienteSeleccionado];
-    localStorage.removeItem("auth");
-    localStorage.setItem("auth", JSON.stringify({ ...Cliente }));
+    sessionStorage.removeItem("auth");
+    sessionStorage.setItem("auth", JSON.stringify({ ...Cliente }));
     LogSucces();
     history.push("/Lista");
   };

@@ -16,7 +16,7 @@ const Permisos = ({ idPermiso }) => {
     useState(false);
   const { push } = useHistory();
   const { usuario, Token, permisos } = JSON.parse(
-    localStorage.getItem("auth") || []
+    sessionStorage.getItem("auth") || []
   );
 
   const pedirListaPermisos = async () => {

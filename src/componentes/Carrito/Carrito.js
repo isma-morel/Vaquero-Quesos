@@ -13,10 +13,10 @@ const Carrito = () => {
   const [productos, setProductos] = useState([]);
   const [user, setUser] = useState();
   const confirmarUsuario = () =>
-    JSON.parse(localStorage.getItem("auth"))?.TipoCliente === "C";
+    JSON.parse(sessionStorage.getItem("auth"))?.TipoCliente === "C";
   useEffect(() => {
-    const carrito = JSON.parse(localStorage.getItem("carrito")) || [];
-    const usuario = JSON.parse(localStorage.getItem("auth"));
+    const carrito = JSON.parse(sessionStorage.getItem("carrito")) || [];
+    const usuario = JSON.parse(sessionStorage.getItem("auth"));
     !confirmarUsuario() && history.push("/");
     setUser(usuario);
     setProductos(carrito);
@@ -66,7 +66,7 @@ const Carrito = () => {
       );
       if (result.status !== 200) {
         if (result.status === 401) {
-          localStorage.removeItem("auth");
+          sessionStorage.removeItem("auth");
           history.push("/");
         }
         throw new Error("error al guardar el pedido");
@@ -74,7 +74,7 @@ const Carrito = () => {
       toast.success(
         `pedido cargado con exito N° de pedido: ${await result.json()} `
       );
-      localStorage.removeItem("carrito");
+      sessionStorage.removeItem("carrito");
       setProductos([]);
     } catch (err) {
       toast.error(err.message);
@@ -88,7 +88,7 @@ const Carrito = () => {
     const tempProductos = [...productos];
     tempProductos.splice(index, 1);
     setProductos(tempProductos);
-    localStorage.setItem("carrito", JSON.stringify(tempProductos));
+    sessionStorage.setItem("carrito", JSON.stringify(tempProductos));
   };
   return (
     <div className="contenedor-pedidos">

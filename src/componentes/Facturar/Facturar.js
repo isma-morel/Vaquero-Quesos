@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { useHistory } from "react-router";
 import { toast } from "react-toastify";
 import { BASE_URL } from "../../BaseURL.json";
@@ -116,6 +116,9 @@ const Iframe = (url) =>
 const Facturar = ({ idPermiso, isConsulta }) => {
   const [isOpenModal, handleModal] = useModal();
   const [isOpenModalImpresion, handleModalImpresion] = useModal();
+  const [isOpenModalPeso, handleModalPeso] = useModal();
+  const [pedidoId, setPedidoId] = useState(null);
+  const [pedidoPesoFiltrado, setPedidoPesoFiltrado] = useState();
   const [pedidosAFacturarFiltrados, setPedidosAFacturarFiltrados] = useState();
   const [pedidosAFacturar, setPedidosAFacturar] = useState();
   const [pedidoAjustar, setPedidoAjustar] = useState();
@@ -124,7 +127,7 @@ const Facturar = ({ idPermiso, isConsulta }) => {
   const { push } = useHistory();
 
   const pedirPedidosParaFacturar = async () => {
-    const auth = JSON.parse(localStorage.getItem("auth"));
+    const auth = JSON.parse(sessionStorage.getItem("auth"));
     if (
       !auth.Token ||
       !auth.permisos.some(({ IdMenu }) => IdMenu === idPermiso)
@@ -136,7 +139,7 @@ const Facturar = ({ idPermiso, isConsulta }) => {
       );
       if (result.status !== 200) {
         if (result.status === 401) {
-          localStorage.removeItem("auth");
+          sessionStorage.removeItem("auth");
           push("/");
         }
         throw new Error(result.statusText);
@@ -151,6 +154,33 @@ const Facturar = ({ idPermiso, isConsulta }) => {
     }
   };
 
+  const getDetallePesaje = async () => {
+    const auth = JSON.parse(sessionStorage.getItem("auth"));
+    const result = await fetch(
+      `${BASE_URL}iPedidosSP/pedidoPesoDatos?pUsuario=${auth.usuario}&pToken=${auth.Token}&pNumeroPedido=${pedidoId.Pedido}`
+    );
+    if (result.status !== 200) {
+      if (result.status === 401) {
+        sessionStorage.removeItem("auth");
+        push("/");
+      }
+      throw new Error(result.statusText);
+    }
+    const json = await result.json();
+    const { Productos, Taras } = json;
+    const pesoFiltered = Productos.filter(
+      ({ Id }) => Id === pedidoId.idPedidosPrepProd
+    );
+    const taraFiltered = Taras.filter(
+      ({ Id }) => Id === pedidoId.idPedidosPrepProd
+    );
+    setPedidoPesoFiltrado([pesoFiltered[0], taraFiltered[0]]);
+    handleModalPeso();
+  };
+  useEffect(() => {
+    pedidoId && getDetallePesaje();
+  }, [pedidoId]);
+
   /* Efectos */
   useEffect(() => {
     pedirPedidosParaFacturar();
@@ -160,6 +190,13 @@ const Facturar = ({ idPermiso, isConsulta }) => {
   }, [pedidosAFacturar]);
 
   /* Manejadores de eventos */
+  // const handleFiltroPedidoPeso = () => {
+  //   const {Productos, Taras} = pedidosPeso;
+  //   const pesoFiltered = Productos.filter(({Id}) => Id === pedidoId.idPedidosPrepProd)
+  //   const taraFiltered = Taras.filter(({Id}) => Id=== pedidoId.idPedidosPrepProd)
+  //   setPedidoPesoFiltrado([pesoFiltered[0], taraFiltered[0]])
+  // }
+
   const handleChangeFiltro = (e) => {
     const resultado = filtrar(e.target.value, pedidosAFacturar);
     if (!resultado) return;
@@ -178,7 +215,7 @@ const Facturar = ({ idPermiso, isConsulta }) => {
     handleModal();
   };
   const handleGuardarPedido = (index) => async (e) => {
-    const auth = JSON.parse(localStorage.getItem("auth"));
+    const auth = JSON.parse(sessionStorage.getItem("auth"));
     const pedidoProcesado = ProcesarPedidoParaGuardar(
       pedidosAFacturarFiltrados[index]
     );
@@ -195,7 +232,7 @@ const Facturar = ({ idPermiso, isConsulta }) => {
       );
       if (result.status !== 200) {
         if (result.status === 401) {
-          localStorage.removeItem("auth");
+          sessionStorage.removeItem("auth");
           push("/");
         }
         throw new Error(result.statusText);
@@ -210,7 +247,7 @@ const Facturar = ({ idPermiso, isConsulta }) => {
     }
   };
   const handleImprimir = (pedidoAImprimir) => async (e) => {
-    const { usuario, Token } = JSON.parse(localStorage.getItem("auth")) || {};
+    const { usuario, Token } = JSON.parse(sessionStorage.getItem("auth")) || {};
     if (pedidoAImprimir === 0) return;
 
     setIsLoadPDF(true);
@@ -249,6 +286,11 @@ const Facturar = ({ idPermiso, isConsulta }) => {
         onClose={handleModalImpresion}
         pdfUrl={pdfUrl}
       />
+      <ModalDetallePedido
+        isOpen={isOpenModalPeso}
+        onClose={handleModalPeso}
+        data={pedidoPesoFiltrado}
+      />
       <div className="controles">
         <div>
           <input
@@ -281,13 +323,15 @@ const Facturar = ({ idPermiso, isConsulta }) => {
                   <div className="botones">
                     <button
                       onClick={handleAjustar(index)}
-                      className="btn ajustar">
+                      className="btn ajustar"
+                    >
                       Ajustar
                     </button>
                     <button
                       onClick={handleGuardarPedido(index)}
                       disabled={!(A || B) || A + B !== 100}
-                      className="btn">
+                      className="btn"
+                    >
                       Guardar
                     </button>
                   </div>
@@ -296,7 +340,8 @@ const Facturar = ({ idPermiso, isConsulta }) => {
                     <button
                       onClick={handleImprimir(Pedido)}
                       disabled={isLoadPDF}
-                      className="btn">
+                      className="btn"
+                    >
                       Imprimir
                     </button>
                   </div>
@@ -315,14 +360,28 @@ const Facturar = ({ idPermiso, isConsulta }) => {
                 <tbody>
                   {Productos.map(
                     (
-                      { Codigo, Presentacion, CantidadLista, Medida, Peso },
+                      {
+                        idPedidosPrepProd,
+                        Codigo,
+                        Presentacion,
+                        CantidadLista,
+                        Medida,
+                        Peso,
+                      },
                       indexProd
                     ) => (
                       <tr key={indexProd}>
                         <td>{Codigo}</td>
                         <td>
                           <div>
-                            <span className="titulo">{Presentacion}</span>
+                            <span
+                              className="titulo tituloPedidos"
+                              onClick={() =>
+                                setPedidoId({ Pedido, idPedidosPrepProd })
+                              }
+                            >
+                              {Presentacion}
+                            </span>
                           </div>
                         </td>
                         <td className="peso">{`${CantidadLista} ${
@@ -449,6 +508,169 @@ const ModalImpresion = ({ isOpen, onClose, pdfUrl }) => {
             Descargar
           </button>
         </div>
+      </div>
+    </div>
+  );
+};
+
+const ModalDetallePedido = ({ isOpen, onClose, data }) => {
+  const [taras, setTaras] = useState(null);
+  const [unidad, setUnidad] = useState(null);
+  const [tipo, setTipo] = useState(null);
+  const [pesajes, setPesajes] = useState({
+    Cantidad: unidad && unidad.Cantidad,
+    PesoBruto: unidad && unidad.PesoBruto,
+    Tara: unidad && unidad.Tara,
+    PesoNeto: unidad && unidad.PesoBruto - unidad.Tara,
+    PesoPieza: 0,
+  });
+  const handleClose = () => onClose();
+
+  useEffect(() => {
+    const getTaras = async () => {
+      try {
+        const auth = JSON.parse(sessionStorage.getItem("auth"));
+        const result = await fetch(
+          `${BASE_URL}iElemTaraSP/ElementosTaraDatos?pUsuario=${auth.usuario}&pToken=${auth.Token}`
+        );
+        if (result.status !== 200) {
+          throw new Error(result.text);
+        }
+        const json = await result.json();
+        console.log(json);
+        const jsonFiltered = data
+          ? json.filter(({ Descripcion }) =>
+              Descripcion.toLowerCase().includes(
+                data[1]?.Decripcion.toLowerCase()
+              )
+            )
+          : [];
+        console.log(jsonFiltered);
+        setTaras(jsonFiltered);
+      } catch (err) {
+        console.log(err);
+      }
+    };
+    getTaras();
+  }, [data]);
+
+  useEffect(() => {
+    data && setUnidad(data[0]);
+    data && setTipo(data[1] ? data[1] : null);
+  }, [data]);
+
+  useEffect(() => {
+    unidad &&
+      setPesajes({
+        Cantidad: unidad.Cantidad,
+        PesoBruto: unidad.PesoBruto,
+        Tara: unidad.Tara,
+        PesoNeto: unidad.PesoBruto - unidad.Tara,
+        PesoPieza: 0,
+      });
+  }, [unidad]);
+
+  return (
+    <div className={`overlay contenedor-peso ${isOpen ? "open" : ""}`}>
+      {console.log(data, taras)}
+      <div className="card-producto">
+        <div className="form-tabla-peso">
+          <div className="tittle-producto">
+            <h2 className="tittle-peso">{data && data[0].Producto}</h2>
+            <h3 className="subtittle-peso">Codigo: {data && data[0].Id}</h3>
+          </div>
+          <div className="form-inputs-peso">
+            <div>
+              <label htmlFor="piezas">Piezas Totales</label>
+              <input
+                disabled
+                className="input-peso"
+                name="piezas"
+                value={pesajes.Cantidad ? pesajes.Cantidad : ""}
+              />
+            </div>
+            <div>
+              <label htmlFor="bruto">Peso Bruto</label>
+              <input
+                disabled
+                className="input-peso"
+                name="bruto"
+                value={pesajes.PesoBruto ? pesajes.PesoBruto : ""}
+              />
+            </div>
+            <div>
+              <label htmlFor="tara">Tara</label>
+              <input
+                disabled
+                className="input-peso"
+                name="tara"
+                value={pesajes.Tara ? pesajes.Tara : ""}
+              />
+            </div>
+            <div>
+              <label htmlFor="neto">Peso Neto</label>
+              <input
+                disabled
+                className="input-peso"
+                name="neto"
+                value={pesajes.PesoNeto ? pesajes.PesoNeto : ""}
+              />
+            </div>
+            <div>
+              <label htmlFor="pesoPieza">Peso por Pieza</label>
+              <input
+                disabled
+                className="input-peso"
+                name="pesoPieza"
+                value={
+                  pesajes.PesoNeto
+                    ? parseFloat(pesajes.PesoNeto / pesajes.Cantidad).toFixed(2)
+                    : ""
+                }
+              />
+            </div>
+          </div>
+          {taras?.length !== 0 ? (
+            <div className="tara-table-peso">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Tipo</th>
+                    <th>Cantidad</th>
+                    <th>Peso</th>
+                    <th>SubTotal</th>
+                  </tr>
+                </thead>
+
+                <tbody>
+                  {taras?.map((tara, index) => (
+                    <tr key={index}>
+                      <td>{tara.Descripcion}</td>
+                      <td inputMode="decimal">
+                        {tipo && tara.Descripcion === tipo.Decripcion
+                          ? tipo.Cantidad
+                          : null}
+                      </td>
+                      <td>
+                        {tipo && tara.Descripcion === tipo.Decripcion
+                          ? tipo.Peso
+                          : tara.Peso}
+                      </td>
+                      <td>
+                        {tipo && tara.Descripcion === tipo.Decripcion
+                          ? parseFloat(tipo.Cantidad * tipo.Peso).toFixed(2)
+                          : " "}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          ) : null}
+        </div>
+        <button className="cancelar" onClick={handleClose}>
+          Cerrar
+        </button>
       </div>
     </div>
   );

@@ -53,7 +53,7 @@ const CargaProductos = ({ idPermiso }) => {
   const obtenerPedidos = async () => {
     setIsLoading(true);
     try {
-      const auth = JSON.parse(localStorage.getItem("auth"));
+      const auth = JSON.parse(sessionStorage.getItem("auth"));
       if (!auth || !auth.permisos.some(({ IdMenu }) => IdMenu === idPermiso))
         return push("/");
 
@@ -164,7 +164,7 @@ const AddOrEdit = ({
   const { push } = useHistory();
 
   const pedirMedidas = async () => {
-    const auth = JSON.parse(localStorage.getItem("auth"));
+    const auth = JSON.parse(sessionStorage.getItem("auth"));
     if (!auth) return push("/");
 
     try {
@@ -257,7 +257,7 @@ const AddOrEdit = ({
     handleModal();
     setInputs({
       ...inputs,
-      ["medidaPrincipal"]: medidas[medidaSeleccionada].IdMedida,
+      "medidaPrincipal": medidas[medidaSeleccionada].IdMedida,
     });
   };
   const handleRemove = (index) => (e) => {
@@ -278,7 +278,7 @@ const AddOrEdit = ({
 
   const handleGuardar = async (e) => {
     let foto = null;
-    const auth = JSON.parse(localStorage.getItem("auth"));
+    const auth = JSON.parse(sessionStorage.getItem("auth"));
     if (!auth) return push("/");
     setIsLoading(true);
     try {

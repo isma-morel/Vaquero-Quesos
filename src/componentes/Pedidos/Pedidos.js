@@ -132,7 +132,7 @@ const Pedidos = ({ idPermiso }) => {
 
   const PedirPedidos = async () => {
     const { usuario, Token, permisos } =
-      JSON.parse(localStorage.getItem("auth")) || {};
+      JSON.parse(sessionStorage.getItem("auth")) || {};
     if (!Token || !permisos.some(({ IdMenu }) => IdMenu === idPermiso))
       return push("/");
 
@@ -143,7 +143,7 @@ const Pedidos = ({ idPermiso }) => {
 
       if (result.status !== 200) {
         if (result.status === 401) {
-          localStorage.removeItem("auth");
+          sessionStorage.removeItem("auth");
           push("/");
         }
         throw new Error(result.statusText);
@@ -165,7 +165,7 @@ const Pedidos = ({ idPermiso }) => {
   /* Manejadores de eventos */
   const handleConfirmar = (index) => async (e) => {
     const { usuario, Token, IdCliente } =
-      JSON.parse(localStorage.getItem("auth")) || {};
+      JSON.parse(sessionStorage.getItem("auth")) || {};
     let Preparados = ProcesarPedidoAConfirmar(pedidos[index]);
     console.log(pedidos[index]);
     if (Preparados.length === 0) return;
@@ -186,7 +186,7 @@ const Pedidos = ({ idPermiso }) => {
       );
       if (result.status !== 200) {
         if (result.status === 401) {
-          localStorage.removeItem("auth");
+          sessionStorage.removeItem("auth");
           push("/");
         }
         throw new Error(result.statusText);

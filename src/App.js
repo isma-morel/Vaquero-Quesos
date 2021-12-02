@@ -20,7 +20,7 @@ function App() {
     LogSucces();
   }, []);
   const LogSucces = () => {
-    const user = JSON.parse(localStorage.getItem("auth"));
+    const user = JSON.parse(sessionStorage.getItem("auth"));
     setUsuario(user);
   };
 
@@ -32,7 +32,7 @@ function App() {
             <BasePage
               LogSucces={LogSucces}
               usuario={usuario}
-              titulo="MAYORISTAS - 57| 22/01/2021">
+              titulo="Realizar Pedido">
               <Lista />
             </BasePage>
           </Route>
@@ -65,7 +65,7 @@ function App() {
 
 const BasePage = ({ children, titulo, usuario = {}, LogSucces }) => {
   const handleSwitch = (e) => {
-    localStorage.setItem("auth", JSON.stringify({ ...usuario.vendedor }));
+    sessionStorage.setItem("auth", JSON.stringify({ ...usuario.vendedor }));
   };
   useEffect(() => {
     if (!usuario.Token) {
@@ -102,7 +102,9 @@ const BasePage = ({ children, titulo, usuario = {}, LogSucces }) => {
 const Logout = () => {
   const history = useHistory();
   useEffect(() => {
-    localStorage.removeItem("auth");
+    sessionStorage.removeItem("auth");
+    sessionStorage.removeItem("carrito");
+
     history.push("/");
   }, []);
   return "";

@@ -23,9 +23,13 @@ const ModoPesar = ({ producto, onGuardar, onCancelar }) => {
   const [editPiezas, setEditPiezas] = useState(false);
   /* Manejadores de eventos */
   const handleChangeBruto = (e) => {
-    const { value } = e.target;
-
-    calcular({ ...pesaje, PesoBruto: parseFloat(value) });
+    const onlyNumber = /([A-Z])/gi;
+    const onlyComa = /,/gi;
+    let { value } = e.target;
+    let valueReplace = value.trim().replace(onlyNumber, "");
+    let valueReplaceComa = valueReplace.trim().replace(onlyComa, ".");
+    e.target.value = valueReplaceComa;
+    calcular({ ...pesaje, PesoBruto: parseFloat(valueReplaceComa) });
   };
 
   const handlePiezasClick = (e) => {
@@ -34,9 +38,15 @@ const ModoPesar = ({ producto, onGuardar, onCancelar }) => {
   };
 
   const handleChangePiezas = (e) => {
-    const { value } = e.target;
+    const onlyNumber = /([A-Z])/gi;
+    const onlyComa = /,/gi;
 
+    const { value } = e.target;
+    let valueReplace = value.trim().replace(onlyNumber, "");
+    let valueReplaceComa = valueReplace.trim().replace(onlyComa, ".");
+    e.target.value = valueReplaceComa;
     let tempProd = pesaje.producto;
+    console.log(valueReplaceComa);
     tempProd.Cantidad = parseFloat(value);
     calcular({ ...pesaje, producto: tempProd });
   };
@@ -54,6 +64,7 @@ const ModoPesar = ({ producto, onGuardar, onCancelar }) => {
     taraTemp[indice].subTotal =
       parseFloat(e.target.innerText) * parseFloat(taraTemp[indice].cantidad);
     taraTemp[indice].Peso = parseFloat(e.target.innerText);
+    console.log(e);
 
     calcular({
       ...pesaje,
@@ -84,7 +95,7 @@ const ModoPesar = ({ producto, onGuardar, onCancelar }) => {
 
   /* funciones  */
   const pedirTaras = async () => {
-    const user = JSON.parse(localStorage.getItem("auth")) || {};
+    const user = JSON.parse(sessionStorage.getItem("auth")) || {};
     let tarasTemp = [];
     try {
       const result = await fetch(
@@ -111,10 +122,12 @@ const ModoPesar = ({ producto, onGuardar, onCancelar }) => {
   const calcular = (taraTemp) => {
     let taraFinal = calcularTara(taraTemp);
     if (taraFinal.PesoBruto !== 0) {
-      taraFinal.PesoNeto = taraFinal.PesoBruto - taraFinal.TaraTotal;
+      taraFinal.PesoNeto = parseFloat(
+        taraFinal.PesoBruto - taraFinal.TaraTotal
+      ).toFixed(2);
       taraFinal.PesoPorPieza = parseFloat(
-        (taraFinal.PesoNeto / taraTemp.producto.Cantidad).toFixed(3)
-      );
+        taraFinal.PesoNeto / taraTemp.producto.Cantidad
+      ).toFixed(2);
     }
 
     setPesaje(taraFinal);
@@ -139,12 +152,17 @@ const ModoPesar = ({ producto, onGuardar, onCancelar }) => {
             <label htmlFor="piezas">Piezas Totales</label>
             <div className="piezas-input-boton">
               <input
+                formnovalidate
                 min={0}
-                type="number"
+                type="text"
                 name="piezas"
                 id="piezas"
                 disabled={!editPiezas}
-                value={pesaje.producto.Cantidad}
+                value={
+                  isNaN(pesaje.producto.Cantidad)
+                    ? " "
+                    : pesaje.producto.Cantidad
+                }
                 onChange={handleChangePiezas}
               />
               <button onClick={handlePiezasClick}>
@@ -155,42 +173,46 @@ const ModoPesar = ({ producto, onGuardar, onCancelar }) => {
           <div className="flex-input bruto-input">
             <label htmlFor="bruto">Peso Bruto</label>
             <input
-              type="number"
+              formnovalidate
+              type="text"
               name="bruto"
               id="bruto"
               step={0.5}
               inputMode="decimal"
               onChange={handleChangeBruto}
-              value={pesaje.PesoBruto}
+              // value={JSON.parse(pesaje.PesoBruto)}
             />
           </div>
           <div className="flex-input ">
             <div className="tara-input">
               <label htmlFor="tara">Tara</label>
               <input
-                type="number"
+                formnovalidate
+                type="text"
                 name="tara"
                 id="tara"
                 disabled
-                value={pesaje.TaraTotal}
+                value={isNaN(pesaje.TaraTotal) ? " " : parseFloat(pesaje.TaraTotal).toFixed(2)}
               />
             </div>
           </div>
           <div className="flex-input neto-input">
             <label htmlFor="neto">Peso Neto</label>
             <input
+              formnovalidate
               disabled
-              type="number"
+              type="text"
               name="neto"
               id="neto"
-              value={pesaje.PesoNeto}
+              value={isNaN(pesaje.PesoNeto) ? " " : pesaje.PesoNeto}
             />
           </div>
           <div className="flex-input pesoPieza-input">
             <label htmlFor="pesoPieza">Peso por Pieza</label>
             <input
+              formnovalidate
               disabled
-              type="number"
+              type="text"
               name="pesoPieza"
               id="pesoPieza"
               className={`${
@@ -200,7 +222,7 @@ const ModoPesar = ({ producto, onGuardar, onCancelar }) => {
                   ? "pesoRojo"
                   : ""
               }`}
-              value={pesaje.PesoPorPieza}
+              value={isNaN(pesaje.PesoPorPieza) ? " " : pesaje.PesoPorPieza}
             />
           </div>
           <div className="botones-form">
@@ -210,7 +232,8 @@ const ModoPesar = ({ producto, onGuardar, onCancelar }) => {
             <button
               disabled={!(pesaje.PesoPorPieza > 0)}
               onClick={onGuardar(pesaje)}
-              className="boton-form">
+              className="boton-form"
+            >
               Guardar
             </button>
           </div>
@@ -232,7 +255,8 @@ const ModoPesar = ({ producto, onGuardar, onCancelar }) => {
                   <td
                     contentEditable
                     inputMode="decimal"
-                    onSelect={handleChange(index)}></td>
+                    onSelect={handleChange(index)}
+                  ></td>
                   {tara.EditaPeso ? (
                     <td
                       contentEditable
@@ -242,13 +266,14 @@ const ModoPesar = ({ producto, onGuardar, onCancelar }) => {
                           ? (e.target.innerHTML = "0")
                           : null
                       }
-                      onSelect={handleChangePeso(index)}>
+                      onSelect={handleChangePeso(index)}
+                    >
                       0
                     </td>
                   ) : (
                     <td>{tara.Peso}</td>
                   )}
-                  <td>{tara.subTotal}</td>
+                  <td>{parseFloat(tara.subTotal).toFixed(2)}</td>
                 </tr>
               ))}
             </tbody>

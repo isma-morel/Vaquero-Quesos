@@ -82,6 +82,14 @@
   white-space: pre;
 }
 
+.tabla.tabla-pedidos tbody td .tituloPedidos {
+  cursor: pointer;
+}
+
+.tabla.tabla-pedidos tbody td .tituloPedidos:hover {
+  color: #cf963c;
+}
+
 /* modal */
 .contenedor-facturar .overlay {
   background: rgba(0, 0, 0, 0.3);
@@ -97,6 +105,7 @@
   padding: 1.5em;
   box-shadow: 1px 1px 15px rgba(0, 0, 0, 0.3);
 }
+
 .contenedor-facturar .overlay .card-producto.impresion {
   width: 50%;
   height: 90%;
@@ -171,6 +180,82 @@
   background: rgba(160, 7, 7, 0.726);
 }
 
+.cancelar {
+  background: rgb(245, 2, 2);
+  padding: 0.6rem 0.6rem;
+  border-radius: 2px;
+  color: white;
+  border: none;
+  margin: 0.5rem;
+  transition: 0.2s ease all;
+  font-size: 13.3333px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.cancelar:hover {
+  background: rgba(245, 2, 2, 0.726);
+}
+
+/*TABLA */
+
+/* Formulario de pesaje  */
+.form-tabla-peso {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+}
+.form-tabla-peso .form-inputs-peso {
+  display: flex;
+  flex-direction: column;
+  margin-top: 20px;
+  margin-bottom: 20px;
+}
+
+.form-tabla-peso .form-inputs-peso div {
+  display: flex;
+  flex-direction: column;
+  padding: 10px;
+}
+
+.form-tabla-peso .form-inputs-peso div > label {
+  font-size: 1.2rem;
+}
+
+.form-tabla-peso .form-inputs-peso div > input {
+  text-align: center;
+  font-size: 1.1rem;
+}
+.form-tabla-peso .tara-table-peso {
+  min-height: 100%;
+  flex-grow: 0.8;
+}
+.form-tabla-peso .tara-table-peso table {
+  border-collapse: collapse;
+  width: 100%;
+}
+.form-tabla-peso .tara-table-peso table thead {
+  background-color: #484848;
+  color: white;
+}
+.form-tabla-peso .tara-table-peso table thead tr th {
+  padding: 1em;
+  border-left: 1px solid gray;
+}
+.form-tabla-peso .tara-table-peso table tbody tr td {
+  border: 1px solid gray;
+}
+.form-tabla-peso .tara-table-peso table tbody tr td {
+  padding: 1em;
+  text-align: right;
+}
+.form-tabla-peso .tara-table-peso table tbody tr td:nth-child(1) {
+  text-align: left;
+}
+
 @media (max-width: 700px) {
   .contenedor-facturar {
     padding-top: 0;
@@ -184,11 +269,12 @@
     display: inline-block;
     margin-top: 0.5em;
   }
+
   .contenedor-facturar .controles div {
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
-    align-items: center;
+    align-items: flex;
     justify-content: flex-start;
   }
   .contenedor-facturar .contenedor-tabla .contenedor-cliente .botones {
@@ -205,5 +291,9 @@
   .contenedor-facturar .overlay .card-producto {
     min-width: 100%;
     min-height: 100%;
+  }
+  h2.tittle {
+    font-size: 18px;
+    margin-top: 10px;
   }
 }

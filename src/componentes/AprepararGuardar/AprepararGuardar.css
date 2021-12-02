@@ -127,6 +127,22 @@
   cursor: pointer;
   display: inline-block;
 }
+
+.preparar .contenedor-tabla {
+  padding-top: 3rem;
+}
+
+.subtitulo {
+  font-size: 1.2rem;
+  font-weight: bold;
+}
+
+.contenedorPedidos {
+  width: 100%;
+  margin-top: 15px;
+  margin-bottom: 20px;
+}
+
 .preparar
   .contenedor-tabla
   .tabla.tabla.tabla-pedidos.tabla-preparar
