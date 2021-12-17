@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { BASE_URL } from "../../BaseURL.json";
 import { toast } from "react-toastify";
 import { useHistory } from "react-router";
+import { BsCaretDown, BsCaretUp } from "react-icons/bs";
 import useModal from "../../hooks/useModal";
 
 import "./Usuarios.css";
@@ -37,7 +38,9 @@ const Usuarios = ({ idPermiso }) => {
 
   const [users, setUsers] = useState([]);
   const [usersFiltrados, setUsersFiltrados] = useState();
-  const [isClick, setIsClick] = useState(false);
+  const [isClickUser, setIsClickUser] = useState(false);
+  const [isClickNombre, setIsClickNombre] = useState(false);
+  const [isClickTipo, setIsClickTipo] = useState(false);
   const [usuarioSeleccionado, setUsuarioSeleccionado] = useState({});
   const [isLoading, setIsLoading] = useState(false);
   const { push } = useHistory();
@@ -124,8 +127,8 @@ const Usuarios = ({ idPermiso }) => {
   };
 
   const handleClickNombre = () => {
-    setIsClick(!isClick);
-    if (isClick) {
+    setIsClickNombre(!isClickNombre);
+    if (isClickNombre) {
       const listSort = usersFiltrados;
       listSort.sort((a, b) => {
         if (a.Nombre > b.Nombre) return -1;
@@ -145,8 +148,8 @@ const Usuarios = ({ idPermiso }) => {
   };
 
   const handleClickUser = () => {
-    setIsClick(!isClick);
-    if (isClick) {
+    setIsClickUser(!isClickUser);
+    if (isClickUser) {
       const listSort = usersFiltrados;
       listSort.sort((a, b) => {
         if (a.Usuario > b.Usuario) return -1;
@@ -166,8 +169,8 @@ const Usuarios = ({ idPermiso }) => {
   };
 
   const handleClickTipo = () => {
-    setIsClick(!isClick);
-    if (isClick) {
+    setIsClickTipo(!isClickTipo);
+    if (isClickTipo) {
       const listSort = usersFiltrados;
       listSort.sort((a, b) => {
         if (a.TipoCliente === "C") return -1;
@@ -216,14 +219,14 @@ const Usuarios = ({ idPermiso }) => {
             <thead>
               <tr>
                 <th className="sorters" onClick={handleClickUser}>
-                  USUARIO
+                  USUARIO {isClickUser ? <BsCaretDown /> : <BsCaretUp />}
                 </th>
                 <th className="sorters" onClick={handleClickNombre}>
-                  NOMBRE
+                  NOMBRE {isClickNombre ? <BsCaretDown /> : <BsCaretUp />}
                 </th>
                 <th>CONTRASEÑA</th>
                 <th className="sorters" onClick={handleClickTipo}>
-                  TIPO
+                  TIPO {isClickTipo ? <BsCaretDown /> : <BsCaretUp />}
                 </th>
               </tr>
             </thead>

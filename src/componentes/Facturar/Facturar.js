@@ -1,3 +1,4 @@
+import axios from "axios";
 import React, { useCallback, useEffect, useState } from "react";
 import { useHistory } from "react-router";
 import { toast } from "react-toastify";
@@ -113,17 +114,14 @@ const Iframe = (url) =>
     style="border:0;top:0;left:0;bottom:0;right:0;width:100%;height:100%;"
     allowfullscreen></iframe>`;
 
-const Facturar = ({ idPermiso, isConsulta }) => {
+const Facturar = ({ idPermiso }) => {
   const [isOpenModal, handleModal] = useModal();
-  const [isOpenModalImpresion, handleModalImpresion] = useModal();
   const [isOpenModalPeso, handleModalPeso] = useModal();
   const [pedidoId, setPedidoId] = useState(null);
   const [pedidoPesoFiltrado, setPedidoPesoFiltrado] = useState();
   const [pedidosAFacturarFiltrados, setPedidosAFacturarFiltrados] = useState();
   const [pedidosAFacturar, setPedidosAFacturar] = useState();
   const [pedidoAjustar, setPedidoAjustar] = useState();
-  const [isLoadPDF, setIsLoadPDF] = useState(false);
-  const [pdfUrl, setPdfUrl] = useState();
   const { push } = useHistory();
 
   const pedirPedidosParaFacturar = async () => {
@@ -219,17 +217,23 @@ const Facturar = ({ idPermiso, isConsulta }) => {
     const pedidoProcesado = ProcesarPedidoParaGuardar(
       pedidosAFacturarFiltrados[index]
     );
+    console.log(pedidoProcesado);
     try {
-      const result = await fetch(
-        `${BASE_URL}iPedidosSP/FacturarGuardar?pUsuario=${auth.usuario}&pToken=${auth.Token}`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(pedidoProcesado),
-        }
-      );
+      const result = await axios({
+        url: `${BASE_URL}iPedidosSP/FacturarGuardar?pUsuario=${auth.usuario}&pToken=${auth.Token}`,
+        method: "POST",
+        data: pedidoProcesado,
+      });
+      // await fetch(
+      //   `${BASE_URL}iPedidosSP/FacturarGuardar?pUsuario=${auth.usuario}&pToken=${auth.Token}`,
+      //   {
+      //     method: "POST",
+      //     body: JSON.stringify(pedidoProcesado),
+      //     headers: {
+      //       "Content-Type": "application/json",
+      //     },
+      //   }
+      // );
       if (result.status !== 200) {
         if (result.status === 401) {
           sessionStorage.removeItem("auth");
@@ -246,45 +250,14 @@ const Facturar = ({ idPermiso, isConsulta }) => {
       console.log(err.message);
     }
   };
-  const handleImprimir = (pedidoAImprimir) => async (e) => {
-    const { usuario, Token } = JSON.parse(sessionStorage.getItem("auth")) || {};
-    if (pedidoAImprimir === 0) return;
-
-    setIsLoadPDF(true);
-
-    try {
-      const result = await fetch(
-        `${BASE_URL}iPedidosSP/pedidoPesoImpresion?pUsuario=${usuario}&pToken=${Token}&pNumeroPedido=${pedidoAImprimir}`
-      );
-
-      const pdf = await result.json();
-
-      setPdfUrl({
-        url: `data:application/pdf;base64,${pdf}`,
-        pedido: pedidoAImprimir,
-      });
-      handleModalImpresion();
-    } catch (err) {
-      toast.error("ocurrio un error. intentelo de nuevo mas tarde");
-      console.log(err);
-    } finally {
-      setIsLoadPDF(false);
-    }
-  };
-
   return (
     <div className="contenedor-facturar">
+      {console.log(pedidosAFacturar)}
       <ModalFactura
         isOpen={isOpenModal}
         onClose={handleModal}
         pedido={pedidoAjustar}
         onGuardar={handleGuardar}
-      />
-      <ModalImpresion
-        key={pdfUrl?.pedido}
-        isOpen={isOpenModalImpresion}
-        onClose={handleModalImpresion}
-        pdfUrl={pdfUrl}
       />
       <ModalDetallePedido
         isOpen={isOpenModalPeso}
@@ -299,9 +272,7 @@ const Facturar = ({ idPermiso, isConsulta }) => {
             placeholder="Filtro"
             onChange={handleChangeFiltro}
           />
-          <span className="titulo">
-            {isConsulta ? "Pesajes" : "Facturacion"}
-          </span>
+          <span className="titulo">{"Facturacion"}</span>
         </div>
         <hr />
       </div>
@@ -314,38 +285,26 @@ const Facturar = ({ idPermiso, isConsulta }) => {
                   <span>Cliente: {Cliente}</span>
                   <span>Pedido: {Pedido}</span>
                 </div>
-                {!isConsulta ? (
-                  <span className="porcentajes">
-                    A: {A}% - B: {B}%
-                  </span>
-                ) : null}
-                {!isConsulta ? (
-                  <div className="botones">
-                    <button
-                      onClick={handleAjustar(index)}
-                      className="btn ajustar"
-                    >
-                      Ajustar
-                    </button>
-                    <button
-                      onClick={handleGuardarPedido(index)}
-                      disabled={!(A || B) || A + B !== 100}
-                      className="btn"
-                    >
-                      Guardar
-                    </button>
-                  </div>
-                ) : (
-                  <div className="impresion">
-                    <button
-                      onClick={handleImprimir(Pedido)}
-                      disabled={isLoadPDF}
-                      className="btn"
-                    >
-                      Imprimir
-                    </button>
-                  </div>
-                )}
+
+                <span className="porcentajes">
+                  A: {A}% - B: {B}%
+                </span>
+
+                <div className="botones">
+                  <button
+                    onClick={handleAjustar(index)}
+                    className="btn ajustar"
+                  >
+                    Ajustar
+                  </button>
+                  <button
+                    onClick={handleGuardarPedido(index)}
+                    disabled={!(A || B) || A + B !== 100}
+                    className="btn"
+                  >
+                    Guardar
+                  </button>
+                </div>
               </div>
               <table className="tabla tabla-pedidos">
                 <thead>
@@ -463,49 +422,6 @@ const ModalFactura = ({ isOpen, onClose, pedido, onGuardar }) => {
           </button>
           <button className="confirmar" onClick={handleGuardar}>
             Guardar
-          </button>
-        </div>
-      </div>
-    </div>
-  );
-};
-
-const ModalImpresion = ({ isOpen, onClose, pdfUrl }) => {
-  const handleClose = (e) => {
-    onClose();
-  };
-  const handleGuardar = (e) => {
-    const a = document.createElement("a");
-    a.href = pdfUrl.url;
-    a.download = `pedido-N${
-      pdfUrl.pedido
-    }-${new Date().toLocaleDateString()}.pdf`;
-    a.click();
-    onClose();
-  };
-  return (
-    <div className={`overlay ${isOpen ? "open" : ""}`}>
-      <div className="card-producto impresion">
-        <embed
-          id="embed"
-          style={{
-            height: "100%",
-            width: "100%",
-            border: 0,
-            top: 0,
-            left: 0,
-            bottom: 0,
-            right: 0,
-          }}
-          src={`${pdfUrl?.url}`}
-          type="application/pdf"
-        />
-        <div className="formulario-botones impresion">
-          <button className="cancelar" onClick={handleClose}>
-            Cerrar
-          </button>
-          <button className="confirmar" onClick={handleGuardar}>
-            Descargar
           </button>
         </div>
       </div>

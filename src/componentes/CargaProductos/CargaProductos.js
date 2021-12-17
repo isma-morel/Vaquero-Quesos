@@ -4,6 +4,7 @@ import { toast } from "react-toastify";
 import { BASE_URL } from "../../BaseURL.json";
 import "./CargaProductos.css";
 import "./AddOrEdit.css";
+import { BsCaretDown, BsCaretUp } from "react-icons/bs";
 import useModal from "../../hooks/useModal";
 
 const obtenerImagen = (imagen) =>
@@ -42,12 +43,37 @@ const procesarProductoParaGuardar = ({
   pMedidas: Medidas,
 });
 
+/* Filtros */
+const filtrarProductoPorCodigo = (codigo, productos) => {
+  return productos.filter((prod) => prod.Codigo.toString().startsWith(codigo));
+};
+
+const filtrarProductoPorNombre = (nombre, productos) => {
+  return productos.filter((prod) =>
+    prod.Descripcion.toLowerCase().includes(nombre.toLowerCase())
+  );
+};
+
+const filtrar = (value, usuarios) => {
+  const esNumero = /^[0-9]+$/;
+  let resultado = usuarios;
+  if (value.match(esNumero)) {
+    resultado = filtrarProductoPorCodigo(value, usuarios);
+  } else {
+    resultado = filtrarProductoPorNombre(value, usuarios);
+  }
+  return resultado;
+};
+
 /* Formulario de listado de productos */
 const CargaProductos = ({ idPermiso }) => {
   const [productos, setProductos] = useState([]);
+  const [productosFiltrados, setProductosFiltrados] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isEditOrAdd, setIsEditOrAdd] = useState(false);
   const [productoSeleccionado, setProductoSeleccionado] = useState();
+  const [isClickNombre, setIsClickNombre] = useState(false);
+  const [isClickCodigo, setIsClickCodigo] = useState(false);
 
   const { push } = useHistory();
   const obtenerPedidos = async () => {
@@ -79,6 +105,10 @@ const CargaProductos = ({ idPermiso }) => {
     return obtenerPedidos();
   }, []);
 
+  useEffect(() => {
+    setProductosFiltrados(productos);
+  }, [productos]);
+
   const handleRowClick = (index) => (e) => {
     setProductoSeleccionado({
       ...productos[index],
@@ -93,6 +123,54 @@ const CargaProductos = ({ idPermiso }) => {
     setIsEditOrAdd(false);
     setProductoSeleccionado(null);
     obtenerPedidos();
+  };
+
+  const handleFiltroChange = ({ target: { value } }) => {
+    const resultado = filtrar(value, productos);
+    if (!resultado) return;
+    setProductosFiltrados(resultado);
+  };
+
+  const handleClickNombre = () => {
+    setIsClickNombre(!isClickNombre);
+    if (isClickNombre) {
+      const listSort = productosFiltrados;
+      listSort.sort((a, b) => {
+        if (a.Descripcion > b.Descripcion) return -1;
+        if (a.Descripcion < b.Descripcion) return 1;
+        return 0;
+      });
+      setProductosFiltrados(listSort);
+    } else {
+      const listSort = productosFiltrados;
+      listSort.sort((a, b) => {
+        if (a.Descripcion < b.Descripcion) return -1;
+        if (a.Descripcion > b.Descripcion) return 1;
+        return 0;
+      });
+      setProductosFiltrados(listSort);
+    }
+  };
+
+  const handleClickCodigo = () => {
+    setIsClickCodigo(!isClickCodigo);
+    if (isClickCodigo) {
+      const listSort = productosFiltrados;
+      listSort.sort((a, b) => {
+        if (a.Codigo > b.Codigo) return -1;
+        if (a.Codigo < b.Codigo) return 1;
+        return 0;
+      });
+      setProductosFiltrados(listSort);
+    } else {
+      const listSort = productosFiltrados;
+      listSort.sort((a, b) => {
+        if (a.Codigo < b.Codigo) return -1;
+        if (a.Codigo > b.Codigo) return 1;
+        return 0;
+      });
+      setProductosFiltrados(listSort);
+    }
   };
 
   return (
@@ -111,34 +189,46 @@ const CargaProductos = ({ idPermiso }) => {
             <button onClick={handleAddClick} className="btn add">
               Nueva
             </button>
+            <input
+              type="text"
+              placeholder="Filtro"
+              onChange={handleFiltroChange}
+            />
           </div>
           <table className="tabla tabla-pedidos">
             <thead>
               <tr>
-                <th>CODIGO</th>
-                <th>DESCRIPCION</th>
+                <th onClick={handleClickCodigo} style={{ cursor: "pointer" }}>
+                  CODIGO {isClickCodigo ? <BsCaretDown /> : <BsCaretUp />}
+                </th>
+                <th onClick={handleClickNombre} style={{ cursor: "pointer" }}>
+                  DESCRIPCION {isClickNombre ? <BsCaretDown /> : <BsCaretUp />}
+                </th>
                 <th>PRESENTACION</th>
               </tr>
             </thead>
             <tbody>
-              {productos.map(({ Codigo, Descripcion, Presentacion }, index) => (
-                <tr key={index}>
-                  <td>{Codigo}</td>
-                  <td className="descripcion">
-                    <div>
-                      <span>{Descripcion}</span>
-                    </div>
-                    <div>
-                      <button onClick={handleRowClick(index)}>
-                        <i
-                          title="presione para editar"
-                          className="fas fa-edit"></i>
-                      </button>
-                    </div>
-                  </td>
-                  <td>{Presentacion}</td>
-                </tr>
-              ))}
+              {productosFiltrados?.map(
+                ({ Codigo, Descripcion, Presentacion }, index) => (
+                  <tr key={index}>
+                    <td>{Codigo}</td>
+                    <td className="descripcion">
+                      <div>
+                        <span>{Descripcion}</span>
+                      </div>
+                      <div>
+                        <button onClick={handleRowClick(index)}>
+                          <i
+                            title="presione para editar"
+                            className="fas fa-edit"
+                          ></i>
+                        </button>
+                      </div>
+                    </td>
+                    <td>{Presentacion}</td>
+                  </tr>
+                )
+              )}
             </tbody>
           </table>
         </div>
@@ -257,7 +347,7 @@ const AddOrEdit = ({
     handleModal();
     setInputs({
       ...inputs,
-      "medidaPrincipal": medidas[medidaSeleccionada].IdMedida,
+      medidaPrincipal: medidas[medidaSeleccionada].IdMedida,
     });
   };
   const handleRemove = (index) => (e) => {
@@ -338,7 +428,8 @@ const AddOrEdit = ({
               setImagen(file);
             }
           }}
-          className="contenedor-imagen">
+          className="contenedor-imagen"
+        >
           <div>
             {imagen ? (
               <div className="imagen" style={{ position: "relative" }}>
@@ -358,7 +449,8 @@ const AddOrEdit = ({
                   border: "1px solid rgba(0,0,0,.3)",
                   textAlign: "center",
                 }}
-                className="imagen">
+                className="imagen"
+              >
                 <span>Arrastre una imagen o haga click en el boton</span>
               </div>
             )}
@@ -374,7 +466,8 @@ const AddOrEdit = ({
           <button
             onClick={(e) => {
               referencedElement.current.click();
-            }}>
+            }}
+          >
             <i className="fas fa-upload"></i>
             <span> Subir</span>
           </button>
@@ -413,7 +506,8 @@ const AddOrEdit = ({
               name="medidaPrincipal"
               id="medidaPrincipal"
               onChange={handleInputChange}
-              value={inputs["medidaPrincipal"]}>
+              value={inputs["medidaPrincipal"]}
+            >
               {inputs?.Medidas?.map((medida) => (
                 <option value={medida.IdMedida}>{medida.DescripcionUM}</option>
               ))}
@@ -446,7 +540,8 @@ const AddOrEdit = ({
           <div>
             <label
               className={`Inactivo  ${inputs["Inactivo"] ? "true" : "false"}`}
-              htmlFor="Inactivo">
+              htmlFor="Inactivo"
+            >
               {`Inactivo ${inputs["Inactivo"] ? "Si" : "No"}`}
             </label>
             <input
@@ -458,6 +553,25 @@ const AddOrEdit = ({
               checked={inputs["Inactivo"]}
             />
           </div>
+          {
+            //Checkbox peso fijo
+            /* <div>
+            <label
+              className={`Inactivo  ${inputs["Inactivo"] ? "true" : "false"}`}
+              htmlFor="Inactivo"
+            >
+              {`Inactivo ${inputs["Inactivo"] ? "Si" : "No"}`}
+            </label>
+            <input
+              hidden
+              type="checkbox"
+              name="Inactivo"
+              id="Inactivo"
+              onChange={handleInputChange}
+              checked={inputs["Inactivo"]}
+            />
+          </div> */
+          }
         </div>
         <div className="contenedor-medidas contenedor-inputs">
           <span>Medidas / Factor</span>
@@ -481,7 +595,8 @@ const AddOrEdit = ({
                     top: "0",
                     transform: "translateY(-20%)",
                   }}
-                  className="fas fa-times"></i>
+                  className="fas fa-times"
+                ></i>
               </span>
               <input
                 type="number"

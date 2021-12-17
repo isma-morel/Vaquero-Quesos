@@ -12,6 +12,7 @@ import { Login, Carrito, Lista, Dashboard } from "./componentes";
 import { logo } from "./logo.json";
 import { useEffect, useState } from "react";
 import { ToastContainer } from "react-toastify";
+import { GetPedidosProvider } from "./context/GetPedidos";
 
 function App() {
   const [usuario, setUsuario] = useState();
@@ -32,7 +33,8 @@ function App() {
             <BasePage
               LogSucces={LogSucces}
               usuario={usuario}
-              titulo="Realizar Pedido">
+              titulo="Realizar Pedido"
+            >
               <Lista />
             </BasePage>
           </Route>
@@ -41,13 +43,16 @@ function App() {
             <BasePage
               LogSucces={LogSucces}
               usuario={usuario}
-              titulo={`CARRITO - ${usuario?.Nombre} `}>
+              titulo={`CARRITO - ${usuario?.Nombre} `}
+            >
               <Carrito />
             </BasePage>
           </Route>
 
           <Route path="/Dashboard">
-            <Dashboard usuario={usuario} />
+            <GetPedidosProvider>
+              <Dashboard usuario={usuario} />
+            </GetPedidosProvider>
           </Route>
           <Route exact path="/Logout">
             <Logout />

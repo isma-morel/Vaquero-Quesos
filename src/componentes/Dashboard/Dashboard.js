@@ -14,6 +14,7 @@ import "./Dashboard.css";
 import Taras from "../Taras/Taras";
 import { BASE_URL } from "../../BaseURL.json";
 import { toast } from "react-toastify";
+import Consulta from "../Confirmados/Confirmados";
 
 const Iconos = {
   Pedidos: <i className="fas fa-list-ul"></i>,
@@ -54,7 +55,7 @@ const Dashboard = () => {
         {
           to: "/Logout",
           icono: <i className="fas fa-sign-out-alt"></i>,
-          texto: "salir",
+          texto: "Salir",
         },
       ]);
     } catch (err) {}
@@ -79,7 +80,7 @@ const Dashboard = () => {
           <AprepararGuardar idPermiso={2} />
         </Route>
         <Route path="/Dashboard/consultaPreparados">
-          <Facturar isConsulta={true} idPermiso={3} />
+          <Consulta idPermiso={3} />
         </Route>
         <Route path="/Dashboard/facturar">
           <Facturar idPermiso={4} />
@@ -151,7 +152,8 @@ const ActualizarClientes = ({ idPermiso }) => {
           borderRadius: ".2em",
           boxShadow: "0px 0px 25px rgba(0,0,0,.3) ",
           border: "1px solid rgba(0,0,0,.3)",
-        }}>
+        }}
+      >
         <div
           style={{
             display: "flex",
@@ -160,7 +162,8 @@ const ActualizarClientes = ({ idPermiso }) => {
             width: "100%",
             justifyContent: "space-between",
             alignContent: "space-between",
-          }}>
+          }}
+        >
           <div
             style={{
               textAlign: "center",
@@ -170,7 +173,8 @@ const ActualizarClientes = ({ idPermiso }) => {
               flexDirection: "column",
               justifyContent: "center",
               alignItems: "center",
-            }}>
+            }}
+          >
             <p style={{ userSelect: "none" }}>
               Seguro que desea actualizar los Clientes?
               <br />
@@ -186,7 +190,8 @@ const ActualizarClientes = ({ idPermiso }) => {
                     border: "2px solid #fff",
                     borderTop: "2px solid #484848",
                   }}
-                  className="spin"></div>
+                  className="spin"
+                ></div>
               </div>
             )}
           </div>
@@ -201,7 +206,8 @@ const ActualizarClientes = ({ idPermiso }) => {
                 padding: "0.4em 0.6em",
                 backgroundColor: "red",
               }}
-              onClick={(e) => push("/Dashboard")}>
+              onClick={(e) => push("/Dashboard")}
+            >
               Cancelar
             </button>
             <button
@@ -214,7 +220,8 @@ const ActualizarClientes = ({ idPermiso }) => {
                 padding: "0.4em 0.6em",
                 backgroundColor: "green",
               }}
-              onClick={handleAceptar}>
+              onClick={handleAceptar}
+            >
               {" "}
               Aceptar
             </button>

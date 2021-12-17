@@ -3,20 +3,37 @@ import { BASE_URL } from "../../BaseURL.json";
 import { toast } from "react-toastify";
 import { useHistory } from "react-router";
 import useModal from "../../hooks/useModal";
+import { BsCaretDown, BsCaretUp } from "react-icons/bs";
 import "./Taras.css";
 
-const Filtrar = (value, taras) => {
-  let resultado = taras;
-  resultado = resultado.filter((tara) =>
-    tara.Descripcion.toUpperCase().includes(value.toUpperCase())
+/* Filtros */
+const filtrarTarasPorPeso = (peso, taras) => {
+  return taras.filter((tara) => tara.Peso.toString().includes(peso));
+};
+
+const filtrarTarasPorNombre = (nombre, taras) => {
+  return taras.filter((tara) =>
+    tara.Descripcion.toLowerCase().includes(nombre.toLowerCase())
   );
+};
+
+const filtrar = (value, usuarios) => {
+  const esNumero = /^[0-9]+$/;
+  let resultado = usuarios;
+  if (value.match(esNumero)) {
+    resultado = filtrarTarasPorPeso(value, usuarios);
+  } else {
+    resultado = filtrarTarasPorNombre(value, usuarios);
+  }
   return resultado;
 };
 
 const Taras = () => {
   const [taras, setTaras] = useState();
   const [taraSeleccionada, setTaraSeleccionada] = useState();
-  const [tarasFiltradas, setTarasFiltradas] = useState();
+  const [isClickNombre, setIsClickNombre] = useState(false);
+  const [isClickPeso, setIsClickPeso] = useState(false);
+  const [tarasFiltradas, setTarasFiltradas] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [isOpenModal, handleModal] = useModal();
 
@@ -94,11 +111,54 @@ const Taras = () => {
     }
   };
 
-  const handleChangeFiltro = (e) => {
-    const resultado = Filtrar(e.target.value, taras);
+  const handleChangeFiltro = ({ target: { value } }) => {
+    const resultado = filtrar(value, taras);
     if (!resultado) return;
     setTarasFiltradas(resultado);
   };
+
+  const handleClickNombre = () => {
+    setIsClickNombre(!isClickNombre);
+    if (isClickNombre) {
+      const listSort = tarasFiltradas;
+      listSort.sort((a, b) => {
+        if (a.Descripcion > b.Descripcion) return -1;
+        if (a.Descripcion < b.Descripcion) return 1;
+        return 0;
+      });
+      setTarasFiltradas(listSort);
+    } else {
+      const listSort = tarasFiltradas;
+      listSort.sort((a, b) => {
+        if (a.Descripcion < b.Descripcion) return -1;
+        if (a.Descripcion > b.Descripcion) return 1;
+        return 0;
+      });
+      setTarasFiltradas(listSort);
+    }
+  };
+
+  const handleClickPeso = () => {
+    setIsClickPeso(!isClickPeso);
+    if (isClickPeso) {
+      const listSort = tarasFiltradas;
+      listSort.sort((a, b) => {
+        if (a.Peso > b.Peso) return -1;
+        if (a.Peso < b.Peso) return 1;
+        return 0;
+      });
+      setTarasFiltradas(listSort);
+    } else {
+      const listSort = tarasFiltradas;
+      listSort.sort((a, b) => {
+        if (a.Peso < b.Peso) return -1;
+        if (a.Peso > b.Peso) return 1;
+        return 0;
+      });
+      setTarasFiltradas(listSort);
+    }
+  };
+
   return (
     <div className="taras">
       <div className="controles">
@@ -132,8 +192,16 @@ const Taras = () => {
           <table className="tabla tabla-pedidos">
             <thead>
               <tr>
-                <th>PESO</th>
-                <th className="">DESCRIPCION</th>
+                <th onClick={handleClickPeso} style={{ cursor: "pointer" }}>
+                  PESO {isClickPeso ? <BsCaretDown /> : <BsCaretUp />}
+                </th>
+                <th
+                  onClick={handleClickNombre}
+                  style={{ cursor: "pointer" }}
+                  className=""
+                >
+                  DESCRIPCION {isClickNombre ? <BsCaretDown /> : <BsCaretUp />}
+                </th>
                 <th>INACTIVO</th>
                 <th>PESO VARIABLE</th>
               </tr>
@@ -141,21 +209,26 @@ const Taras = () => {
             <tbody>
               {tarasFiltradas?.map((tara, index) => (
                 <tr key={index}>
-                  <td style={{ textAlign: "right" }}>{parseFloat(tara.Peso).toFixed(2)}</td>
+                  <td style={{ textAlign: "right" }}>
+                    {parseFloat(tara.Peso).toFixed(2)}
+                  </td>
                   <td className="tara-descripcion">
                     <span>{tara.Descripcion}</span>
                     <span>
                       <button onClick={handleEditar(tara)} className="btn edit">
                         <i
                           title="presione para editar"
-                          className="fas fa-edit"></i>
+                          className="fas fa-edit"
+                        ></i>
                       </button>
                       <button
                         onClick={handleEliminar(tara)}
-                        className="btn remove">
+                        className="btn remove"
+                      >
                         <i
                           title="Presione para eliminar"
-                          className="fas fa-times"></i>
+                          className="fas fa-times"
+                        ></i>
                       </button>
                     </span>
                   </td>
@@ -246,7 +319,9 @@ const ModalForm = ({ Tara, isOpen, onClose, pedirTaras }) => {
       [target.name]:
         target.type === "checkbox"
           ? target.checked
-          :  target.name === "peso"? target.value :target.value.toUpperCase(),
+          : target.name === "peso"
+          ? target.value
+          : target.value.toUpperCase(),
     });
   };
   const handleSubmit = (e) => {
@@ -266,13 +341,13 @@ const ModalForm = ({ Tara, isOpen, onClose, pedirTaras }) => {
             <label>Peso</label>
             <input
               disabled={inputs.editaPeso}
-              type="number"
-              step={0.10}
-              min={0}
+              type="text"
               className="usuario"
               placeholder="Peso"
               name="peso"
-              value={parseFloat(inputs.peso).toFixed(2)}
+              value={
+                isNaN(inputs.peso) ? "0.00" : parseFloat(inputs.peso).toFixed(2)
+              }
               onChange={handleChange}
             />
           </div>
@@ -291,7 +366,8 @@ const ModalForm = ({ Tara, isOpen, onClose, pedirTaras }) => {
             htmlFor="inactivo"
             className={`inactivo ${
               inputs.inactivo ? "btn cancelar" : "btn add"
-            }`}>
+            }`}
+          >
             Inactivo {inputs.inactivo ? "si" : "no"}
           </label>
           <input
@@ -306,7 +382,8 @@ const ModalForm = ({ Tara, isOpen, onClose, pedirTaras }) => {
             htmlFor="editaPeso"
             className={`inactivo ${
               !inputs.editaPeso ? "btn cancelar" : "btn add"
-            }`}>
+            }`}
+          >
             Edita Peso {inputs.editaPeso ? "si" : "no"}
           </label>
           <input
@@ -321,7 +398,8 @@ const ModalForm = ({ Tara, isOpen, onClose, pedirTaras }) => {
             <button
               disabled={isLoading}
               className="btn cancelar"
-              onClick={onClose}>
+              onClick={onClose}
+            >
               Cancelar
             </button>
             <button disabled={isLoading} className="btn add">

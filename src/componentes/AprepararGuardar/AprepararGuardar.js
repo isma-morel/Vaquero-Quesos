@@ -6,55 +6,7 @@ import { BASE_URL } from "../../BaseURL.json";
 import useModal from "../../hooks/useModal";
 import "./AprepararGuardar.css";
 import { useLocation } from "react-router-dom";
-
-const ProcesarPedido = (pedidos) => {
-  let pedidosProcesados = [];
-  if (Object.keys(pedidos).length === 0) return [];
-
-  /*
-    Agrupo el resumen y el detalle formando un objeto con los campos necesarios para armar 
-    la tabla
-  */
-  pedidosProcesados = pedidos.Resumido.reduce((acum, actual) => {
-    console.log(actual);
-    let resultado = {
-      ...actual,
-      Fecha: new Date(actual.Fecha).toLocaleDateString(),
-      Productos: [],
-    };
-    //recorro el detalle para obtener todos los productos de un pedido
-    pedidos.Detallado.forEach(
-      ({
-        IdPedido,
-        idPedidosProd,
-        Codigo,
-        Presentacion,
-        Cantidad,
-        Medida,
-        idMedidaPrinc,
-        pesoMaximo,
-        pesoMinimo,
-      }) => {
-        if (actual.IdPedido === IdPedido) {
-          resultado.Productos.push({
-            idPedidosProd,
-            Codigo,
-            Presentacion,
-            Cantidad,
-            idMedidaPrinc,
-            Medida,
-            pesoMaximo,
-            pesoMinimo,
-            NuevoPedido: false,
-            DesecharFaltante: false,
-          });
-        }
-      }
-    );
-    return [...acum, resultado];
-  }, []);
-  return pedidosProcesados;
-};
+import { useGetPedidos } from "../../context/GetPedidos";
 
 /* Metodos de filtrado */
 const FiltrarCliente = (cliente, pedidos) => {
@@ -117,51 +69,20 @@ const ProcesarParaGuardar = (pedido) => {
 
 function AprepararGuardar({ isConsulta, idPermiso }) {
   /* Variables de estado */
-  const [pedidos, setPedidos] = useState([]);
+  const {
+    pedidosPendientes,
+    isLoading,
+    setPedidosPendientes,
+    pedirPedidosAPreparar,
+  } = useGetPedidos();
   const [pedidosFiltrados, setPedidosFiltrados] = useState([]);
   const [modoPreparar, setModoPreparar] = useState(false);
   const [pedidoSeleccionado, setPedidoSeleccionado] = useState({});
-  const [isLoading, setIsLoading] = useState(false);
   const [isLoadPDF, setIsLoadPDF] = useState(false);
   const [pdfUrl, setPdfUrl] = useState({ url: "", pedido: 0 });
   const [isOpenModalImpresion, handleModalImpresion] = useModal();
   const { push } = useHistory();
   const location = useLocation();
-
-  const pedirPedidosAPreparar = async () => {
-    let pedidosProcesados = [];
-
-    const { usuario, Token, permisos } =
-      JSON.parse(sessionStorage.getItem("auth")) || {};
-    if (!Token || !permisos.some(({ IdMenu }) => IdMenu === idPermiso))
-      return push("/");
-
-    try {
-      const result = await fetch(
-        `${BASE_URL}iPedidosSP/PedidosParaPreparar?pUsuario=${usuario}&pToken=${Token}`
-      );
-
-      /* si la api devuelve un estado difetente a ok compruebo que el error no sea de auth */
-      if (result.status !== 200) {
-        if (result.status === 401) {
-          sessionStorage.removeItem("auth");
-          push("/");
-        }
-        throw new Error(result.statusText);
-      }
-
-      const json = await result.json();
-
-      pedidosProcesados = await ProcesarPedido(json);
-      
-      setPedidos(pedidosProcesados);
-    } catch (err) {
-      toast.error("a ocurrido un error");
-      console.log(err);
-    } finally {
-      setIsLoading(false);
-    }
-  };
 
   const volverAlListado = () => {
     setModoPreparar(false);
@@ -219,26 +140,22 @@ function AprepararGuardar({ isConsulta, idPermiso }) {
   };
 
   const handlePrepararCerrar = (e) => {
-    setPedidos([]);
+    setPedidosPendientes([]);
     pedirPedidosAPreparar();
     setPedidoSeleccionado({});
     setModoPreparar(false);
   };
 
   const handleChangeFiltro = (e) => {
-    const resultado = Filtrar(e.target.value, pedidos);
+    const resultado = Filtrar(e.target.value, pedidosPendientes);
     if (!resultado) return;
     setPedidosFiltrados(resultado);
   };
 
   /* Efectos */
   useEffect(() => {
-    setPedidosFiltrados(pedidos);
-  }, [pedidos]);
-  useEffect(() => {
-    setIsLoading(true);
-    pedirPedidosAPreparar();
-  }, []);
+    setPedidosFiltrados(pedidosPendientes);
+  }, [pedidosPendientes]);
 
   return (
     <div className="preparar">
@@ -257,70 +174,72 @@ function AprepararGuardar({ isConsulta, idPermiso }) {
           />
         </div>
         <span className="titulo">Preparación</span>
-        <span className="subtitulo">Pedidos Pendientes: {pedidos && pedidos.length}</span>
+        <span className="subtitulo">
+          Pedidos Pendientes: {pedidosPendientes && pedidosPendientes.length}
+        </span>
         <hr />
       </div>
       <div className="contenedorPedidos">
+        {!isLoading ? (
+          !modoPreparar ? (
+            pedidosFiltrados.map(
+              ({ Cliente, Fecha, Productos, Pedido }, index) => (
+                <div key={index} className="contenedor-tabla">
+                  <div className="contenedor-cliente">
+                    <div className="datos">
+                      <span>Cliente: {Cliente}</span>
 
-      {!isLoading ? (
-        !modoPreparar ? (
-          pedidosFiltrados.map(
-            ({ Cliente, Fecha, Productos, Pedido }, index) => (
-              <div key={index} className="contenedor-tabla">
-                <div className="contenedor-cliente">
-                  <div className="datos">
-                    <span>Cliente: {Cliente}</span>
+                      <span>Pedido: {Pedido}</span>
 
-                    <span>Pedido: {Pedido}</span>
-
-                    <span>Fecha: {Fecha}</span>
+                      <span>Fecha: {Fecha}</span>
+                    </div>
+                    <button
+                      hidden={isConsulta}
+                      onClick={handlePreparar(pedidosFiltrados[index])}
+                      className="btn"
+                    >
+                      Preparar
+                    </button>
                   </div>
-                  <button
-                    hidden={isConsulta}
-                    onClick={handlePreparar(pedidosFiltrados[index])}
-                    className="btn">
-                    Preparar
-                  </button>
+                  <table className="tabla tabla-pedidos">
+                    <thead>
+                      <tr>
+                        <th>CODIGO</th>
+                        <th>PRESENTACION</th>
+                        <th>CANTIDAD</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {Productos?.map(
+                        (
+                          { Codigo, Presentacion, Cantidad, Medida, Pesaje },
+                          indexProd
+                        ) => (
+                          <tr key={indexProd}>
+                            <td>{Codigo}</td>
+                            <td>
+                              <span className="titulo">{Presentacion}</span>
+                            </td>
+                            <td>{`${Cantidad} ${Medida}`}</td>
+                          </tr>
+                        )
+                      )}
+                    </tbody>
+                  </table>
+                  <hr />
                 </div>
-                <table className="tabla tabla-pedidos">
-                  <thead>
-                    <tr>
-                      <th>CODIGO</th>
-                      <th>PRESENTACION</th>
-                      <th>CANTIDAD</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {Productos?.map(
-                      (
-                        { Codigo, Presentacion, Cantidad, Medida, Pesaje },
-                        indexProd
-                      ) => (
-                        <tr key={indexProd}>
-                          <td>{Codigo}</td>
-                          <td>
-                            <span className="titulo">{Presentacion}</span>
-                          </td>
-                          <td>{`${Cantidad} ${Medida}`}</td>
-                        </tr>
-                      )
-                    )}
-                  </tbody>
-                </table>
-                <hr />
-              </div>
+              )
             )
+          ) : (
+            <ModoPreparar
+              pedido={pedidoSeleccionado}
+              salir={handlePrepararCerrar}
+              onGuardar={handleGuardarPreparacion}
+            />
           )
         ) : (
-          <ModoPreparar
-            pedido={pedidoSeleccionado}
-            salir={handlePrepararCerrar}
-            onGuardar={handleGuardarPreparacion}
-          />
-        )
-      ) : (
-        <div className="spin"></div>
-      )}
+          <div className="spin"></div>
+        )}
       </div>
     </div>
   );

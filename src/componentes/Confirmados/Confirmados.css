@@ -1,0 +1,299 @@
+.contenedor-facturar {
+  width: 100%;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-top: 1.5em;
+  font-size: clamp(0.8em, 2vw, 1em);
+}
+.contenedor-facturar .controles {
+  position: fixed;
+  width: 80%;
+  z-index: 1;
+  background: #fff;
+  top: 0;
+}
+
+.contenedor-facturar .controles input[type="text"] {
+  max-width: 50%;
+  padding: 0.5em;
+  font-weight: 500;
+  margin-top: 1em;
+}
+.contenedor-facturar .controles .btn {
+  margin: 1rem;
+  padding: 0.5rem 1rem;
+  color: #fff;
+  background: green;
+  border: none;
+  transition: 0.3s ease all;
+  border-radius: 0.2em;
+  max-width: fit-content;
+}
+.contenedor-facturar .contenedor-cliente {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  height: fit-content;
+  padding: 0.5em 0;
+}
+.contenedor-facturar .contenedor-tabla .contenedor-cliente .datos {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  flex-direction: column;
+}
+.contenedor-facturar .contenedor-tabla .contenedor-cliente .porcentajes {
+  white-space: nowrap;
+}
+.contenedor-facturar .contenedor-tabla .contenedor-cliente .botones {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.contenedor-facturar .contenedor-tabla .contenedor-cliente .btn {
+  background: green;
+  border: none;
+  border-radius: 2px;
+  padding: 0.4rem 0.8rem;
+  margin: 0.5rem;
+  color: #fff;
+  cursor: pointer;
+  transition: 0.2s ease all;
+  font-size: 0.7em;
+}
+.contenedor-facturar .contenedor-tabla .contenedor-cliente .btn.ajustar {
+  background-color: rgb(179, 128, 19);
+}
+.contenedor-facturar .contenedor-tabla .contenedor-cliente .btn.ajustar:hover,
+.contenedor-facturar
+  .contenedor-tabla
+  .contenedor-cliente
+  .btn.ajustar:disabled {
+  background-color: rgba(179, 128, 19, 0.726);
+}
+.contenedor-facturar .contenedor-tabla .contenedor-cliente .btn:hover,
+.contenedor-facturar .contenedor-tabla .contenedor-cliente .btn:disabled {
+  background: rgba(0, 128, 0, 0.726);
+}
+.contenedor-facturar .tabla.tabla-pedidos tbody tr td.peso {
+  white-space: pre;
+}
+
+.tabla.tabla-pedidos tbody td .tituloPedidos {
+  cursor: pointer;
+}
+
+.tabla.tabla-pedidos tbody td .tituloPedidos:hover {
+  color: #cf963c;
+}
+
+/* modal */
+.contenedor-facturar .overlay {
+  background: rgba(0, 0, 0, 0.3);
+}
+.contenedor-facturar .overlay .card-producto {
+  background: #fafafa;
+
+  border-radius: 5px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  padding: 1.5em;
+  box-shadow: 1px 1px 15px rgba(0, 0, 0, 0.3);
+}
+
+.contenedor-facturar .overlay .card-producto.impresion {
+  width: 50%;
+  height: 90%;
+  overflow: hidden;
+  overflow-y: scroll;
+}
+.contenedor-facturar .overlay .card-producto .formulario .formulario-item {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  flex-direction: column;
+  margin: 1em;
+}
+.contenedor-facturar
+  .overlay
+  .card-producto
+  .formulario
+  .formulario-item
+  input[type="number"] {
+  padding: 0.5em;
+  margin: 0.3em;
+  border: 1px solid gray;
+  border-radius: 5px;
+}
+.contenedor-facturar .overlay .card-producto .formulario-botones {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  align-items: center;
+  min-width: 80%;
+}
+.contenedor-facturar .overlay .card-producto .formulario-botones.impresion {
+  justify-content: center;
+  padding: 0.2em 0;
+}
+.contenedor-facturar .overlay .card-producto .formulario-botones button {
+  margin: 1em;
+  padding: 0.6em 0.8em;
+  border: none;
+  background: black;
+  color: white;
+  border-radius: 2px;
+  cursor: pointer;
+}
+
+.contenedor-facturar
+  .overlay
+  .card-producto
+  .formulario-botones
+  button.confirmar {
+  background: green;
+}
+.contenedor-facturar
+  .overlay
+  .card-producto
+  .formulario-botones
+  button.confirmar:hover {
+  background: rgba(0, 128, 0, 0.726);
+}
+.contenedor-facturar
+  .overlay
+  .card-producto
+  .formulario-botones
+  button.cancelar {
+  background: rgb(160, 7, 7);
+}
+.contenedor-facturar
+  .overlay
+  .card-producto
+  .formulario-botones
+  button.cancelar:hover {
+  background: rgba(160, 7, 7, 0.726);
+}
+
+.cancelar {
+  background: rgb(245, 2, 2);
+  padding: 0.6rem 0.6rem;
+  border-radius: 2px;
+  color: white;
+  border: none;
+  margin: 0.5rem;
+  transition: 0.2s ease all;
+  font-size: 13.3333px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.cancelar:hover {
+  background: rgba(245, 2, 2, 0.726);
+}
+
+/*TABLA */
+
+/* Formulario de pesaje  */
+.form-tabla-peso {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+}
+.form-tabla-peso .form-inputs-peso {
+  display: flex;
+  flex-direction: column;
+  margin-top: 20px;
+  margin-bottom: 20px;
+}
+
+.form-tabla-peso .form-inputs-peso div {
+  display: flex;
+  flex-direction: column;
+  padding: 10px;
+}
+
+.form-tabla-peso .form-inputs-peso div > label {
+  font-size: 1.2rem;
+}
+
+.form-tabla-peso .form-inputs-peso div > input {
+  text-align: center;
+  font-size: 1.1rem;
+}
+.form-tabla-peso .tara-table-peso {
+  min-height: 100%;
+  flex-grow: 0.8;
+}
+.form-tabla-peso .tara-table-peso table {
+  border-collapse: collapse;
+  width: 100%;
+}
+.form-tabla-peso .tara-table-peso table thead {
+  background-color: #484848;
+  color: white;
+}
+.form-tabla-peso .tara-table-peso table thead tr th {
+  padding: 1em;
+  border-left: 1px solid gray;
+}
+.form-tabla-peso .tara-table-peso table tbody tr td {
+  border: 1px solid gray;
+}
+.form-tabla-peso .tara-table-peso table tbody tr td {
+  padding: 1em;
+  text-align: right;
+}
+.form-tabla-peso .tara-table-peso table tbody tr td:nth-child(1) {
+  text-align: left;
+}
+
+@media (max-width: 700px) {
+  .contenedor-facturar {
+    padding-top: 0;
+  }
+
+  .contenedor-facturar .controles {
+    position: inherit;
+    margin-left: auto;
+  }
+  .contenedor-facturar .controles .titulo {
+    display: inline-block;
+    margin-top: 0.5em;
+  }
+
+  .contenedor-facturar .controles div {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: flex;
+    justify-content: flex-start;
+  }
+  .contenedor-facturar .contenedor-tabla .contenedor-cliente .botones {
+    flex-direction: column;
+  }
+  .tabla .tabla-pedidos tbody tr td.peso {
+    background-color: red;
+  }
+  .contenedor-facturar .controles .btn {
+    margin: 0 1em;
+    margin-top: 1em;
+  }
+  /* modal */
+  .contenedor-facturar .overlay .card-producto {
+    min-width: 100%;
+    min-height: 100%;
+  }
+  h2.tittle {
+    font-size: 18px;
+    margin-top: 10px;
+  }
+}
