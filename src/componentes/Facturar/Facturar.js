@@ -1,4 +1,4 @@
-import axios from "axios";
+// import axios from "axios";
 import React, { useCallback, useEffect, useState } from "react";
 import { useHistory } from "react-router";
 import { toast } from "react-toastify";
@@ -219,21 +219,21 @@ const Facturar = ({ idPermiso }) => {
     );
     console.log(pedidoProcesado);
     try {
-      const result = await axios({
-        url: `${BASE_URL}iPedidosSP/FacturarGuardar?pUsuario=${auth.usuario}&pToken=${auth.Token}`,
-        method: "POST",
-        data: pedidoProcesado,
-      });
-      // await fetch(
-      //   `${BASE_URL}iPedidosSP/FacturarGuardar?pUsuario=${auth.usuario}&pToken=${auth.Token}`,
-      //   {
-      //     method: "POST",
-      //     body: JSON.stringify(pedidoProcesado),
-      //     headers: {
-      //       "Content-Type": "application/json",
-      //     },
-      //   }
-      // );
+      // const result = await axios({
+      //   url: `${BASE_URL}iPedidosSP/FacturarGuardar?pUsuario=${auth.usuario}&pToken=${auth.Token}`,
+      //   method: "POST",
+      //   data: pedidoProcesado,
+      // });
+      const result = await fetch(
+        `${BASE_URL}iPedidosSP/FacturarGuardar?pUsuario=${auth.usuario}&pToken=${auth.Token}`,
+        {
+          method: "POST",
+          body: JSON.stringify(pedidoProcesado),
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
       if (result.status !== 200) {
         if (result.status === 401) {
           sessionStorage.removeItem("auth");
