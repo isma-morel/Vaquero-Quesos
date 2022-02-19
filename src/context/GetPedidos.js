@@ -3,7 +3,7 @@ import { BASE_URL } from "../BaseURL.json";
 import { useHistory } from "react-router";
 import React from "react";
 import { toast } from "react-toastify";
-import audioMP3 from "./asset/pop.mp3";
+import audioMP3 from "./asset/notif.mp3";
 
 const GetPedidos = createContext();
 
@@ -100,8 +100,6 @@ export const GetPedidosProvider = ({ children }) => {
     }
   };
   const pedirPedidosAPrepararComparar = async () => {
-    let pedidosProcesados = [];
-
     const { usuario, Token, permisos } =
       JSON.parse(sessionStorage.getItem("auth")) || {};
     if (permisos) {
@@ -123,7 +121,7 @@ export const GetPedidosProvider = ({ children }) => {
 
         const json = await result.json();
 
-        pedidosProcesados = await ProcesarPedido(json);
+        const pedidosProcesados = await ProcesarPedido(json);
         setPedidosComparar(pedidosProcesados);
       } catch (err) {
         toast.error("a ocurrido un error");
@@ -161,7 +159,7 @@ export const GetPedidosProvider = ({ children }) => {
     return () => {
       clearTimeout(timeout);
     };
-  }, [pedidosComparar]);
+  }, [pedidosComparar, pedidosPendientes]);
 
   return (
     <GetPedidos.Provider

@@ -78,11 +78,12 @@ function AprepararGuardar({ isConsulta, idPermiso }) {
   const [pedidosFiltrados, setPedidosFiltrados] = useState([]);
   const [modoPreparar, setModoPreparar] = useState(false);
   const [pedidoSeleccionado, setPedidoSeleccionado] = useState({});
+  const [pedidoAeliminar, setPedidoAeliminar] = useState({});
   const [isLoadPDF, setIsLoadPDF] = useState(false);
   const [pdfUrl, setPdfUrl] = useState({ url: "", pedido: 0 });
   const [isOpenModalImpresion, handleModalImpresion] = useModal();
+  const [isOpenModalBorrar, handleModalBorrar] = useModal();
   const { push } = useHistory();
-  const location = useLocation();
 
   const volverAlListado = () => {
     setModoPreparar(false);
@@ -152,6 +153,17 @@ function AprepararGuardar({ isConsulta, idPermiso }) {
     setPedidosFiltrados(resultado);
   };
 
+  const handleEliminar = (e, pedido) => {
+    console.log(e.target);
+    setPedidoAeliminar(pedido);
+    handleModalBorrar();
+  };
+
+  const handleEliminarCerrar = () => {
+    setPedidoAeliminar({});
+    pedirPedidosAPreparar();
+  };
+
   /* Efectos */
   useEffect(() => {
     setPedidosFiltrados(pedidosPendientes);
@@ -163,6 +175,12 @@ function AprepararGuardar({ isConsulta, idPermiso }) {
         isOpen={isOpenModalImpresion}
         onClose={handleModalImpresion}
         pdfUrl={pdfUrl}
+      />
+      <ModalEliminar
+        isOpen={isOpenModalBorrar}
+        onClose={handleModalBorrar}
+        pedido={pedidoAeliminar}
+        cerrar={handleEliminarCerrar}
       />
       <div className="controles">
         <div>
@@ -193,13 +211,23 @@ function AprepararGuardar({ isConsulta, idPermiso }) {
 
                       <span>Fecha: {Fecha}</span>
                     </div>
-                    <button
-                      hidden={isConsulta}
-                      onClick={handlePreparar(pedidosFiltrados[index])}
-                      className="btn"
-                    >
-                      Preparar
-                    </button>
+                    <div>
+                      <button
+                        onClick={(e) =>
+                          handleEliminar(e, pedidosFiltrados[index])
+                        }
+                        className="btn btn-cancelar"
+                      >
+                        Eliminar
+                      </button>
+                      <button
+                        hidden={isConsulta}
+                        onClick={handlePreparar(pedidosFiltrados[index])}
+                        className="btn"
+                      >
+                        Preparar
+                      </button>
+                    </div>
                   </div>
                   <table className="tabla tabla-pedidos">
                     <thead>
@@ -281,6 +309,58 @@ const ModalImpresion = ({ isOpen, onClose, pdfUrl }) => {
           </button>
           <button className="confirmar" onClick={handleGuardar}>
             Descargar
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+};
+const ModalEliminar = ({ isOpen, onClose, pedido, cerrar }) => {
+  const { push } = useHistory();
+  const handleClose = (e) => {
+    onClose();
+  };
+  const handleEliminar = async (pedidoEliminar) => {
+    const auth = JSON.parse(sessionStorage.getItem("auth")) || {};
+    try {
+      const result = await fetch(
+        `${BASE_URL}iPedidosSP/Eliminar?pUsuario=${auth.usuario}&pToken=${auth.Token}&pPedido=${pedidoEliminar.IdPedido}`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(pedido),
+        }
+      );
+      if (result.status !== 200) {
+        if (result.status === 401) {
+          sessionStorage.removeItem("auth");
+          push("/");
+        }
+        throw new Error(result.statusText);
+      }
+      toast.success("Pedido eliminado con exito");
+      console.log(result);
+      onClose();
+      cerrar();
+    } catch (err) {
+      toast.error("se ha producido un error");
+      console.log(err);
+      onClose();
+    }
+  };
+
+  return (
+    <div className={`overlay ${isOpen ? "open" : ""}`}>
+      <div className="card-producto opcion">
+        <h2>¿Estas seguro de eliminar el pedido?</h2>
+        <div className="formulario-botones impresion">
+          <button className="cancelar" onClick={handleClose}>
+            Cancelar
+          </button>
+          <button className="confirmar" onClick={() => handleEliminar(pedido)}>
+            Confirmar
           </button>
         </div>
       </div>

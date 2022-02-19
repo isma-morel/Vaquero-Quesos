@@ -36,6 +36,12 @@
   overflow: hidden;
   overflow-y: scroll;
 }
+.preparar .overlay .card-producto.opcion {
+  width: 50%;
+  height: 20%;
+  overflow: hidden;
+  overflow-y: scroll;
+}
 .preparar .overlay .card-producto .formulario-botones.impresion {
   justify-content: center;
   padding: 0.2em 0;
@@ -102,6 +108,7 @@
   cursor: pointer;
   transition: 0.2s ease all;
   font-size: 0.8em;
+  font-weight: 500;
   transition: 0.2s all ease;
 }
 .preparar .contenedor-tabla .contenedor-cliente .btn:hover,
@@ -116,6 +123,15 @@
   vertical-align: middle;
   padding: 0;
 }
+
+.preparar .contenedor-tabla .contenedor-cliente .btn.btn-cancelar {
+  background-color: red;
+}
+
+.preparar .contenedor-tabla .contenedor-cliente .btn.btn-cancelar:hover {
+  background: rgba(177, 5, 5, 0.726);
+}
+
 .preparar .contenedor-tabla .contenedor-cliente .btn.btn-red:hover {
   color: rgba(255, 0, 0, 0.726);
 }
