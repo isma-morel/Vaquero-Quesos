@@ -252,7 +252,6 @@ const AddOrEdit = ({
   });
   const [isOpenModal, handleModal] = useModal();
   const { push } = useHistory();
-
   const pedirMedidas = async () => {
     const auth = JSON.parse(sessionStorage.getItem("auth"));
     if (!auth) return push("/");
@@ -327,6 +326,7 @@ const AddOrEdit = ({
           ? parseFloat(value)
           : value,
     });
+    console.log(inputs);
   };
   const handleSabeModal = (medidaSeleccionada) => (e) => {
     if (
@@ -539,23 +539,22 @@ const AddOrEdit = ({
           </div>
           <div>
             <label
-              className={`Inactivo  ${inputs["Inactivo"] ? "true" : "false"}`}
-              htmlFor="Inactivo"
+              className={`Inactivo  ${inputs["EsPesoFijo"] ? "true" : "false"}`}
+              htmlFor="EsPesoFijo"
             >
-              {`Inactivo ${inputs["Inactivo"] ? "Si" : "No"}`}
+              {`Peso fijo ${inputs["EsPesoFijo"] ? "Si" : "No"}`}
             </label>
             <input
               hidden
               type="checkbox"
-              name="Inactivo"
-              id="Inactivo"
+              name="EsPesoFijo"
+              id="EsPesoFijo"
               onChange={handleInputChange}
-              checked={inputs["Inactivo"]}
+              checked={inputs["EsPesoFijo"]}
             />
           </div>
-          {
-            //Checkbox peso fijo
-            /* <div>
+
+          <div>
             <label
               className={`Inactivo  ${inputs["Inactivo"] ? "true" : "false"}`}
               htmlFor="Inactivo"
@@ -570,8 +569,7 @@ const AddOrEdit = ({
               onChange={handleInputChange}
               checked={inputs["Inactivo"]}
             />
-          </div> */
-          }
+          </div>
         </div>
         <div className="contenedor-medidas contenedor-inputs">
           <span>Medidas / Factor</span>
@@ -581,7 +579,7 @@ const AddOrEdit = ({
                 {medida.DescripcionUM}
                 <i
                   onClick={handleRemove(index)}
-                  className="medidas-descripcion-eliminar"
+                  className="medidas-descripcion-eliminar fas fa-times"
                   style={{
                     fontSize: ".9em",
                     cursor: "pointer",
@@ -595,7 +593,6 @@ const AddOrEdit = ({
                     top: "0",
                     transform: "translateY(-20%)",
                   }}
-                  className="fas fa-times"
                 ></i>
               </span>
               <input
