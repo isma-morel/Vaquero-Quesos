@@ -1,13 +1,38 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import ModoPesar from "./ModoPesar";
+import { toast } from "react-toastify";
+import { BASE_URL } from "../../BaseURL.json";
+import { useHistory } from "react-router-dom/cjs/react-router-dom.min";
 
 const ModoPreparar = ({ pedido, salir, onGuardar }) => {
   const [pedidoApreparar, setPedidoApreparar] = useState(pedido);
   const [productoApesar, setProductoApesar] = useState();
+  const [prodData, setProdData] = useState({});
+  const { push } = useHistory();
+  const obtenerPedidos = async (prod) => {
+    try {
+      const auth = JSON.parse(sessionStorage.getItem("auth"));
+      const result = await fetch(
+        `${BASE_URL}iProductosSP/ProductosDatos?pUsuario=${auth.usuario}&pToken=${auth.Token}`
+      );
+
+      if (result.status !== 200) {
+        if (result.status === 401) return push("/");
+        throw new Error("error al obtener los pedidos");
+      }
+
+      const json = await result.json();
+      setProdData(() => json.find(({ Codigo }) => prod.Codigo === Codigo));
+    } catch (err) {
+      console.log(err);
+      toast.error(err);
+    }
+  };
 
   /* Manejadores de eventos */
   const handlePesar = (productoApesar) => (e) => {
     setProductoApesar(productoApesar);
+    obtenerPedidos(productoApesar);
   };
   const handleGuardarPesaje = (pesaje) => (e) => {
     const { producto, PesoBruto, Taras, PesoPorPieza, PesoNeto } = pesaje;
@@ -60,7 +85,7 @@ const ModoPreparar = ({ pedido, salir, onGuardar }) => {
   const handleCancelarPesaje = (e) => {
     setProductoApesar(null);
   };
-  console.log(pedidoApreparar)
+  console.log(pedidoApreparar);
 
   return !productoApesar ? (
     <div className="contenedor-tabla">
@@ -75,7 +100,8 @@ const ModoPreparar = ({ pedido, salir, onGuardar }) => {
         <div className="botones">
           <button
             onClick={salir}
-            className="fas fa-window-close btn btn-red"></button>
+            className="fas fa-window-close btn btn-red"
+          ></button>
           <button
             disabled={pedidoApreparar.Productos.some(
               ({
@@ -99,7 +125,8 @@ const ModoPreparar = ({ pedido, salir, onGuardar }) => {
               }
             )}
             onClick={onGuardar(pedidoApreparar)}
-            className="btn">
+            className="btn"
+          >
             Guardar
           </button>
         </div>
@@ -143,13 +170,15 @@ const ModoPreparar = ({ pedido, salir, onGuardar }) => {
                           CantidadAnterior === null ||
                           CantidadAnterior > Cantidad
                         )
-                      }>
+                      }
+                    >
                       <button
                         title="Presione para cargar el faltante a un nuevo pedido"
                         onClick={handleDescartarNuevoClick("Nuevo", indexProd)}
                         className={`boton nuevo ${
                           NuevoPedido ? "seleccionado" : ""
-                        }`}>
+                        }`}
+                      >
                         <i className="fas fa-plus"></i>
                       </button>
                       <button
@@ -160,7 +189,8 @@ const ModoPreparar = ({ pedido, salir, onGuardar }) => {
                         )}
                         className={`boton eliminar ${
                           DesecharFaltante ? "seleccionado" : ""
-                        }`}>
+                        }`}
+                      >
                         <i className="fas fa-trash"></i>
                       </button>
                     </div>
@@ -170,13 +200,15 @@ const ModoPreparar = ({ pedido, salir, onGuardar }) => {
                           ...pedidoApreparar.Productos[indexProd],
                           index: indexProd,
                         })}
-                        className="boton pesaje">
+                        className="boton pesaje"
+                      >
                         Pesar
                       </button>
                     ) : (
                       <button
                         className="boton pesaje"
-                        onClick={handleEliminarPesaje(indexProd)}>
+                        onClick={handleEliminarPesaje(indexProd)}
+                      >
                         Cancelar
                       </button>
                     )}
@@ -191,7 +223,8 @@ const ModoPreparar = ({ pedido, salir, onGuardar }) => {
                       Pesaje?.PesoPorPieza > pesoMaximo)
                       ? "pesoRojo"
                       : ""
-                  }`}>{`${Pesaje?.PesoPorPieza || 0}`}</td>
+                  }`}
+                >{`${Pesaje?.PesoPorPieza || 0}`}</td>
               </tr>
             )
           )}
@@ -204,6 +237,7 @@ const ModoPreparar = ({ pedido, salir, onGuardar }) => {
       producto={productoApesar}
       onGuardar={handleGuardarPesaje}
       onCancelar={handleCancelarPesaje}
+      prodData={prodData}
     />
   );
 };

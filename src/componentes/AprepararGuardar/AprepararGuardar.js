@@ -70,6 +70,7 @@ const ProcesarParaGuardar = (pedido) => {
 function AprepararGuardar({ isConsulta, idPermiso }) {
   /* Variables de estado */
   const {
+    setIsLoading,
     pedidosPendientes,
     isLoading,
     setPedidosPendientes,
@@ -160,7 +161,6 @@ function AprepararGuardar({ isConsulta, idPermiso }) {
   };
 
   const handleEliminarCerrar = () => {
-    setPedidoAeliminar({});
     pedirPedidosAPreparar();
   };
 
@@ -198,6 +198,7 @@ function AprepararGuardar({ isConsulta, idPermiso }) {
         <hr />
       </div>
       <div className="contenedorPedidos">
+        {console.log(pedidosFiltrados)}
         {!isLoading ? (
           !modoPreparar ? (
             pedidosFiltrados.map(
@@ -316,6 +317,7 @@ const ModalImpresion = ({ isOpen, onClose, pdfUrl }) => {
   );
 };
 const ModalEliminar = ({ isOpen, onClose, pedido, cerrar }) => {
+  const { setIsLoading, pedirPedidosAPreparar } = useGetPedidos();
   const { push } = useHistory();
   const handleClose = (e) => {
     onClose();
@@ -343,11 +345,13 @@ const ModalEliminar = ({ isOpen, onClose, pedido, cerrar }) => {
       toast.success("Pedido eliminado con exito");
       console.log(result);
       onClose();
-      cerrar();
     } catch (err) {
       toast.error("se ha producido un error");
       console.log(err);
       onClose();
+    } finally {
+      setIsLoading(true);
+      pedirPedidosAPreparar();
     }
   };
 

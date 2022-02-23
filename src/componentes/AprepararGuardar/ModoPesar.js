@@ -10,15 +10,32 @@ const calcularTara = (tara) => {
   return tarasTemp;
 };
 
-const ModoPesar = ({ producto, onGuardar, onCancelar }) => {
-  const [pesaje, setPesaje] = useState({
-    TaraTotal: 0,
-    PesoNeto: 0,
-    PesoPorPieza: 0,
-    PesoBruto: 0,
-    Taras: null,
-    producto: producto,
-  });
+const ModoPesar = ({ producto, onGuardar, onCancelar, prodData }) => {
+  const [pesaje, setPesaje] = useState(
+    prodData.EsPesoFijo
+      ? {
+          TaraTotal: 0,
+          PesoNeto: parseFloat(
+            producto.Cantidad * prodData.PesoPromedio
+          ).toFixed(2),
+          PesoPorPieza: parseFloat(
+            producto.Cantidad * prodData.PesoPromedio
+          ).toFixed(2),
+          PesoBruto: parseFloat(
+            producto.Cantidad * prodData.PesoPromedio
+          ).toFixed(2),
+          Taras: null,
+          producto: producto,
+        }
+      : {
+          TaraTotal: 0,
+          PesoNeto: 0,
+          PesoPorPieza: 0,
+          PesoBruto: 0,
+          Taras: null,
+          producto: producto,
+        }
+  );
 
   const [editPiezas, setEditPiezas] = useState(false);
   /* Manejadores de eventos */
@@ -46,7 +63,6 @@ const ModoPesar = ({ producto, onGuardar, onCancelar }) => {
     let valueReplaceComa = valueReplace.trim().replace(onlyComa, ".");
     e.target.value = valueReplaceComa;
     let tempProd = pesaje.producto;
-    console.log(valueReplaceComa);
     tempProd.Cantidad = parseFloat(value);
     calcular({ ...pesaje, producto: tempProd });
   };
@@ -64,7 +80,6 @@ const ModoPesar = ({ producto, onGuardar, onCancelar }) => {
     taraTemp[indice].subTotal =
       parseFloat(e.target.innerText) * parseFloat(taraTemp[indice].cantidad);
     taraTemp[indice].Peso = parseFloat(e.target.innerText);
-    console.log(e);
 
     calcular({
       ...pesaje,
@@ -121,6 +136,24 @@ const ModoPesar = ({ producto, onGuardar, onCancelar }) => {
 
   const calcular = (taraTemp) => {
     let taraFinal = calcularTara(taraTemp);
+    if (prodData.EsPesoFijo) {
+      taraFinal.TaraTotal !== 0
+        ? (taraFinal.PesoBruto = parseFloat(
+            taraFinal.producto.Cantidad * prodData.PesoPromedio +
+              taraFinal.TaraTotal
+          ).toFixed(2))
+        : (taraFinal.PesoBruto = parseFloat(
+            taraFinal.producto.Cantidad * prodData.PesoPromedio
+          ).toFixed(2));
+      taraFinal.PesoNeto = parseFloat(
+        taraFinal.PesoBruto - taraFinal.TaraTotal
+      ).toFixed(2);
+      taraFinal.PesoPorPieza = parseFloat(
+        taraFinal.PesoNeto / taraTemp.producto.Cantidad
+      ).toFixed(2);
+      setPesaje(taraFinal);
+      return;
+    }
     if (taraFinal.PesoBruto !== 0) {
       taraFinal.PesoNeto = parseFloat(
         taraFinal.PesoBruto - taraFinal.TaraTotal
@@ -129,7 +162,7 @@ const ModoPesar = ({ producto, onGuardar, onCancelar }) => {
         taraFinal.PesoNeto / taraTemp.producto.Cantidad
       ).toFixed(2);
     }
-
+    console.log(taraFinal);
     setPesaje(taraFinal);
   };
 
@@ -180,6 +213,8 @@ const ModoPesar = ({ producto, onGuardar, onCancelar }) => {
               step={0.5}
               inputMode="decimal"
               onChange={handleChangeBruto}
+              disabled={prodData.EsPesoFijo ? true : false}
+              value={prodData.EsPesoFijo ? pesaje.PesoBruto : null}
               // value={JSON.parse(pesaje.PesoBruto)}
             />
           </div>
@@ -192,9 +227,14 @@ const ModoPesar = ({ producto, onGuardar, onCancelar }) => {
                 name="tara"
                 id="tara"
                 disabled
-                value={isNaN(pesaje.TaraTotal) ? " " : parseFloat(pesaje.TaraTotal).toFixed(2)}
+                value={
+                  isNaN(pesaje.TaraTotal)
+                    ? " "
+                    : parseFloat(pesaje.TaraTotal).toFixed(2)
+                }
               />
             </div>
+            {console.log(pesaje)}
           </div>
           <div className="flex-input neto-input">
             <label htmlFor="neto">Peso Neto</label>

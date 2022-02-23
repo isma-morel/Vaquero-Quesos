@@ -294,6 +294,10 @@ const ModalUsuarios = ({ Usuario, onClose, isOpen }) => {
   const handleInputChange = (e) => {
     const { name, value, type, checked } = e.target;
 
+    if (name === "Contrasenia") {
+      return setInputs({ ...inputs, [name]: parseInt(value) });
+    }
+
     setInputs({ ...inputs, [name]: type === "checkbox" ? checked : value });
   };
 
@@ -306,12 +310,13 @@ const ModalUsuarios = ({ Usuario, onClose, isOpen }) => {
         Inactivo,
         CondicionPago,
         ListaPrecio,
+        Contrasenia,
       } = inputs;
       const auth = JSON.parse(sessionStorage.getItem("auth")) || {};
       const result = await fetch(
         `${BASE_URL}iClientesSP/Guardar?pUsuario=${auth.usuario}&pToken=${
           auth.Token
-        }&pNombre=${Nombre}&pTipoCliente=${TipoCliente}&pCodigoSistExt=${
+        }&pNombre=${Nombre}&pContrasenia=${Contrasenia}&pTipoCliente=${TipoCliente}&pCodigoSistExt=${
           CodigoSistExt ? CodigoSistExt : Nombre
         }&pInactivo=${Inactivo}&pListaPrecio=${"."}&pCondicionPago=${"."}`,
         { method: "POST" }
@@ -340,6 +345,7 @@ const ModalUsuarios = ({ Usuario, onClose, isOpen }) => {
               className="contenedor-input"
               style={{ display: "flex", flexDirection: "column" }}
             >
+              {console.log(inputs)}
               <label htmlFor="">Nombre</label>
               <input
                 onChange={handleInputChange}
@@ -393,6 +399,18 @@ const ModalUsuarios = ({ Usuario, onClose, isOpen }) => {
                 onChange={handleInputChange}
                 name="CodigoSistExt"
                 value={inputs.CodigoSistExt}
+                type="text"
+              />
+            </div>
+            <div
+              className="contenedor-input"
+              style={{ display: "flex", flexDirection: "column" }}
+            >
+              <label htmlFor="">Contraseña</label>
+              <input
+                onChange={handleInputChange}
+                name="Contrasenia"
+                value={inputs.Contrasenia}
                 type="text"
               />
             </div>

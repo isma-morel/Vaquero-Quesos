@@ -411,6 +411,7 @@ const AddOrEdit = ({
     <div className="spin"></div>
   ) : (
     <div className="AddOrEdit">
+      {console.log(productoSeleccionado, inputs)}
       <ModalMedidas
         medidas={medidas}
         isOpen={isOpenModal}

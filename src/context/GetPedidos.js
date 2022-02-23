@@ -58,9 +58,9 @@ const ProcesarPedido = (pedidos) => {
 };
 
 export const GetPedidosProvider = ({ children }) => {
-  const [pedidosPendientes, setPedidosPendientes] = useState();
+  const [pedidosPendientes, setPedidosPendientes] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
-  const [pedidosComparar, setPedidosComparar] = useState();
+  const [pedidosComparar, setPedidosComparar] = useState([]);
   const [comparacion, setComparacion] = useState(false);
   const { push } = useHistory();
   const audio = useRef();
@@ -150,7 +150,7 @@ export const GetPedidosProvider = ({ children }) => {
         setComparacion(true);
         timeout = setTimeout(() => {
           setComparacion(false);
-        }, 1000);
+        }, 1500);
       } else {
         setPedidosPendientes(pedidosComparar);
         setComparacion(false);
@@ -159,7 +159,7 @@ export const GetPedidosProvider = ({ children }) => {
     return () => {
       clearTimeout(timeout);
     };
-  }, [pedidosComparar, pedidosPendientes]);
+  }, [pedidosComparar]);
 
   return (
     <GetPedidos.Provider
@@ -168,6 +168,7 @@ export const GetPedidosProvider = ({ children }) => {
         isLoading,
         setPedidosPendientes: setPedidosPendientes,
         pedirPedidosAPreparar: pedirPedidosAPreparar,
+        setIsLoading: setIsLoading,
       }}
     >
       {children}
