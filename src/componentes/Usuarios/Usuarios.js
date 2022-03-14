@@ -317,20 +317,20 @@ const ModalUsuarios = ({ Usuario, onClose, isOpen }) => {
       let result;
       if (!Usuario?.Nombre) {
         result = await fetch(
-          `${BASE_URL}ClientesSP/Modificar?pUsuario=${auth.usuario}&pToken=${
-            auth.Token
-          }&pNombre=${Nombre}&pTipoCliente=${TipoCliente}&pCodigoSistExt=${
-            CodigoSistExt ? CodigoSistExt : Nombre
-          }&pInactivo=${Inactivo}&pContrasenia=${Contrasenia}`,
-          { method: "POST" }
-        );
-      } else {
-        result = await fetch(
           `${BASE_URL}iClientesSP/Guardar?pUsuario=${auth.usuario}&pToken=${
             auth.Token
           }&pNombre=${Nombre}&pContrasenia=${Contrasenia}&pTipoCliente=${TipoCliente}&pCodigoSistExt=${
             CodigoSistExt ? CodigoSistExt : Nombre
           }&pInactivo=${Inactivo}&pListaPrecio=${"."}&pCondicionPago=${"."}`,
+          { method: "POST" }
+        );
+      } else {
+        result = await fetch(
+          `${BASE_URL}ClientesSP/Modificar?pUsuario=${auth.usuario}&pToken=${
+            auth.Token
+          }&pNombre=${Nombre}&pTipoCliente=${TipoCliente}&pCodigoSistExt=${
+            CodigoSistExt ? CodigoSistExt : Nombre
+          }&pInactivo=${Inactivo}&pContrasenia=${Contrasenia}`,
           { method: "POST" }
         );
       }
