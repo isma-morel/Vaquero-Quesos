@@ -283,6 +283,7 @@ const ModalUsuarios = ({ Usuario, onClose, isOpen }) => {
     Inactivo: false,
     CondicionPago: "",
     ListaPrecio: "",
+    Contrasenia: "",
   };
   const [inputs, setInputs] = useState(usuarioInicial);
 
@@ -313,14 +314,26 @@ const ModalUsuarios = ({ Usuario, onClose, isOpen }) => {
         Contrasenia,
       } = inputs;
       const auth = JSON.parse(sessionStorage.getItem("auth")) || {};
-      const result = await fetch(
-        `${BASE_URL}iClientesSP/Guardar?pUsuario=${auth.usuario}&pToken=${
-          auth.Token
-        }&pNombre=${Nombre}&pContrasenia=${Contrasenia}&pTipoCliente=${TipoCliente}&pCodigoSistExt=${
-          CodigoSistExt ? CodigoSistExt : Nombre
-        }&pInactivo=${Inactivo}&pListaPrecio=${"."}&pCondicionPago=${"."}`,
-        { method: "POST" }
-      );
+      let result;
+      if (!Usuario?.Nombre) {
+        result = await fetch(
+          `${BASE_URL}ClientesSP/Modificar?pUsuario=${auth.usuario}&pToken=${
+            auth.Token
+          }&pNombre=${Nombre}&pTipoCliente=${TipoCliente}&pCodigoSistExt=${
+            CodigoSistExt ? CodigoSistExt : Nombre
+          }&pInactivo=${Inactivo}&pContrasenia=${Contrasenia}`,
+          { method: "POST" }
+        );
+      } else {
+        result = await fetch(
+          `${BASE_URL}iClientesSP/Guardar?pUsuario=${auth.usuario}&pToken=${
+            auth.Token
+          }&pNombre=${Nombre}&pContrasenia=${Contrasenia}&pTipoCliente=${TipoCliente}&pCodigoSistExt=${
+            CodigoSistExt ? CodigoSistExt : Nombre
+          }&pInactivo=${Inactivo}&pListaPrecio=${"."}&pCondicionPago=${"."}`,
+          { method: "POST" }
+        );
+      }
 
       if (result.status !== 200) {
         console.log(result.statusText);

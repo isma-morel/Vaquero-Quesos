@@ -25,6 +25,7 @@ const procesarProductoParaGuardar = ({
   Presentacion,
   Codigo,
   Inactivo,
+  EsPesoFijo,
   PesoPromedio,
   PorcDesvio,
   medidaPrincipal,
@@ -39,6 +40,7 @@ const procesarProductoParaGuardar = ({
   PesoPromedio: PesoPromedio || 0,
   PorcDesvio: PorcDesvio || 0,
   Inactivo: Inactivo || false,
+  EsPesoFijo: EsPesoFijo || false,
   pFoto: pFoto || null,
   pMedidas: Medidas,
 });
@@ -380,6 +382,7 @@ const AddOrEdit = ({
         ...inputs,
         pFoto: foto,
       });
+      console.log(productoAGuardar);
       const result = await fetch(
         `${BASE_URL}iProductosSP/Guardar?pUsuario=${auth.usuario}&pToken=${auth.Token}`,
         {
