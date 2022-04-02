@@ -108,6 +108,7 @@ const Usuarios = ({ idPermiso }) => {
           return push("/");
         }
       }
+      toast.success("Usuario borrado con exito");
 
       setUsers([
         ...users.filter((user) => user.Usuario !== usuarioAeliminar.Usuario),
@@ -314,26 +315,50 @@ const ModalUsuarios = ({ Usuario, onClose, isOpen }) => {
         Contrasenia,
       } = inputs;
       const auth = JSON.parse(sessionStorage.getItem("auth")) || {};
-      let result;
-      if (!Usuario?.Nombre) {
-        result = await fetch(
-          `${BASE_URL}iClientesSP/Guardar?pUsuario=${auth.usuario}&pToken=${
-            auth.Token
-          }&pNombre=${Nombre}&pContrasenia=${Contrasenia}&pTipoCliente=${TipoCliente}&pCodigoSistExt=${
-            CodigoSistExt ? CodigoSistExt : Nombre
-          }&pInactivo=${Inactivo}&pListaPrecio=${"."}&pCondicionPago=${"."}`,
-          { method: "POST" }
-        );
-      } else {
-        result = await fetch(
-          `${BASE_URL}ClientesSP/Modificar?pUsuario=${auth.usuario}&pToken=${
-            auth.Token
-          }&pNombre=${Nombre}&pTipoCliente=${TipoCliente}&pCodigoSistExt=${
-            CodigoSistExt ? CodigoSistExt : Nombre
-          }&pInactivo=${Inactivo}&pContrasenia=${Contrasenia}`,
-          { method: "POST" }
-        );
+      const result = await fetch(
+        `${BASE_URL}iClientesSP/Modificar?pUsuario=${auth.usuario}&pToken=${
+          auth.Token
+        }&pNombre=${Nombre}&pTipoCliente=${TipoCliente}&pCodigoSistExt=${
+          CodigoSistExt ? CodigoSistExt : Nombre
+        }&pInactivo=${Inactivo}&pContrasenia=${Contrasenia}`,
+        { method: "POST" }
+      );
+
+      if (result.status !== 200) {
+        console.log(result.statusText);
+        toast.error("Se produjo un error al modificar el usuario");
+        return;
       }
+
+      toast.success("Usuario modificado con exito");
+    } catch (err) {
+      console.log(err);
+      toast.error("Se produjo un error al modificar el usuario");
+    } finally {
+      onClose();
+    }
+  };
+
+  const handleGuardarNuevo = async () => {
+    try {
+      const {
+        Nombre,
+        TipoCliente,
+        CodigoSistExt,
+        Inactivo,
+        CondicionPago,
+        ListaPrecio,
+        Contrasenia,
+      } = inputs;
+      const auth = JSON.parse(sessionStorage.getItem("auth")) || {};
+      const result = await fetch(
+        `${BASE_URL}iClientesSP/Guardar?pUsuario=${auth.usuario}&pToken=${
+          auth.Token
+        }&pNombre=${Nombre}&pTipoCliente=${TipoCliente}&pCodigoSistExt=${
+          CodigoSistExt ? CodigoSistExt : Nombre
+        }&pInactivo=${Inactivo}&pListaPrecio=${"."}&pCondicionPago=${"."}&pProvincia=${"."}&pContrasenia=${Contrasenia}`,
+        { method: "POST" }
+      );
 
       if (result.status !== 200) {
         console.log(result.statusText);
@@ -439,9 +464,15 @@ const ModalUsuarios = ({ Usuario, onClose, isOpen }) => {
             <button className="cancelar" onClick={onClose}>
               Cancelar
             </button>
-            <button className="aceptar" onClick={handleGuardar}>
-              Aceptar
-            </button>
+            {!Usuario?.Nombre ? (
+              <button className="aceptar" onClick={handleGuardarNuevo}>
+                Guardar
+              </button>
+            ) : (
+              <button className="aceptar" onClick={handleGuardar}>
+                Guardar
+              </button>
+            )}
           </div>
         </div>
       </div>

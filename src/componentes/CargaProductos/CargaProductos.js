@@ -111,10 +111,14 @@ const CargaProductos = ({ idPermiso }) => {
     setProductosFiltrados(productos);
   }, [productos]);
 
-  const handleRowClick = (index) => (e) => {
+  const handleRowClick = (id) => (e) => {
+    const productoFiltrado = productos.find(
+      ({ IdProducto }) => IdProducto === id
+    );
+    console.log(productoFiltrado);
     setProductoSeleccionado({
-      ...productos[index],
-      medidaPrincipal: productos[index].Medidas[0].IdMedida,
+      ...productoFiltrado,
+      medidaPrincipal: productoFiltrado.Medidas[0].IdMedida,
     });
     setIsEditOrAdd(true);
   };
@@ -211,7 +215,7 @@ const CargaProductos = ({ idPermiso }) => {
             </thead>
             <tbody>
               {productosFiltrados?.map(
-                ({ Codigo, Descripcion, Presentacion }, index) => (
+                ({ Codigo, Descripcion, Presentacion, IdProducto }, index) => (
                   <tr key={index}>
                     <td>{Codigo}</td>
                     <td className="descripcion">
@@ -219,7 +223,7 @@ const CargaProductos = ({ idPermiso }) => {
                         <span>{Descripcion}</span>
                       </div>
                       <div>
-                        <button onClick={handleRowClick(index)}>
+                        <button onClick={handleRowClick(IdProducto)}>
                           <i
                             title="presione para editar"
                             className="fas fa-edit"
