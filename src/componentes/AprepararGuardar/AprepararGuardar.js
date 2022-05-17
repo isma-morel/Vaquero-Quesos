@@ -202,7 +202,7 @@ function AprepararGuardar({ isConsulta, idPermiso }) {
         {!isLoading ? (
           !modoPreparar ? (
             pedidosFiltrados.map(
-              ({ Cliente, Fecha, Productos, Pedido }, index) => (
+              ({ Cliente, Fecha, Productos, Pedido, Observacion }, index) => (
                 <div key={index} className="contenedor-tabla">
                   <div className="contenedor-cliente">
                     <div className="datos">
@@ -211,6 +211,9 @@ function AprepararGuardar({ isConsulta, idPermiso }) {
                       <span>Pedido: {Pedido}</span>
 
                       <span>Fecha: {Fecha}</span>
+                      {Observacion.length ? (
+                        <span>Observación: {Observacion}</span>
+                      ) : null}
                     </div>
                     <div>
                       <button
@@ -322,6 +325,7 @@ const ModalEliminar = ({ isOpen, onClose, pedido, cerrar }) => {
   const handleClose = (e) => {
     onClose();
   };
+  console.log(pedido);
   const handleEliminar = async (pedidoEliminar) => {
     const auth = JSON.parse(sessionStorage.getItem("auth")) || {};
     try {

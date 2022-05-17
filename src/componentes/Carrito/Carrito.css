@@ -1,6 +1,10 @@
 .contenedor-pedidos {
   width: 80%;
 }
+.inputCarrito {
+  width: 50%;
+  height: 25px;
+}
 .tabla-pedidos {
   width: 80%;
   border-collapse: collapse;

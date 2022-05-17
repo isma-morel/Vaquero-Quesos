@@ -11,6 +11,7 @@ const Carrito = () => {
   const [isOpenConfirmacionModal, handleConfirmacionModal] = useModal();
   const [productoEditable, setProductoEditable] = useState(null);
   const [productos, setProductos] = useState([]);
+  const [observacion, setObservacion] = useState("");
   const [user, setUser] = useState();
   const confirmarUsuario = () =>
     JSON.parse(sessionStorage.getItem("auth"))?.TipoCliente === "C";
@@ -26,14 +27,13 @@ const Carrito = () => {
   };
   const handleConfirmar = async (e) => {
     handleConfirmacionModal();
-
     let pedido = {
       Numero: 0,
       IdCliente: user.IdCliente,
       IdClienteRegistro: user.vendedor
         ? user.vendedor.IdCliente
         : user.IdCliente,
-      Observacion: "",
+      Observacion: observacion,
       Productos: [],
     };
 
@@ -90,6 +90,10 @@ const Carrito = () => {
     setProductos(tempProductos);
     sessionStorage.setItem("carrito", JSON.stringify(tempProductos));
   };
+
+  const handleChangeObservacion = (e) => {
+    setObservacion(e.target.value);
+  };
   return (
     <div className="contenedor-pedidos">
       <ModalCarrito
@@ -107,46 +111,63 @@ const Carrito = () => {
       </div>
 
       {productos.length > 0 ? (
-        <table className="tabla-pedidos">
-          <thead>
-            <tr>
-              <th>PRODUCTO</th>
-              <th>CANTIDAD</th>
-            </tr>
-          </thead>
-          <tbody>
-            {productos.map(
-              ({ Descripcion, Medidas, cantidad, medida }, index) => (
-                <tr key={index}>
-                  <td>
-                    <span>{Descripcion}</span>
-                  </td>
-                  <td className="contenedor-flex">
-                    <span>{`${cantidad} ${
-                      Medidas?.find(({ IdMedida }) => IdMedida === medida)
-                        .DescripcionUM || ""
-                    } `}</span>
-                    <span className="botones">
-                      <i
-                        onClick={handleCarrito(index)}
-                        className="fas fa-edit icono"></i>
-                      <i
-                        onClick={handleEliminar(index)}
-                        className="fas fa-window-close icono-cancel"></i>
-                    </span>
-                  </td>
-                </tr>
-              )
-            )}
-          </tbody>
-        </table>
+        <>
+          <div className="container">
+            <label htmlFor="observacion">OBSERVACIÓN</label>
+            <input
+              type="text"
+              name="observacion"
+              value={observacion}
+              onChange={handleChangeObservacion}
+              className="inputCarrito"
+              placeholder=""
+              maxLength="50"
+            />
+          </div>
+          <table className="tabla-pedidos">
+            <thead>
+              <tr>
+                <th>PRODUCTO</th>
+                <th>CANTIDAD</th>
+              </tr>
+            </thead>
+            <tbody>
+              {productos.map(
+                ({ Descripcion, Medidas, cantidad, medida }, index) => (
+                  <tr key={index}>
+                    <td>
+                      <span>{Descripcion}</span>
+                    </td>
+                    <td className="contenedor-flex">
+                      <span>{`${cantidad} ${
+                        Medidas?.find(({ IdMedida }) => IdMedida === medida)
+                          .DescripcionUM || ""
+                      } `}</span>
+                      <span className="botones">
+                        <i
+                          onClick={handleCarrito(index)}
+                          className="fas fa-edit icono"
+                        ></i>
+                        <i
+                          onClick={handleEliminar(index)}
+                          className="fas fa-window-close icono-cancel"
+                        ></i>
+                      </span>
+                    </td>
+                  </tr>
+                )
+              )}
+            </tbody>
+          </table>
+        </>
       ) : null}
       <div className="contenedor-botones">
         <button
           onClick={() => {
             history.push("/Lista");
           }}
-          className="btn">
+          className="btn"
+        >
           Volver a la Lista
         </button>
         {productos.length ? (

@@ -24,6 +24,7 @@ const ProcesarPedidosAFacturar = (pedidosBruto) => {
         A,
         B,
         idPedidosPrepProd,
+        idPedido,
       }
     ) => {
       let prodTemp = {};
@@ -33,6 +34,7 @@ const ProcesarPedidosAFacturar = (pedidosBruto) => {
         prodTemp = {
           Pedido,
           Cliente,
+          idPedido,
           A,
           B,
           Productos: [
@@ -65,13 +67,14 @@ const ProcesarPedidosAFacturar = (pedidosBruto) => {
   );
   return pedidosProcesados;
 };
-const ProcesarPedidoParaGuardar = ({ Pedido, A, B, Productos }) => {
+const ProcesarPedidoParaGuardar = ({ Pedido, A, B, Productos, idPedido }) => {
   const pedidoProcesado = {
     Numero: Pedido,
     Fecha: Date.now(),
     Productos: Productos.map(({ idPedidosPrepProd, CantidadLista, Peso }) => ({
       Cantidad: CantidadLista,
       idPedidosPrepProd,
+      idPedido,
       Peso,
       A,
       B,
@@ -144,6 +147,7 @@ const Facturar = ({ idPermiso }) => {
       }
 
       const json = await result.json();
+      console.log(json);
       const PedidosAFacturarProcesados = ProcesarPedidosAFacturar(json);
       setPedidosAFacturar(PedidosAFacturarProcesados);
     } catch (err) {
@@ -199,6 +203,35 @@ const Facturar = ({ idPermiso }) => {
     const resultado = filtrar(e.target.value, pedidosAFacturar);
     if (!resultado) return;
     setPedidosAFacturarFiltrados(resultado);
+  };
+  const handleEliminarPedido = (index) => async (e) => {
+    console.log(pedidosAFacturarFiltrados[index]);
+    const auth = JSON.parse(sessionStorage.getItem("auth"));
+    try {
+      const result = await fetch(
+        `${BASE_URL}iPedidosSP/Eliminar?pUsuario=${auth.usuario}&pToken=${auth.Token}&pPedido=${pedidosAFacturarFiltrados[index].idPedido}`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      if (result.status !== 200) {
+        if (result.status === 401) {
+          sessionStorage.removeItem("auth");
+          push("/");
+        }
+        throw new Error(result.statusText);
+      }
+
+      toast.success("Facturación eliminada correctamente");
+      setPedidosAFacturar(null);
+      pedirPedidosParaFacturar();
+    } catch (err) {
+      toast.error("Ocurrio un error al eliminar la factura.");
+      console.log(err.message);
+    }
   };
   const handleAjustar = (index) => (e) => {
     setPedidoAjustar({ ...pedidosAFacturarFiltrados[index], index });
@@ -291,6 +324,12 @@ const Facturar = ({ idPermiso }) => {
                 </span>
 
                 <div className="botones">
+                  <button
+                    className="btn btn-cancelar"
+                    onClick={handleEliminarPedido(index)}
+                  >
+                    Eliminar
+                  </button>
                   <button
                     onClick={handleAjustar(index)}
                     className="btn ajustar"

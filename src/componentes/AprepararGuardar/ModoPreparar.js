@@ -109,24 +109,18 @@ const ModoPreparar = ({ pedido, salir, onGuardar }) => {
     }
 
     setPedidoApreparar({ ...pedidoApreparar, Productos: ProductoPesado });
-    // const objetoProvisorio = {
-    //   idPedidosProd: ,
-    //   IdMedidaPrinc: 2,
-    //   Cantidad: 3,
-    //   PesoBruto: 4.0,
-    // };
-    const pesajeProvisorio = ProductoPesado.map(
-      ({
-        Cantidad,
-        idPedidosProd,
-        idMedidaPrinc,
-        Pesaje: { PesoBruto, Taras },
-      }) => ({
+    const getObj = [
+      ProductoPesado.find(
+        ({ idPedidosProd }) => idPedidosProd === pesaje.producto.idPedidosProd
+      ),
+    ];
+    const pesajeProvisorioFind = getObj.map(
+      ({ Cantidad, idPedidosProd, idMedidaPrinc, Pesaje }) => ({
         idPedidosProd: idPedidosProd,
         idMedidaPrinc: idMedidaPrinc,
         Cantidad: Cantidad,
-        PesoBruto: PesoBruto,
-        Tara: Taras.map(({ IdElemTara, cantidad, Peso, $id }) => ({
+        PesoBruto: Pesaje.PesoBruto,
+        Tara: Pesaje.Taras.map(({ IdElemTara, cantidad, Peso, $id }) => ({
           $id: $id,
           idPedidosProd: idPedidosProd,
           IdElemTara: IdElemTara,
@@ -135,10 +129,7 @@ const ModoPreparar = ({ pedido, salir, onGuardar }) => {
         })),
       })
     );
-    console.log(pesajeProvisorio);
-    pesajeProvisorio.forEach((element) => {
-      handlePesajeProvisorio(element);
-    });
+    handlePesajeProvisorio(pesajeProvisorioFind[0]);
     setProductoApesar(undefined);
   };
 
@@ -213,10 +204,11 @@ const ModoPreparar = ({ pedido, salir, onGuardar }) => {
         );
 
       if (pesajeProvisorio) {
-        console.log("asdasd", pesajeProvisorio);
         const tarasProvisorio = taras.map((itemTara) => {
           const elemProvisorio = pesajeProvisorio.Tara.find(
-            ({ IdElemTara }) => IdElemTara === itemTara.IdElemTara
+            ({ IdElemTara, idPedidosProd }) =>
+              IdElemTara === itemTara.IdElemTara &&
+              element.idPedidosProd === idPedidosProd
           );
           itemTara.cantidad = elemProvisorio.Cantidad;
           itemTara.Peso = elemProvisorio.Peso;
@@ -277,23 +269,26 @@ const ModoPreparar = ({ pedido, salir, onGuardar }) => {
         const { producto, PesoBruto, Taras, PesoPorPieza, PesoNeto } =
           taraFinal;
         let ProductoPesado = pedidoApreparar.Productos;
-        ProductoPesado[index].Pesaje = {
-          PesoBruto,
-          Taras,
-          PesoPorPieza,
-          PesoNeto,
-        };
-        ProductoPesado[index].CantidadAnterior = ProductoPesado[index].Cantidad;
-        ProductoPesado[index].Cantidad = producto.Cantidad;
-        if (
-          ProductoPesado[index].CantidadAnterior <=
-          ProductoPesado[index].Cantidad
-        ) {
-          ProductoPesado[index].NuevoPedido = false;
-          ProductoPesado[index].DesecharFaltante = false;
-        }
+        if (ProductoPesado[index].idPedidosProd === element.idPedidosProd) {
+          ProductoPesado[index].Pesaje = {
+            PesoBruto,
+            Taras,
+            PesoPorPieza,
+            PesoNeto,
+          };
+          ProductoPesado[index].CantidadAnterior =
+            ProductoPesado[index].Cantidad;
+          ProductoPesado[index].Cantidad = producto.Cantidad;
+          if (
+            ProductoPesado[index].CantidadAnterior <=
+            ProductoPesado[index].Cantidad
+          ) {
+            ProductoPesado[index].NuevoPedido = false;
+            ProductoPesado[index].DesecharFaltante = false;
+          }
 
-        setPedidoApreparar({ ...pedidoApreparar, Productos: ProductoPesado });
+          setPedidoApreparar({ ...pedidoApreparar, Productos: ProductoPesado });
+        }
       }
     });
   }, [pesajesProvisorios, taras, prodData]);

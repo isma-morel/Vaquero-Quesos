@@ -15,6 +15,10 @@ hr {
   padding: 4px;
 }
 
+.inputLogin {
+  align-self: flex-end;
+}
+
 .container form .error {
   color: red;
   font-size: small;

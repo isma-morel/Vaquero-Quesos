@@ -64,6 +64,10 @@
   transition: 0.2s ease all;
   font-size: 0.7em;
 }
+.contenedor-facturar .contenedor-tabla .contenedor-cliente .btn.btn-cancelar {
+  background-color: red;
+  font-weight: 500;
+}
 .contenedor-facturar .contenedor-tabla .contenedor-cliente .btn.ajustar {
   background-color: rgb(179, 128, 19);
 }
@@ -73,6 +77,16 @@
   .contenedor-cliente
   .btn.ajustar:disabled {
   background-color: rgba(179, 128, 19, 0.726);
+}
+.contenedor-facturar
+  .contenedor-tabla
+  .contenedor-cliente
+  .btn.btn-cancelar:hover,
+.contenedor-facturar
+  .contenedor-tabla
+  .contenedor-cliente
+  .btn.btn-cancelar:disabled {
+  background: rgba(177, 5, 5, 0.726);
 }
 .contenedor-facturar .contenedor-tabla .contenedor-cliente .btn:hover,
 .contenedor-facturar .contenedor-tabla .contenedor-cliente .btn:disabled {
